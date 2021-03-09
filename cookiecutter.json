@@ -1,0 +1,17 @@
+{
+    "project_name": "Main",
+    "project_slug": "{{ cookiecutter.project_name.lower()|replace(' ', '_')|replace('-', '_')|replace('.', '_')|trim() }}",
+    "main_app": "{{cookiecutter.project_name.lower()}}",
+    "client_name": "Prefeitura de Palmas",
+    "created_date_project": "{% now 'utc', '%d/%m/%Y' %}",
+    "description": "Projeto base para os novos projetos",
+    "author_name": "Analista Agtec",
+    "domain_name": "palmas.to.gov.br",
+    "email": "{{ cookiecutter.author_name.lower()|replace(' ', '.') }}@palmas.to.gov.br",
+    "django_version": "3.1.7",
+    "python_version": "3.9.2",
+    "postgresql_version": "13.2",
+    "_copy_without_render": [
+        "core/**"
+    ]
+}
