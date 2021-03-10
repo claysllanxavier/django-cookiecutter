@@ -134,30 +134,7 @@ Para atualizar o arquivo main.dart com todas as apps do projeto
          Para realizar testes nos endpoints da APIRest
          
          No mesmo diretório de tests devem ser criados quantos arquivos forem necessário para testar todos
-         os endpoints da referida App. O arquivo de test segue o padrão YAML, abaixo temos um exemplo de arquivo
-         de test:
-
-         endpoints:
-           - name: Servico #Nome do Teste
-             path: http://localhost:8000/core/api/ # Caminho Raiz da API
-             requests:
-               - name: Nome da Requisição # Criando o Primeiro Request
-                 path: xpto/ # Informando qual o caminho do endpoint, esse será concatenado com o path anterior
-                 method: get #Informando qual o verbo HTTP
-                 headers: # Configurando o head da requisição
-                   Accept: application/json
-                   Contenty-Type: application/json
-                 params: # Parametros da consulta via QueryString
-                   codigo: # Chave
-                     406fde9e-19b8-42f7-aa00-db29e5675cc7 # Valor
-                 vars: # Variáveis que podem ser utilizadas daqui para frente com o valor de retorno do json
-                   json_data: ${{ response.json() }}
-                   count: ${{ response.json()["count"] }}
-                 tests: # Area para os testes
-                   - name: status_code # Nome do Teste
-                     assert: ${{ response.status_code == 200 }} # Teste, podendo utilizar notação Python dentro do ${{}}
-                   - name: count
-                     assert: ${{ ${count} == 2 }}
+         os endpoints da referida App. O arquivo de test segue o padrão YAML, vide arquivo de exemplo scanapi_exemplo.yaml.
 
          3.1 Para executar basta chamar o comando no terminal
 

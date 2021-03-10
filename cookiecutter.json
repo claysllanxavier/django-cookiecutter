@@ -12,6 +12,7 @@
     "python_version": "3.9.2",
     "postgresql_version": "13.2",
     "_copy_without_render": [
-        "core/**"
+        "core/**",
+        "scanapi_exemplo.yaml"
     ]
 }
