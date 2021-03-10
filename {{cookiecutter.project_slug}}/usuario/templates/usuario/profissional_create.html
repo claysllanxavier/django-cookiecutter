@@ -1,0 +1,181 @@
+{% extends 'core/index_create.html' %}
+{% load base %}
+
+<!--
+Arquivo gerado automaticamente pelo build.
+Caso deseje bloquear o parser nesse arquivo, basta adicionar o caracter #(cerquilha) antes da palavra a seguir
+#FileLocked
+-->
+
+{% block title %}Criação Profissional{% endblock title %}
+{% block title_modulo %}Profissional{% endblock title_modulo %}
+{% block menu_app %}
+    {% for app in apps %}
+        {% if app.real_name_app.lower == 'usuario' %}
+            {% for model in app.models_app %}
+                <tr>
+                    <td>
+                        <i class="fe fe-chevrons-right text-muted"></i> &nbsp;
+                        <a href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endblock menu_app %}
+{% block form_app %}
+    <form id="form_principal" class="needs-validation was-validated" method="post" novalidate
+          enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field }}
+        {% endfor %}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {{ form.cpf.label_tag }}
+                {{ form.cpf }}
+                <div class="invalid-feedback">
+                    Campo Requerido.
+                </div>
+                {% if form.cpf.errors %}{{ form.cpf.errors }}{% endif %}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.nome.label_tag }}
+                {{ form.nome }}
+                <div class="invalid-feedback">
+                    Campo Requerido.
+                </div>
+                {% if form.nome.errors %}{{ form.nome.errors }}{% endif %}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                <div class="invalid-feedback">
+                    Campo Requerido.
+                </div>
+                {% if form.email.errors %}{{ form.email.errors }}{% endif %}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.telefone.label_tag }}
+                {{ form.telefone }}
+                <div class="invalid-feedback">
+                    Campo Requerido.
+                </div>
+                {% if form.telefone.errors %}{{ form.telefone.errors }}{% endif %}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.token.label_tag }}
+                {{ form.token }}{% if form.token.errors %}{{ form.token.errors }}{% endif %}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.firebase.label_tag }}
+                {{ form.firebase }}{% if form.firebase.errors %}{{ form.firebase.errors }}{% endif %}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.foto.label_tag }}
+                {{ form.foto }}{% if form.foto.errors %}{{ form.foto.errors }}{% endif %}
+            </div>
+
+            <div class="form-group col-md-6">
+                {{ form.categoria.label_tag }}
+                {{ form.categoria }}{% if form.categoria.errors %}{{ form.categoria.errors }}{% endif %}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.especializacao.label_tag }}
+                {{ form.especializacao }}{% if form.especializacao.errors %}{{ form.especializacao.errors }}{% endif %}
+            </div>
+            <div class="form-group col-md-12">
+                {{ form.endereco.label_tag }}
+                {{ form.endereco }}
+                <div class="invalid-feedback">
+                    Campo Requerido.
+                </div>
+                {% if form.endereco.errors %}{{ form.endereco.errors }}{% endif %}
+            </div>
+
+        </div>
+
+        <div class="col-12 m-0 p-0 text-right">
+            <div class="btn-list">
+                {% if list_inlines %}
+                    <input type="submit" class="btn btn-primary btn-large" name="_continue" value="Salvar">
+                {% else %}
+                    <input type="submit" class="btn btn-primary btn-large" value="Salvar">
+                {% endif %}
+                <input type="submit" class="btn btn-outline-info" name="_continue" value="Salvar e continuar">
+                <input type="submit" class="btn btn-outline-info" name="_addanother" value="Salvar e adicionar outro">
+                <a class="btn btn-outline-danger" href="{% url 'usuario:profissional-list' %}">Cancelar</a>
+            </div>
+        </div>
+    </form>
+
+    {% if form.profissao.field.queryset.model|has_add_permission:request %}
+        {# MODAL Profissao #}
+        <div class="modal fade" id="formProfissaoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myLargeModalLabel">Adicionar Profissao</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" id="form-profissao">
+                            {% csrf_token %}
+                            {% for hidden in form_profissao.hidden_fields %} {{ hidden }} {% endfor %}
+                            {% for field in form_profissao.visible_fields %}
+                                <div class="form-group">
+                                    {{ field.label_tag }} {{ field }} {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %} {% if field.field.required %}
+                                    <div class="invalid-feedback">
+                                        Campo Obrigatorio.
+                                    </div>
+                                {% endif %} {% if field.errors %} {{ field.errors }} {% endif %}
+                                </div>
+                            {% endfor %}
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btn-gravar-profissao">Gravar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $("#btn-gravar-profissao").on("click", function (event) {
+                event.preventDefault();
+                var url = window.location.href;
+                $.ajax({
+                    url: '/core/api/usuario/profissao/',
+                    method: 'POST',
+                    data: $("#form-profissao").serialize(),
+                    dataType: 'json',
+                    success: function (data) {
+                        // Adicionando o item retornado no select.
+                        $("#id_profissao").load(url + " #id_profissao option");
+                        // Ocultando o form.
+                        $("#formProfissaoModal").modal('hide');
+                        //Limpar o form do modal
+                        $('#form-profissao').trigger("reset");
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                })
+            });
+        </script>
+    {% endif %}
+
+
+{% endblock form_app %}

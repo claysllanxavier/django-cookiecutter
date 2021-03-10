@@ -1,0 +1,106 @@
+{% extends 'core/index_create.html' %}
+{% load base %}
+
+<!--
+Arquivo gerado automaticamente pelo build.
+Caso deseje bloquear o parser nesse arquivo, basta adicionar o caracter #(cerquilha) antes da palavra a seguir
+#FileLocked
+-->
+
+{% block title %}Criação Cliente{% endblock title %}
+{% block title_modulo %}Cliente{% endblock title_modulo %}
+{% block menu_app %}
+{% for app in apps %}
+{% if app.real_name_app.lower == 'usuario' %}
+{% for model in app.models_app %}
+                    <tr>
+                        <td>
+                            <i class="fe fe-chevrons-right text-muted"></i> &nbsp;
+                            <a href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
+                        </td>
+                    </tr>
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endblock menu_app %}
+{% block form_app %}
+<form id="form_principal" class="needs-validation was-validated" method="post" novalidate enctype="multipart/form-data">
+  {% csrf_token %}
+  {% for hidden_field in form.hidden_fields %}
+  {{ hidden_field }}
+  {% endfor %}
+  {% if form.non_field_errors %}
+  <div class="alert alert-danger" role="alert">
+    {% for error in form.non_field_errors %}
+    {{ error }}
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="form-row">   
+    <div class="form-group col-md-6">
+      {{ form.nome.label_tag }}
+      {{ form.nome }}
+      <div class="invalid-feedback">
+        Campo Requerido.
+      </div>
+      {% if form.nome.errors  %}{{ form.nome.errors  }}{% endif %}
+    </div>
+    <div class="form-group col-md-6">
+      {{ form.cpf.label_tag }}
+      {{ form.cpf }}
+      <div class="invalid-feedback">
+        Campo Requerido.
+      </div>
+      {% if form.cpf.errors  %}{{ form.cpf.errors  }}{% endif %}
+    </div>
+    <div class="form-group col-md-6">
+      {{ form.email.label_tag }}
+      {{ form.email }}
+      <div class="invalid-feedback">
+        Campo Requerido.
+      </div>
+      {% if form.email.errors  %}{{ form.email.errors  }}{% endif %}
+    </div>
+    <div class="form-group col-md-6">
+      {{ form.telefone.label_tag }}
+      {{ form.telefone }}
+      <div class="invalid-feedback">
+        Campo Requerido.
+      </div>
+      {% if form.telefone.errors  %}{{ form.telefone.errors  }}{% endif %}
+    </div>
+    <div class="form-group col-md-6">
+      {{ form.token.label_tag }}
+      {{ form.token }}{% if form.token.errors  %}{{ form.token.errors  }}{% endif %}
+    </div>
+    <div class="form-group col-md-6">
+      {{ form.firebase.label_tag }}
+      {{ form.firebase }}{% if form.firebase.errors  %}{{ form.firebase.errors  }}{% endif %}
+    </div>
+    <div class="form-group col-md-6">
+      {{ form.endereco_res.label_tag }}
+      {{ form.endereco_res }}{% if form.endereco_res.errors  %}{{ form.endereco_res.errors  }}{% endif %}
+    </div>
+    <div class="form-group col-md-6">
+      {{ form.endereco_com.label_tag }}
+      {{ form.endereco_com }}{% if form.endereco_com.errors  %}{{ form.endereco_com.errors  }}{% endif %}
+    </div>
+  </div>
+
+  <div class="col-12 m-0 p-0 text-right">
+    <div class="btn-list">
+      {% if list_inlines %}
+      <input type="submit" class="btn btn-primary btn-large" name="_continue" value="Salvar">
+      {% else %}
+      <input type="submit" class="btn btn-primary btn-large" value="Salvar">
+      {% endif %}
+      <input type="submit" class="btn btn-outline-info" name="_continue" value="Salvar e continuar">
+      <input type="submit" class="btn btn-outline-info" name="_addanother" value="Salvar e adicionar outro">
+      <a class="btn btn-outline-danger" href="{% url 'usuario:cliente-list' %}">Cancelar</a>
+    </div>
+  </div>
+</form>
+
+
+
+{% endblock form_app %}

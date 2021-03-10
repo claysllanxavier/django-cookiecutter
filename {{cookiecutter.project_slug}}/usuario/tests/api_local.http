@@ -1,0 +1,82 @@
+POST http://localhost:8000/core/api/usuario/profissional/
+Content-Type: application/json
+
+{
+  "cpf": "76556765400",
+  "nome": "Profissional sem senha",
+  "email": "profissional_com_senh55a4_9@nuvols.com.br",
+  "telefone": "74554645464546",
+  "endereco": "Centro"}
+
+###
+POST http://localhost:8000/core/api/usuario/cliente/
+Content-Type: application/json
+
+{
+  "cpf": "22233344434",
+  "nome": "Cliente sem senha",
+  "email": "falecom@nuvols.com.br",
+  "telefone": "74554645464546",
+  "endereco_res": "Centro ",
+  "endereco_com": "Centro"
+}
+
+###
+GET http://localhost:8000/core/api/profissional/reviews?profissional=bfe79b46-10f0-4ec1-9b62-3872279c7f41
+
+###
+GET http://localhost:8000/core/api/usuario/profissional/bfe79b46-10f0-4ec1-9b62-3872279c7f41
+Accept: application/json
+
+###
+GET http://localhost:8000/core/api/usuario/recoverpassword/?email=guilherme.carvalho@nuvols.com.br
+Accept: application/json
+
+###
+
+PATCH http://localhost:8000/core/api/usuario/profissional/134727b2-98d7-4d9d-98d3-c4c2b1aecfeb/
+Content-Type: application/json
+
+{
+  "banco_codigo": 5,
+  "banco_nome": "Banco do Brasil",
+  "banco_tipo_conta": "Conta Corrente",
+  "banco_numero_conta": "123456"
+}
+
+###
+GET http://localhost:8000/core/api/usuario/sendemail?email=vitorhugoo0@hotmail.com
+
+###
+GET http://localhost:8000/core/api/usuario/sendemail?email=guilherme.carvalho.carneiro@gmail.com
+
+###
+GET http://localhost:8000/core/api/usuario/sendemail?email=guilherme.carvalho@hotmail.com.br
+
+###
+GET http://localhost:8000/core/api/usuario/sendemail?email=desenvolvedor.net@gmail.com
+
+###
+GET http://localhost:8000/core/api/usuario/requestresetaccount?email=desenvolvedor.net@gmail.com
+
+###
+GET http://localhost:8000/core/api/usuario/resetaccount?email=aninharodrigues2@hotmail.com
+
+###
+POST http://localhost:8000/core/api/usuario/changepassword/
+Content-Type: application/json
+
+{
+  "email": "desenvolvedor.net@gmail.com",
+  "old_password": "kjahdsf",
+  "new_password": "asdf123456"
+}
+
+### Etapa 1 e 3 para o profissional pesquisado
+GET http://localhost:8000/core/api/atendimento/agendamento-aberto-list?fk_profissional=93e171cd-9687-4d6c-b774-1a6d9578af65&data=2021-02-01&fields=fk_profissional/id,data_solicitacao,data_agendamento,data_confirmacao,etapa
+
+###
+GET http://localhost:8000/core/api/atendimento/agendamento-list?fk_profissional=93e171cd-9687-4d6c-b774-1a6d9578af65&fields=fk_profissional/id,data_solicitacao,data_agendamento,data_confirmacao,etapa
+
+###
+GET http://localhost:8000/core/api/profissional/reviews?profissional=bfe79b46-10f0-4ec1-9b62-3872279c7f41
