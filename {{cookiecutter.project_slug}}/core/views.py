@@ -31,7 +31,7 @@ from django.views.generic.edit import (CreateView, DeleteView, UpdateView)
 
 from .forms import BaseForm
 from .models import Base
-from main.settings import SYSTEM_NAME
+from base.settings import SYSTEM_NAME
 
 # Configurando o logger
 logger = logging.getLogger(__name__)

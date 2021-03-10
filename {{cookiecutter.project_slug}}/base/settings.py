@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [ '{{ cookiecutter.domain_name }}', ]
+ALLOWED_HOSTS = ['{{ cookiecutter.domain_name }}', ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -29,13 +29,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'core',
     # Django Rest Framework
-    'rest_framework.authtoken',
-    'rest_framework',
-    'dj_rest_auth',
     'drf_yasg',
-
-    'core'
+    'dj_rest_auth',
+    'rest_framework',
+    'rest_framework.authtoken',
+    # Apps do projeto
 ]
 
 MIDDLEWARE = [
@@ -46,9 +46,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_currentuser.middleware.ThreadLocalUserMiddleware',
 ]
 
-ROOT_URLCONF = '{{ cookiecutter.project_slug }}.urls'
+ROOT_URLCONF = 'base.urls'
 
 TEMPLATES = [
     {
@@ -66,7 +67,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = '{{ cookiecutter.project_slug }}.wsgi.application'
+WSGI_APPLICATION = 'base.wsgi.application'
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -123,7 +124,7 @@ if 'test' in sys.argv:
     MIGRATION_MODULES = DisableMigrations()
 
 try:
-    from {{ cookiecutter.project_slug }}.settings_local import *
+    from base.settings_local import *
 except:
     pass
 
@@ -139,61 +140,46 @@ if DEBUG:
         '127.0.0.1', 'localhost'
     ]
 
-# ÁRE PARA CONFIGURAÇÃO DAS VARIÁVEIS DO PROJETO
+# Django Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework_rapidjson.renderers.RapidJSONRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework_rapidjson.parsers.RapidJSONParser',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 200
+}
 
-try:
-    SYSTEM_NAME = settings.PROJECT_NAME
-except:
-    SYSTEM_NAME = 'Projeto Core'
+# ÁREA PARA CONFIGURAÇÃO DAS VARIÁVEIS DO PROJETO
 
-"""Variável responsável por configurar qual Manager utilizar
-Se for True usa o manager padrão que retorna todos os elementos
-mesmo os que foram marcados com deleted = True e enabled = False
-Se for False usa o manager configurado para não mostrar 
-os elementos marcados com deleted = True e enabled
-"""
-try:
-    use_default_manager = settings.USE_DEFAULT_MANAGER
-except:
-    use_default_manager = False
+SYSTEM_NAME = '{{ cookiecutter.project_name.title() }} '
 
-# Carregando o caminho para o projeto Flutter
-try:
-    FLUTTER_PROJECT_PATH = settings.FLUTTER_PROJECT_PATH
-except:
-    pass
+LOGIN_URL = '/core/login'
+LOGIN_REDIRECT_URL = '/core'
+LOGOUT_REDIRECT_URL = '/core/login'
 
-# Carregando as apps que devem ser mapeadas para gerar o projeto Flutter
-try:
-    FLUTTER_APPS = settings.FLUTTER_APPS
-except:
-    pass
+#Variável responsável por configurar qual Manager utilizar
+#Se for True usa o manager padrão que retorna todos os elementos
+#mesmo os que foram marcados com deleted = True e enabled = False
+#Se for False usa o manager configurado para não mostrar
+#os elementos marcados com deleted = True e enabled
+USE_DEFAULT_MANAGER = False
 
-# Carregando o URI da API
-try:
-    API_PATH = settings.API_PATH
-except:
-    pass
+# O Valor dessa variável não deve ser alterado
+FLUTTER_PROJECT_PATH = "../../Flutter/"
 
-# Carregando as apps que será gerada a documentação utilizando o Sphinx
-try:
-    DOC_APPS = settings.DOC_APPS
-except:
-    pass
-
-# Carregando a URL do login redirect
-try:
-    LOGIN_REDIRECT_URL = settings.LOGIN_REDIRECT_URL
-except:
-    pass
-
-# Carregando a URL do logout redirect
-try:
-    LOGOUT_REDIRECT_URL = settings.LOGOUT_REDIRECT_URL
-except:
-    pass
-
-# ÁRE PARA CONFIGURAÇÃO DAS VARIÁVEIS DO PROJETO
+# TODO Adicione na lista abaixo as apps que devem ser renderizadas no projeto Flutter
+FLUTTER_APPS = []
+# TODO Configure o caminho da API do projeto
+API_PATH = ""
 
 # HERE STARTS DYNACONF EXTENSION LOAD (Keep at the very bottom of settings.py)
 # Read more at https://dynaconf.readthedocs.io/en/latest/guides/django.html

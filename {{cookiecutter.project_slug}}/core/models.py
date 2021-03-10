@@ -8,9 +8,10 @@ from django.db.models import (AutoField, ManyToManyField, ManyToOneRel, ManyToMa
                               FileField, ImageField)
 from rest_framework.pagination import PageNumberPagination
 
-from main.settings import use_default_manager
+from base.settings import USE_DEFAULT_MANAGER
 
 models.options.DEFAULT_NAMES += ('fk_fields_modal', 'fields_display', 'fk_inlines')
+
 
 class PaginacaoCustomizada(PageNumberPagination):
     """Classe para configurar a paginação da API
@@ -36,7 +37,6 @@ class BaseManager(models.Manager):
         registros que foram marcados como deleted
         """
         queryset = super(BaseManager, self).get_queryset()
-
         if ((hasattr(self.model, '_meta') and hasattr(self.model._meta, 'ordering') and self.model._meta.ordering) or
                 ((hasattr(self.model, 'Meta') and hasattr(self.model.Meta, 'ordering') and self.model.Meta.ordering))):
             queryset = queryset.order_by(*(self.model._meta.ordering or self.model.Meta.ordering))
@@ -57,7 +57,7 @@ class Base(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
 
     # Verificação se deve ser usado o manager padrão ou o customizado
-    if use_default_manager is False:
+    if USE_DEFAULT_MANAGER is False:
         objects = BaseManager()
     else:
         objects = models.Manager()
@@ -113,7 +113,7 @@ class Base(models.Model):
                     try:
                         object_list.append((field.related_model._meta.verbose_name or field.name,
                                             self.object.__getattribute__(field.name)))
-                    except Exception:
+                    except:
                         pass
                 elif type(field) is BooleanField:
                     object_list.append(((field.verbose_name if hasattr(field, 'verbose_name') else None) or field.name,
@@ -145,7 +145,7 @@ class Base(models.Model):
         item não é excluído do banco de dados.
         """
         # Verificando se deve ser utilizado o manager costumizado
-        if use_default_manager is False:
+        if USE_DEFAULT_MANAGER is False:
 
             # Iniciando uma transação para garantir a integridade dos dados
             with transaction.atomic():

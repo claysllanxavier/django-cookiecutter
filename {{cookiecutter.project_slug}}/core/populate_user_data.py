@@ -5,7 +5,7 @@ import os
 
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', '{{ cookiecutter.project_name }}.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'base.settings')
 django.setup()
 
 from faker import Faker
