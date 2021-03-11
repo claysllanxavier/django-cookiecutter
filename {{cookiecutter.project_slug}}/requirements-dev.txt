@@ -50,6 +50,8 @@ faker==6.6.0
     # via -r .\requirements-dev.in
 flake8==3.8.4
     # via -r .\requirements-dev.in
+html5lib==1.1
+    # via -r .\requirements-dev.in
 idna==2.10
     # via
     #   -c .\requirements.txt
@@ -128,6 +130,7 @@ scanapi==2.1.0
 six==1.15.0
     # via
     #   -c .\requirements.txt
+    #   html5lib
     #   python-dateutil
 soupsieve==2.2
     # via beautifulsoup4
@@ -159,7 +162,9 @@ urllib3==1.25.11
 validate-docbr==1.8.2
     # via -r .\requirements-dev.in
 webencodings==0.5.1
-    # via -r .\requirements-dev.in
+    # via
+    #   -r .\requirements-dev.in
+    #   html5lib
 whitenoise==5.2.0
     # via -r .\requirements-dev.in
 xmltodict==0.12.0

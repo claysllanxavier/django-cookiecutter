@@ -1,5 +1,3 @@
-import '../usuario/cliente/model.dart';
-
 import 'data.dart';
 
 class AuthModel {
@@ -28,15 +26,6 @@ class AuthModel {
       this.cpf,
       this.phoneNumber,
       this.token});
-
-  AuthModel.fromClienteModel(ClienteModel client) {
-    name = client.nome;
-    cpf = client.cpf;
-    email = client.email;
-    phoneNumber = client.telefone;
-    token = client.token;
-    firebaseId = client.firebase;
-  }
 
   Future<bool> logout() async{
     try {

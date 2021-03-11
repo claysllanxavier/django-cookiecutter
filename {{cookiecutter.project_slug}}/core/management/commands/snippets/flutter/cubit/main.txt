@@ -48,14 +48,11 @@ class MaterialAppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SettingsCubit, SettingsState>(
-      listener: (context, state) {
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return MaterialApp(
           title: Config.app_title,
-          theme: context.bloc<SettingsCubit>().lightTheme == true
-              ? CustomTheme.lightTheme
-              : CustomTheme.darkTheme,
+          theme: context.watch<SettingsCubit>().lightTheme == true ? CustomTheme.lightTheme : CustomTheme.darkTheme,
           home: MyHomePage(title: '${Config.app_title}'),
           supportedLocales: [
             const Locale('en', 'US'),
@@ -63,6 +60,7 @@ class MaterialAppWidget extends StatelessWidget {
           ],
           localizationsDelegates: [
             AppLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
           ],

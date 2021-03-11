@@ -178,7 +178,7 @@ USE_DEFAULT_MANAGER = False
 FLUTTER_PROJECT_PATH = "../../Flutter/"
 
 # TODO Adicione na lista abaixo as apps que devem ser renderizadas no projeto Flutter
-FLUTTER_APPS = []
+FLUTTER_APPS = ['usuario', ]
 # TODO Configure o caminho da API do projeto
 API_PATH = ""
 
