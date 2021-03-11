@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'usuario',
     # Django Rest Framework
     'drf_yasg',
     'dj_rest_auth',

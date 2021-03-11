@@ -983,7 +983,7 @@ class Command(BaseCommand):
             self.path_model = Path(f"{self.path_app}/models.py")
             self.path_form = Path(f"{self.path_app}/forms.py")
             self.path_views = Path(f"{self.path_app}/views.py")
-            self.path_api_views = Path(f"{self.path_app}/api_view.py")
+            self.path_api_views = Path(f"{self.path_app}/api_views.py")
             self.path_urls = Path(f"{self.path_app}/urls.py")
             self.path_api_urls = Path(f"{self.path_app}/api_urls.py")
             self.path_serializer = Path(f"{self.path_app}/serializers.py")

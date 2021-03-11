@@ -10,9 +10,10 @@ from django.apps import apps
 from django.core.management.base import BaseCommand
 
 from core.management.commands.utils import Utils
+
 from core.management.commands.parser_content import ParserContent
 from core.models import Base
-from core.settings import FLUTTER_APPS, SYSTEM_NAME, API_PATH
+from base.settings import FLUTTER_APPS, SYSTEM_NAME, API_PATH
 
 
 class StateManager(Enum):

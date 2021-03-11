@@ -13,6 +13,7 @@
     "postgresql_version": "13.2",
     "_copy_without_render": [
         "core/**",
+        "usuario/**",
         "scanapi_exemplo.yaml"
     ]
 }
