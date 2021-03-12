@@ -14,10 +14,8 @@ import 'apps/configuracao/cubit.dart';
 import 'user_interface/widget.dart';
 import 'utils/config.dart';
 import 'utils/localization.dart';
-import 'package:base/apps/usuario/usuario/pages/index.dart';
 import 'dart:async';
 import 'package:flutter/scheduler.dart';
-
 
 $ImportViews$
 
