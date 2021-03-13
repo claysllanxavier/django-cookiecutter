@@ -18,10 +18,6 @@
 ## Etapas para configuração do projeto 
 ### Lembre-se de ativar o virtualenv
 
-1. Execute o comando   
-   > **pip-compile requirements.in**
-1. Execute o comando  
-   > **pip-compile requirements-dev.in**
 1. Execute o comando 
    > **pip-sync requirements.txt requirements-dev.txt**   
    > O requirements-dev.txt só deve ser utilizado em ambiente de desenvolvimento

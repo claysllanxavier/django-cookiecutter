@@ -130,6 +130,7 @@ except:
     pass
 
 if DEBUG:
+    INSTALLED_APPS.append('django_extensions')
     # Adicionando o debug tool bar no middleware
     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
     # MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
