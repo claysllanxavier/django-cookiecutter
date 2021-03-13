@@ -24,3 +24,5 @@ Faker
 validate-docbr
 isort==4.3.21
 html5lib
+ipython
+django-extensions

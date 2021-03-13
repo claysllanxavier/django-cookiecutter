@@ -16,6 +16,8 @@ attrs==20.3.0
     # via pytest
 autopep8==1.5.5
     # via -r .\requirements-dev.in
+backcall==0.2.0
+    # via ipython
 beautifulsoup4==4.9.3
     # via -r .\requirements-dev.in
 certifi==2020.12.5
@@ -29,7 +31,9 @@ chardet==3.0.4
 click==7.1.2
     # via scanapi
 colorama==0.4.4
-    # via pytest
+    # via
+    #   ipython
+    #   pytest
 coverage==5.5
     # via pytest-cov
 curlify==2.2.1
@@ -38,7 +42,11 @@ dateparser==1.0.0
     # via
     #   -c .\requirements.txt
     #   -r .\requirements-dev.in
+decorator==4.4.2
+    # via ipython
 django-debug-toolbar==3.2
+    # via -r .\requirements-dev.in
+django-extensions==3.1.1
     # via -r .\requirements-dev.in
 django==3.0.5
     # via
@@ -58,8 +66,14 @@ idna==2.10
     #   requests
 iniconfig==1.1.1
     # via pytest
+ipython-genutils==0.2.0
+    # via traitlets
+ipython==7.21.0
+    # via -r .\requirements-dev.in
 isort==4.3.21
     # via -r .\requirements-dev.in
+jedi==0.18.0
+    # via ipython
 jinja2==2.11.2
     # via
     #   -c .\requirements.txt
@@ -74,8 +88,14 @@ packaging==20.9
     # via
     #   -c .\requirements.txt
     #   pytest
+parso==0.8.1
+    # via jedi
+pickleshare==0.7.5
+    # via ipython
 pluggy==0.13.1
     # via pytest
+prompt-toolkit==3.0.17
+    # via ipython
 py==1.10.0
     # via pytest
 pycodestyle==2.6.0
@@ -88,7 +108,9 @@ pyflakes==2.2.0
     #   -r .\requirements-dev.in
     #   flake8
 pygments==2.8.1
-    # via -r .\requirements-dev.in
+    # via
+    #   -r .\requirements-dev.in
+    #   ipython
 pyparsing==2.4.7
     # via
     #   -c .\requirements.txt
@@ -146,6 +168,8 @@ toml==0.10.2
     #   -r .\requirements-dev.in
     #   autopep8
     #   pytest
+traitlets==5.0.5
+    # via ipython
 tzlocal==2.1
     # via
     #   -c .\requirements.txt
@@ -161,6 +185,8 @@ urllib3==1.25.11
     #   requests
 validate-docbr==1.8.2
     # via -r .\requirements-dev.in
+wcwidth==0.2.5
+    # via prompt-toolkit
 webencodings==0.5.1
     # via
     #   -r .\requirements-dev.in
@@ -169,3 +195,6 @@ whitenoise==5.2.0
     # via -r .\requirements-dev.in
 xmltodict==0.12.0
     # via -r .\requirements-dev.in
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
