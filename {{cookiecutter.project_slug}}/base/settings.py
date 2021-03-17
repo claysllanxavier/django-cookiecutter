@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import sys
-
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 from django.conf import settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -182,6 +183,15 @@ FLUTTER_PROJECT_PATH = "../../Flutter/"
 FLUTTER_APPS = ['usuario', ]
 # TODO Configure o caminho da API do projeto
 API_PATH = ""
+
+# TODO Configurar o dsn do Sentry
+#  Exemplo: https://path_dsn
+sentry_sdk.init(
+    dsn="", # Exemplo: https://path_dsn
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+    send_default_pii=True
+)
 
 # HERE STARTS DYNACONF EXTENSION LOAD (Keep at the very bottom of settings.py)
 # Read more at https://dynaconf.readthedocs.io/en/latest/guides/django.html
