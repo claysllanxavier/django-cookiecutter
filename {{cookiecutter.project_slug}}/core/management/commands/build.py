@@ -387,18 +387,38 @@ class Command(BaseCommand):
                 Utils.show_message("O model informado já possui views da API configurado.")
                 return
 
+            # Verificando se o from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+            # Já existe no arquivo
+            if self.__check_content(self.path_api_views, "from rest_framework.viewsets import ModelViewSet"):
+                content = content.replace("from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet", "")
+                content = content.strip()
+
+            # Verificando se o from drf_jsonmask.views import OptimizedQuerySetMixin
+            # Já existe no arquivo
+            if self.__check_content(self.path_api_views, "from drf_jsonmask.views import OptimizedQuerySetMixin"):
+                content = content.replace("from drf_jsonmask.views import OptimizedQuerySetMixin", "")
+                content = content.strip()
+
+            # Verificando se o from rest_framework import filters
+            # Já existe no arquivo
+            if self.__check_content(self.path_api_views, "from rest_framework import filters"):
+                content = content.replace("from rest_framework import filters", "")
+                content = content.strip()
+
             if self.__check_content(self.path_api_views, self.model) is False:
                 content_models = content_urls.split("\n")[5]
                 api_views_file = open(self.path_api_views, "r", encoding='utf-8')
                 data = []
                 for line in api_views_file:
                     if line.startswith('from .models import'):
-                        models = line.split('import')[-1].rstrip()
-                        if len(content_models.split()) == 0:
-                            continue
-                        import_model = ', ' + content_models.split()[-1]
-                        models += import_model
-                        line = 'from .models import{}\n'.format(models)
+                        line = line.replace("\n", "") + f", {self.model} \n"
+                        # TODO Verificar se não ocorre erro após essa alteração.
+                        # models = line.split('import')[-1].rstrip()
+                        # if len(content_models.split()) == 0:
+                        #     continue
+                        # import_model = ', ' + content_models.split()[-1]
+                        # models += import_model
+                        # line = 'from .models import{}\n'.format(models)
                     data.append(line)
                 api_views_file.close()
 
@@ -414,27 +434,13 @@ class Command(BaseCommand):
                 data = []
                 for line in api_views_file:
                     if line.startswith('from .serializers import'):
-                        models = line.split('import')[-1].rstrip()
-                        import_model = ', ' + content_urls.split()[-1]
-                        models += import_model
-                        line = 'from .serializers import{}, {}\n'.format(
-                            models, models.replace("Serializer", "GETSerializer"))
+                        line = line.replace("\n", ", ") + content_urls.replace("from .serializers import", "") + "\n"
                     data.append(line)
                 api_views_file.close()
 
                 api_views_file = open(self.path_api_views, "w", encoding='utf-8')
                 api_views_file.writelines(data)
                 api_views_file.close()
-            elif self.__check_content(self.path_api_views, "from core.views"):
-                imports = "\n\n"
-                imports += 'from core.views import BaseListView, BaseDeleteView, BaseDetailView, '
-                imports += 'BaseUpdateView, BaseCreateView, BaseTemplateView'
-                imports_rest = '\n{}\n{}\n{}\n{}\n'.format(content_urls.split("\n")[0], content_urls.split("\n")[1],
-                                                           content_urls.split("\n")[2], content_urls.split("\n")[3])
-                with fileinput.FileInput(self.path_api_views, inplace=True) as api_views_file:
-                    for line in api_views_file:
-                        print(line.replace(
-                            imports, imports + imports_rest + content_urls.split("\n")[4]), end='')
             else:
                 with open(self.path_api_views, 'a', encoding='utf-8') as views:
                     views.write("\n")
@@ -669,6 +675,13 @@ class Command(BaseCommand):
             if self.__check_content(self.path_urls, " {}ListView".format(self.model)):
                 Utils.show_message("O model informado já possui urls configuradas.")
                 return
+
+            # Verificando se já existe o caminho path('api/$app_name$/', include('$app_name$.api_urls')),
+            # no arquivo para não importar novamente
+            content_include = "path('api/$app_name$/', include('$app_name$.api_urls')),"
+            content_include = content_include.replace("$app_name$", self.app_lower)
+            if self.__check_content(self.path_urls, content_include):
+                content = content.replace(content_include, "").strip()
 
             if self.__check_content(self.path_urls, "{}IndexTemplateView".format(self.app.title())):
                 content_urls = content_urls.replace(", $AppIndexTemplate$", "")
