@@ -183,7 +183,8 @@ class Command(BaseCommand):
         """Method responsible for applying the rules of PEP8 in the generated file
         """
         try:
-            __items_apply_pep8 = [self.path_urls, self.path_form, self.path_views, self.path_serializer]
+            __items_apply_pep8 = [self.path_urls, self.path_form, self.path_views, self.path_serializer,
+                                  self.path_api_urls, self.path_api_views]
             for element in __items_apply_pep8:
                 os.system('autopep8 --in-place --aggressive --aggressive {}'.format(element))
                 os.system('isort {}'.format(element))
@@ -342,9 +343,24 @@ class Command(BaseCommand):
             content_file = open(self.path_api_urls, 'r', encoding='utf-8')
             if content_file.read().find(f"{self.model}ViewAPI") != -1:
                 return
+
+            # Variável que conterá o código sem o urlpatterns
+            content_without_router = ""
+
+            # Abrindo o arquivo para ler o conteúdo
+            with open(self.path_api_urls, 'r', encoding='utf-8') as read_api_urls_content:
+                content_without_router = read_api_urls_content.read()
+
+            # removendo o conteúdo router = router.urls
+            content_without_router = content_without_router.replace("urlpatterns = router.urls", "")
+            content_without_router = content_without_router.strip()
+
+            # Abrindo o arquivo para gravar o novo valor
+            with open(self.path_api_urls, 'w', encoding='utf-8') as update_content_file:
+                update_content_file.write(content_without_router)
+
             with open(self.path_api_urls, 'a', encoding='utf-8') as api_url_file:
                 content = content.replace("router = routers.DefaultRouter()", "")
-                content = content.replace("urlpatterns = router.urls", "")
                 content = content.replace("from django.urls import include, path", "")
                 content = content.replace("from rest_framework import routers", "")
                 api_url_file.write(content)
@@ -739,21 +755,13 @@ class Command(BaseCommand):
             (str) -- String containing the HTML code of the model attribute
         """
         try:
-            types = [
-                'AutoField', 'BLANK_CHOICE_DASH', 'BigAutoField',
-                'BigIntegerField', 'BinaryField', 'BooleanField',
-                'CharField', 'CommaSeparatedIntegerField',
-                'DateField', 'DateTimeField', 'DecimalField',
-                'DurationField', 'EmailField', 'Empty', 'FileField',
-                'Field', 'FieldDoesNotExist', 'FilePathField',
-                'FloatField', 'GenericIPAddressField',
-                'IPAddressField', 'IntegerField', 'FieldFile',
-                'NOT_PROVIDED', 'NullBooleanField', 'ImageField',
-                'PositiveIntegerField', 'PositiveSmallIntegerField',
-                'SlugField', 'SmallIntegerField', 'TextField',
-                'TimeField', 'URLField', 'UUIDField', 'ForeignKey',
-                'OneToOneField', 'ManyToManyField', 'OptimizedImageField'
-            ]
+            types = ['AutoField', 'BLANK_CHOICE_DASH', 'BigAutoField', 'BigIntegerField', 'BinaryField', 'BooleanField',
+                     'CharField', 'CommaSeparatedIntegerField', 'DateField', 'DateTimeField', 'DecimalField',
+                     'DurationField', 'EmailField', 'Empty', 'FileField', 'Field', 'FieldDoesNotExist', 'FilePathField',
+                     'FloatField', 'GenericIPAddressField', 'IPAddressField', 'IntegerField', 'FieldFile',
+                     'NOT_PROVIDED', 'NullBooleanField', 'ImageField', 'PositiveIntegerField',
+                     'PositiveSmallIntegerField', 'SlugField', 'SmallIntegerField', 'TextField', 'TimeField',
+                     'URLField', 'UUIDField', 'ForeignKey', 'OneToOneField', 'ManyToManyField', 'OptimizedImageField']
             _model = self.__get_model()
             iten = {}
             iten["app"], iten["model"], iten["name"] = str(field).split('.')
@@ -871,18 +879,14 @@ class Command(BaseCommand):
                         app_field = next(
                             (item_field for item_field in model._meta.fields if item == item_field.name), None)
                         if app_field is not None:
-                            field_name = app_field.verbose_name.title(
-                            ) if app_field.verbose_name else "Não Definido."
+                            field_name = app_field.verbose_name.title() if app_field.verbose_name else "Não Definido."
                             thead += f"<th>{field_name}</th>\n"
-                            tline += '<td>{{{{ item.{} }}}}</td>\n'.format(
-                                item.replace('__', '.'))
+                            tline += '<td>{{{{ item.{} }}}}</td>\n'.format(item.replace('__', '.'))
                     list_template = Path(
                         f"{self.path_template_dir}/{self.model_lower}_list.html")
                     list_template_content = self.__get_snippet(list_template)
-                    list_template_content = list_template_content.replace(
-                        "<!--REPLACE_THEAD-->", thead)
-                    list_template_content = list_template_content.replace(
-                        "<!--REPLACE_TLINE-->", tline)
+                    list_template_content = list_template_content.replace("<!--REPLACE_THEAD-->", thead)
+                    list_template_content = list_template_content.replace("<!--REPLACE_TLINE-->", tline)
                     with open(list_template, 'w', encoding='utf-8') as list_file:
                         list_file.write(list_template_content)
 
