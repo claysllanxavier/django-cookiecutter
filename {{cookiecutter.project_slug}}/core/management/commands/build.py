@@ -5,11 +5,12 @@ views and creating Rest API using DRF
 import fileinput
 import os
 from pathlib import Path
+
+from bs4 import BeautifulSoup
 from core.management.commands.utils import Utils
 from django.apps import apps
 from django.core.management.base import BaseCommand
 from django.urls import resolve, reverse
-from bs4 import BeautifulSoup
 
 
 class Command(BaseCommand):
@@ -77,49 +78,14 @@ class Command(BaseCommand):
 
         parser.add_argument('App', type=str)
         parser.add_argument('Model', type=str, nargs='?')
-
-        parser.add_argument(
-            '--templates',
-            action='store_true',
-            dest='templates',
-            help='Criar apenas os Templates'
-        )
-        parser.add_argument(
-            '--api',
-            action='store_true',
-            dest='api',
-            help='Criar apenas a API'
-        )
-        parser.add_argument(
-            '--urls',
-            action='store_true',
-            dest='url',
-            help='Criar apenas as Urls'
-        )
-        parser.add_argument(
-            '--forms',
-            action='store_true',
-            dest='forms',
-            help='Criar apenas o Form'
-        )
-        parser.add_argument(
-            '--views',
-            action='store_true',
-            dest='views',
-            help='Criar apenas as Views (CRUD)'
-        )
-        parser.add_argument(
-            '--parserhtml',
-            action='store_true',
-            dest='renderhtml',
-            help='Renderizar os fields do models para HTML'
-        )
-        parser.add_argument(
-            '--format',
-            action='store_true',
-            dest='format',
-            help='Aplicar PEP8 nos arquivos'
-        )
+        parser.add_argument('--templates', action='store_true', dest='templates', help='Criar apenas os Templates')
+        parser.add_argument('--api', action='store_true', dest='api', help='Criar apenas a API')
+        parser.add_argument('--urls', action='store_true', dest='url', help='Criar apenas as Urls')
+        parser.add_argument('--forms', action='store_true', dest='forms', help='Criar apenas o Form')
+        parser.add_argument('--views', action='store_true', dest='views', help='Criar apenas as Views (CRUD)')
+        parser.add_argument('--parserhtml', action='store_true', dest='renderhtml',
+                            help='Renderizar os fields do models para HTML')
+        parser.add_argument('--format', action='store_true', dest='format', help='Aplicar PEP8 nos arquivos')
 
     def __get_verbose_name(self, app_name=None, model_name=None):
         """
@@ -219,9 +185,7 @@ class Command(BaseCommand):
         try:
             __items_apply_pep8 = [self.path_urls, self.path_form, self.path_views, self.path_serializer]
             for element in __items_apply_pep8:
-                os.system(
-                    'autopep8 --in-place --aggressive --aggressive {}'
-                    .format(element))
+                os.system('autopep8 --in-place --aggressive --aggressive {}'.format(element))
                 os.system('isort {}'.format(element))
         except Exception as error:
             Utils.show_message(f"Ocorreu o erro : {error}")
@@ -269,8 +233,7 @@ class Command(BaseCommand):
         """
         try:
             Utils.show_message("Trabalhando na configuração do template de Listagem.")
-            path = Path(
-                f"{self.path_template_dir}/{self.model_lower}_list.html")
+            path = Path(f"{self.path_template_dir}/{self.model_lower}_list.html")
             if self.__check_file_is_locked(path):
                 return
             content = self._snippet_list_template
@@ -295,8 +258,7 @@ class Command(BaseCommand):
         """
         try:
             Utils.show_message("Trabalhando na configuração do template de Atualização.")
-            path = Path(
-                f"{self.path_template_dir}/{self.model_lower}_update.html")
+            path = Path(f"{self.path_template_dir}/{self.model_lower}_update.html")
             if self.__check_file_is_locked(path):
                 return
             content = self._snippet_update_template
@@ -316,8 +278,7 @@ class Command(BaseCommand):
         """
         try:
             Utils.show_message("Trabalhando na configuração do template de Criação.")
-            path = Path(
-                f"{self.path_template_dir}/{self.model_lower}_create.html")
+            path = Path(f"{self.path_template_dir}/{self.model_lower}_create.html")
             if self.__check_file_is_locked(path):
                 return
             content = self._snippet_create_template
@@ -335,8 +296,7 @@ class Command(BaseCommand):
         """
         try:
             Utils.show_message("Trabalhando na configuração do template de Exclusão.")
-            path = Path(
-                f"{self.path_template_dir}/{self.model_lower}_delete.html")
+            path = Path(f"{self.path_template_dir}/{self.model_lower}_delete.html")
             if self.__check_file_is_locked(path):
                 return
             content = self._snippet_delete_template
@@ -369,7 +329,6 @@ class Command(BaseCommand):
     def __manage_api_url(self):
         """Method responsible for creating the Rest API urls file for the model
         """
-        # TODO Verificar como agrupar os imports
         try:
             Utils.show_message("Trabalhando na configuração das Urls API do model {}".format(self.model))
             content = self._snippet_api_router
@@ -397,11 +356,9 @@ class Command(BaseCommand):
     def __manage_api_view(self):
         """Method responsible for creating the Rest API VIEWS file for the model
         """
-        # TODO Refatorar para não importar as libs duplicadas
         try:
             Utils.show_message("Trabalhando na configuração das Views da API do model {} ".format(self.model))
             content = self._snippet_api_view
-
             content_urls = self._snippet_api_urls
             content = content.replace("$ModelName$", self.model)
             content_urls = content_urls.replace("$ModelName$", self.model)
@@ -690,21 +647,22 @@ class Command(BaseCommand):
             content = content.replace("$ModelClass$", self.model)
             content_urls = content_urls.replace("$ModelClass$", self.model)
 
-            if self.__check_content(self.path_urls, "{}IndexTemplateView".format(self.app.title())):
-                content_urls = content_urls.replace(", $AppIndexTemplate$", "")
-            else:
-                content_urls = content_urls.replace(
-                    "$AppIndexTemplate$", "{}IndexTemplateView".format(self.app.title()))
-            if self.__check_file(self.path_urls) is False:
-                with open(self.path_urls, 'w', encoding='utf-8') as url_file:
-                    url_file.write(content_urls + '\n' + content)
-                return
-
             if self.__check_file_is_locked(self.path_urls) is True:
                 return
 
             if self.__check_content(self.path_urls, " {}ListView".format(self.model)):
                 Utils.show_message("O model informado já possui urls configuradas.")
+                return
+
+            if self.__check_content(self.path_urls, "{}IndexTemplateView".format(self.app.title())):
+                content_urls = content_urls.replace(", $AppIndexTemplate$", "")
+            else:
+                content_urls = content_urls.replace("$AppIndexTemplate$",
+                                                    "{}IndexTemplateView".format(self.app.title()))
+            if self.__check_file(self.path_urls) is False:
+                with open(self.path_urls, 'w', encoding='utf-8') as url_file:
+                    url_file.write(content_urls + '\n' + content)
+                return
 
             if self.__check_content(self.path_urls, "from .views import"):
                 content_urls = content_urls.split("\n")[1]
@@ -801,7 +759,7 @@ class Command(BaseCommand):
             iten["app"], iten["model"], iten["name"] = str(field).split('.')
             iten["tipo"] = (str(
                 str(type(field)).split('.')[-1:])
-                .replace("[\"", "").replace("\'>\"]", ""))
+                            .replace("[\"", "").replace("\'>\"]", ""))
             if iten["tipo"] in types:
                 if iten["tipo"] == 'BooleanField':
                     tag_result = "<div class='form-check col-md-6'>"
@@ -885,11 +843,11 @@ class Command(BaseCommand):
                                 "<!--REPLACE_PARSER_HTML-->",
                                 BeautifulSoup(html_tag, 'html5lib').prettify().replace(
                                     "<html>", "").replace(
-                                        "<head>", "").replace(
-                                            "</head>", "").replace(
-                                                "<body>", "").replace(
-                                                    "</body>", "").replace(
-                                                        "</html>", "").strip()).replace(
+                                    "<head>", "").replace(
+                                    "</head>", "").replace(
+                                    "<body>", "").replace(
+                                    "</body>", "").replace(
+                                    "</html>", "").strip()).replace(
                                 "$url_back$", '{}:{}-list'.format(
                                     self.app_lower, self.model_lower
                                 )), end='')
