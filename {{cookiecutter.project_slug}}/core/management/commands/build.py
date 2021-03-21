@@ -474,6 +474,12 @@ class Command(BaseCommand):
                 Utils.show_message("O model informado já possui serializer configurado.")
                 return
 
+            # Verificando se o from drf_jsonmask.serializers import FieldsListSerializerMixin
+            # já existe no arquivo para não importar novamente
+            if self.__check_content(self.path_serializer,
+                                    "from drf_jsonmask.serializers import FieldsListSerializerMixin"):
+                content = content.replace("from drf_jsonmask.serializers import FieldsListSerializerMixin", "")
+
             if self.__check_content(self.path_serializer, "from rest_framework.serializers import ModelSerializer"):
                 content_urls = content_urls.split("\n")[1]
                 serializer_file = open(self.path_serializer, "r")
