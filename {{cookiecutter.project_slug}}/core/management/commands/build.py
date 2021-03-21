@@ -336,11 +336,13 @@ class Command(BaseCommand):
             content = content.replace("$app_name$", self.app_lower)
             content = content.replace("$model_name$", self.model_lower)
             content = content.replace("$ModelName$", self.model)
+
             if self.__check_file(self.path_api_urls) is False:
                 api_url_file = open(self.path_api_urls, 'w', encoding='utf-8')
                 api_url_file.write(content)
                 return
             content_file = open(self.path_api_urls, 'r', encoding='utf-8')
+
             if content_file.read().find(f"{self.model}ViewAPI") != -1:
                 return
 
