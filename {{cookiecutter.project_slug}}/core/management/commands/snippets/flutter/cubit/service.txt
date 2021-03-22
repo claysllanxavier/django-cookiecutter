@@ -34,10 +34,10 @@ class $ModelClass$Service {
 
   Future<List<$ModelClass$Model>> fetch({String url}) async {
     try {
-      String _url = url != null? url: _uri;
+      _uri = "${Config.uri}$App$/$Model$/";
       _$ModelClassCamelCase$List?.clear();
-      final CustomDio _dio = CustomDio(_url);
-      final dataResponse = await _dio.getHttp();
+      final CustomDio _dio = CustomDio(_uri);
+      final dataResponse = await _dio.getHttp(uri: _uri);
       if (dataResponse != null) {
         final String _next = dataResponse["next"];
         final String _previous = dataResponse["previous"];
@@ -59,7 +59,7 @@ class $ModelClass$Service {
   Future<List<$ModelClass$Model>> getMore(String uri) async {
     try {
       final CustomDio _dio = CustomDio(uri);
-      final dataResponse = await _dio.getHttp();
+      final dataResponse = await _dio.getHttp(uri: uri);
       if (dataResponse != null) {
         final String _next = dataResponse["next"];
         final String _previous = dataResponse["previous"];
@@ -77,12 +77,12 @@ class $ModelClass$Service {
     }
     return _$ModelClassCamelCase$List;
   }
-  
+
   Future<$ModelClass$Model> detail($ModelClass$Model $ModelClassCamelCase$) async {
-    _uri += "${$ModelClassCamelCase$.id}/";
+    _uri = "${Config.uri}$App$/$Model$/${$ModelClassCamelCase$.id}/";
     try {
       final CustomDio _dio = CustomDio(_uri);
-      final data = await _dio.getHttp();
+      final data = await _dio.getHttp(uri: _uri);
       if (data != null) {
         _$ModelClassCamelCase$ = $ModelClass$Model.fromMap(data);
       }
@@ -91,7 +91,7 @@ class $ModelClass$Service {
     }
     return _$ModelClassCamelCase$;
   }
-  
+
   Future<$ModelClass$Model> post($ModelClass$Model $ModelClassCamelCase$) async {
     try {
       final CustomDio _dio = CustomDio(_uri);
@@ -107,11 +107,13 @@ class $ModelClass$Service {
   }
 
   Future<$ModelClass$Model> put($ModelClass$Model $ModelClassCamelCase$) async {
-    _uri += "${$ModelClassCamelCase$.id}/";
+    _uri = "${Config.uri}$App$/$Model$/${$ModelClassCamelCase$.id}/";
     try {
       final CustomDio _dio = CustomDio(_uri);
       final _data = json.encode($ModelClassCamelCase$.toMap());
-      final data = await _dio.putHttp(_data, $ModelClassCamelCase$.id.toString());
+      final data = await _dio.putHttp(_data,
+                                      $ModelClassCamelCase$.id.toString(),
+                                      uri: _uri);
       if (data != null) {
         _$ModelClassCamelCase$ = $ModelClass$Model.fromMap(data);
       }
@@ -122,11 +124,11 @@ class $ModelClass$Service {
   }
 
   Future<$ModelClass$Model> patch($ModelClass$Model $ModelClassCamelCase$) async {
-    _uri += "${$ModelClassCamelCase$.id}/";
+    _uri = "${Config.uri}$App$/$Model$/${$ModelClassCamelCase$.id}/";
     try {
-      final CustomDio _dio = CustomDio(_uri);    
+      final CustomDio _dio = CustomDio(_uri);
       final _data = json.encode($ModelClassCamelCase$.toMap());
-      final data = await _dio.patchHttp(_data);
+      final data = await _dio.patchHttp(_data, uri: _uri);
       if (data != null) {
         _$ModelClassCamelCase$ = $ModelClass$Model.fromMap(data);
       }
@@ -137,11 +139,13 @@ class $ModelClass$Service {
   }
 
   Future<bool> delete($ModelClass$Model $ModelClassCamelCase$) async {
-    _uri += "${$ModelClassCamelCase$.id}/";
+    _uri = "${Config.uri}$App$/$Model$/${$ModelClassCamelCase$.id}/";
     try {
-      final CustomDio _dio = CustomDio(_uri);    
+      final CustomDio _dio = CustomDio(_uri);
       final _data = json.encode($ModelClassCamelCase$.toMap());
-      final data = await _dio.deleteHttp(_data, $ModelClassCamelCase$.id.toString());
+      final data = await _dio.deleteHttp(_data,
+                                         $ModelClassCamelCase$.id.toString(),
+                                         uri: _uri);
       if (data != null) {
         return true;
       }
@@ -154,7 +158,7 @@ class $ModelClass$Service {
 
   void _success(String message, {int statusCode}) async {
     try {
-      debugPrint("DebugSuccess: $message, Status: $statusCode");
+      DebugPrint.print("DebugSuccess: $message, Status: $statusCode");
     } catch (e) {
       _error("$e", "");
     }
@@ -162,10 +166,10 @@ class $ModelClass$Service {
 
   void _error(String error, String exception, {int statusCode}) async {
     try {
-      debugPrint(
+      DebugPrint.error(
           "DebugErro: $ModelClass$Service -> $error | $exception");
     } catch (error) {
-      debugPrint(
+      DebugPrint.error(
           "DebugErro: $ModelClass$Service ->$error");
     }
   }

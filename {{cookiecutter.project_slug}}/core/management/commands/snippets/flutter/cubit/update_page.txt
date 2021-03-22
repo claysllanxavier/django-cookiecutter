@@ -38,6 +38,7 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
     super.initState();
     _animationController = AnimationController(vsync: this);
     _$ModelClassCamelCase$Model = widget.$ModelClassCamelCase$Model;
+    _loadData();
   }
 
   @override
@@ -70,8 +71,6 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
         }
       },
       builder: (context, state) {
-        $EditedAttributes$
-
         return Stack(
           children: <Widget>[
             HeadWidget(),
@@ -169,13 +168,20 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
 
   void _put() async {
     final _$Model$Cubit = context.read<$ModelClass$Cubit>();
-
     try{
        $GetValuesControllers$
 
       _$Model$Cubit.put(_$Model$Model);
     }catch (e){
       DebugPrint.error("DebugError: No método _put do $ModelClass$UpdatePage -> $e");
+    }
+  }
+
+  void _loadData() {
+    try{
+      $EditedAttributes$
+    }catch (e){
+      DebugPrint.error("DebugError: No método _loadData do $ModelClass$UpdatePage -> $e");
     }
   }
 

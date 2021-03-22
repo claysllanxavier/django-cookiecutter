@@ -780,8 +780,8 @@ class Command(BaseCommand):
 
                 field_type = (
                     str(str(type(field)).split(".")[-1:])
-                    .replace('["', "")
-                    .replace("'>\"]", ""))
+                        .replace('["', "")
+                        .replace("'>\"]", ""))
 
                 attribute = self._flutter_types[self._django_types.index(field_type)]
                 content_attributes += "  final _{0}Form{1} = TextEditingController();\n".format(
@@ -866,7 +866,7 @@ class Command(BaseCommand):
                 return
 
             content = ParserContent(["$ModelClass$"], [app.model_name],
-                                    self.__get_snippet(f"{self.snippet_dir}widget.txt"),).replace()
+                                    self.__get_snippet(f"{self.snippet_dir}widget.txt"), ).replace()
 
             with open(__widget_file, "w", encoding="utf-8") as page:
                 page.write(content)
@@ -962,7 +962,7 @@ class Command(BaseCommand):
         """
         try:
             __dio_file = Path(f"{self.flutter_dir}/lib/utils/custom_dio.dart")
-            
+
             if Utils.check_file_is_locked(__dio_file):
                 return
 
@@ -1126,8 +1126,8 @@ class Command(BaseCommand):
 
                 field_type = (
                     str(str(type(field)).split(".")[-1:])
-                    .replace('["', "")
-                    .replace("'>\"]", ""))
+                        .replace('["', "")
+                        .replace("'>\"]", ""))
                 attribute = self._flutter_types[self._django_types.index(
                     field_type)]
 

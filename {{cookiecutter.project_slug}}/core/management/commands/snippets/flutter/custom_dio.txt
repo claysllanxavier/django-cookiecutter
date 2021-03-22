@@ -11,8 +11,6 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-
 import 'config.dart';
 
 class CustomDio {
@@ -57,7 +55,7 @@ class CustomDio {
       }
       return null;
     } on DioError catch (error) {
-      debugPrint("DebugError: No método get do Dio -> $error | " +
+      DebugPrint.error("DebugError: No método get do Dio -> $error | " +
           "\nResponse:${error.response.data.toString()} \nRequest: ${error.request.uri} " +
           "\nHeader: ${error.request.headers.toString().replaceAll(",", "\n    ")} \nData: ${error.request.data.toString()}");
 
@@ -73,7 +71,7 @@ class CustomDio {
       }
       return null;
     } on DioError catch (error) {
-      debugPrint("DebugError: No método post do Dio -> $error |" +
+      DebugPrint.error("DebugError: No método post do Dio -> $error |" +
           "\nResponse:${error.response.data.toString()} \nRequest: ${error.request.uri} " +
           "\nHeader: ${error.request.headers.toString().replaceAll(",", "\n    ")} \nData: ${error.request.data.toString()}");
     }
@@ -81,29 +79,29 @@ class CustomDio {
 
   Future<dynamic> putHttp(data, String id, {String uri}) async {
     try {
-      Response _response = await _dio.put(_url, data: data);
+      Response _response = await _dio.put(uri ?? _url, data: data);
       if (_response.statusCode == 201 || _response.statusCode == 200) {
         return _response.data;
       }
       return null;
     } on DioError catch (error) {
-      debugPrint("DebugError: No método put do Dio -> $error | " +
+      DebugPrint.error("DebugError: No método put do Dio -> $error | " +
           "\nResponse:${error.response.data.toString()} \nRequest: ${error.request.uri} " +
           "\nHeader: ${error.request.headers.toString().replaceAll(",", "\n    ")} \nData: ${error.request.data.toString()}");
     } catch (errorGeneral) {
-      debugPrint("Erro geral: $errorGeneral");
+      DebugPrint.error("Erro geral: $errorGeneral");
     }
   }
 
   Future<dynamic> patchHttp(data, {String uri}) async {
     try {
-      Response _response = await _dio.patch(_url, data: data);
+      Response _response = await _dio.patch(uri ?? _url, data: data);
       if (_response.statusCode == 201 || _response.statusCode == 200) {
         return _response.data;
       }
       return null;
     } on DioError catch (error) {
-      debugPrint("DebugError: No método patch do Dio -> $error |" +
+      DebugPrint.error("DebugError: No método patch do Dio -> $error |" +
           "\nResponse:${error.response.data.toString()} \nRequest: ${error.request.uri} " +
           "\nHeader: ${error.request.headers.toString().replaceAll(",", "\n    ")} \nData: ${error.request.data}");
 
@@ -113,13 +111,13 @@ class CustomDio {
 
   Future<dynamic> deleteHttp(data, String id, {String uri}) async {
     try {
-      Response _response = await _dio.delete(_url, data: data);
+      Response _response = await _dio.delete(uri ?? _url, data: data);
       if (_response.statusCode == 200 || _response.statusCode == 204) {
         return _response.data;
       }
       return null;
     } on DioError catch (error) {
-      debugPrint("DebugError: No método delete do Dio -> $error | " +
+      DebugPrint.error("DebugError: No método delete do Dio -> $error | " +
           "\nResponse:${error.response.data.toString()} \nRequest: ${error.request.uri} " +
           "\nHeader: ${error.request.headers.toString().replaceAll(",", "\n    ")} \nData: ${error.request.data.toString()}");
 
