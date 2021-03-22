@@ -75,20 +75,58 @@ class AuthService {
     return _authModel;
   }
 
-  Future<AuthModel> login() async {
-    String _url = "";
+  Future<int> checkDjangoUserTypeClient(String login) async {
+    String _uri = "${Config.uri}usuario/cliente/?email=$login";
     try {
-      final CustomDio _dio = CustomDio(_url);
-      final data = await _dio.getHttp();
-      if (data != null) {
-        for (final item in data) {
-          auth = AuthModel.fromMap(item);
+      CustomDio _dio = CustomDio(_uri);
+      var dataResponse = await _dio.getHttp(uri: _uri);
+      if (dataResponse != null) {
+        if (dataResponse["count"] != 0) {
+          return 0;
         }
+        return 1;
       }
     } catch (error, exception) {
       _error(error.toString(), exception.toString());
     }
-    return auth;
+    return null;
+  }
+
+  Future<AuthModel> login(AuthModel auth) async {
+     String _uri = "${Config.uriAuth}";
+    try {
+      CustomDio _dio = CustomDio(_uri);
+      final _data = json.encode({"username": auth.login, "password": auth.password});
+      final userType = await checkDjangoUserTypeClient(auth.login);
+      var dataResponse = await _dio.postHttp(_data, uri: _uri);
+      if (dataResponse != null && userType != null) {
+        final authData = AuthData();
+        auth.token = dataResponse['access'];
+        final djangoUser = await signInDjangoUser(auth.login, userType);
+        if (djangoUser != null) {
+          // Verificando o tipo do usuário
+          auth.id = djangoUser.id;
+          auth.cpf = djangoUser.cpf;
+          auth.uuid = djangoUser.id;
+          auth.name = djangoUser.nome;
+          auth.login = djangoUser.email;
+          auth.email = djangoUser.email;
+          auth.address = djangoUser.enderecoRes;
+          auth.photoUrl = djangoUser.foto;
+          auth.firebase = djangoUser.firebase;
+          auth.phoneNumber = djangoUser.telefone;
+          auth.typeUser = userType;
+          authData.save(auth);
+          return auth;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (error) {
+      throw (error);
+    }
   }
 
   Future<bool> logout() async {

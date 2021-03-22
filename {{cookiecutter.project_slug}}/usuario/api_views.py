@@ -1,23 +1,22 @@
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet
-from .serializers import UsuarioSerializer, UsuarioGETSerializer
+from drf_jsonmask.views import OptimizedQuerySetMixin
+from rest_framework import filters
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+from .serializers import UsuarioSerializer, UsuarioGETSerializer
 from .models import Usuario
 
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from rest_framework.decorators import action
-from drf_jsonmask.views import OptimizedQuerySetMixin
-from rest_framework import filters, status
 
-
+@permission_classes([IsAuthenticated, ])
 class UsuarioViewAPI(ModelViewSet):
     """ Classe para gerenciar as requisições da API para os métodos POST, PUT, PATCH e DELETE """
     queryset = Usuario.objects.select_related().all()
     serializer_class = UsuarioSerializer
 
 
+@permission_classes([IsAuthenticated, ])
 class UsuarioGETAPI(OptimizedQuerySetMixin, ReadOnlyModelViewSet):
     """ Classe para gerenciar as requisições da API para o métodos GET
 

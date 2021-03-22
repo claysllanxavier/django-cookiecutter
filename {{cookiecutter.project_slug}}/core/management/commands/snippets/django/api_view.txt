@@ -1,16 +1,19 @@
-
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from rest_framework.decorators import action
 from drf_jsonmask.views import OptimizedQuerySetMixin
-from rest_framework import filters, status
+from rest_framework import filters
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 
+@permission_classes([IsAuthenticated, ])
 class $ModelName$ViewAPI(ModelViewSet):
     """ Classe para gerenciar as requisições da API para os métodos POST, PUT, PATCH e DELETE """
     queryset = $ModelName$.objects.select_related().all()
     serializer_class = $ModelName$Serializer
 
 
+@permission_classes([IsAuthenticated, ])
 class $ModelName$GETAPI(OptimizedQuerySetMixin, ReadOnlyModelViewSet):
     """ Classe para gerenciar as requisições da API para o métodos GET
 

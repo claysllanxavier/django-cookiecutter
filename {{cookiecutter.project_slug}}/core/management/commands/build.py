@@ -407,6 +407,18 @@ class Command(BaseCommand):
                 content = content.replace("from rest_framework import filters, status", "")
                 content = content.strip()
 
+            # Verificando se o from rest_framework.permissions import IsAuthenticated
+            # Já existe no arquivo
+            if self.__check_content(self.path_api_views, "from rest_framework.permissions import IsAuthenticated"):
+                content = content.replace("from rest_framework.permissions import IsAuthenticated", "")
+                content = content.strip()
+
+            # Verificando se o from rest_framework.decorators import permission_classes
+            # Já existe no arquivo
+            if self.__check_content(self.path_api_views, "from rest_framework.decorators import permission_classes"):
+                content = content.replace("from rest_framework.decorators import permission_classes", "")
+                content = content.strip()
+
             if self.__check_content(self.path_api_views, self.model) is False:
                 content_models = content_urls.split("\n")[5]
                 api_views_file = open(self.path_api_views, "r", encoding='utf-8')

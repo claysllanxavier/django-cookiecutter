@@ -85,6 +85,7 @@ class AuthData {
 
   Future<bool> save(AuthModel auth) async {
     try {
+      await deleteAll();
       _db = await initDb();
       final _store = smbt.intMapStoreFactory.store(_storeName);
       await _store.add(_db, auth.toMap());
@@ -139,6 +140,21 @@ class AuthData {
       return false;
     } finally {
       _db.close();
+    }
+  }
+
+  /// Método para consultar o Token JWT
+  Future<String> getJWTToken() async {
+    try {
+      final _data = await get(0);
+      final String token = _data.token ?? "";
+      if (token.isNotEmpty) {
+        return token;
+      }
+      return null;
+    } catch (e) {
+      DebugPrint.error("DebugError: Erro $e ao executar o getJWTToken do AuthData");
+      return null;
     }
   }
 }
