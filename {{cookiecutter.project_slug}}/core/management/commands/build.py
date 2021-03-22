@@ -404,7 +404,7 @@ class Command(BaseCommand):
             # Verificando se o from rest_framework import filters
             # Já existe no arquivo
             if self.__check_content(self.path_api_views, "from rest_framework import filters"):
-                content = content.replace("from rest_framework import filters", "")
+                content = content.replace("from rest_framework import filters, status", "")
                 content = content.strip()
 
             if self.__check_content(self.path_api_views, self.model) is False:
