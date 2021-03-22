@@ -159,7 +159,7 @@ class _$ModelClass$AddPageState extends State<$ModelClass$AddPage>
   }
 
   void _post() async {
-    final _$Model$Cubit = context.bloc<$ModelClass$Cubit>();
+    final _$Model$Cubit = context.read<$ModelClass$Cubit>();
     try{
       _$Model$Model = $ModelClass$Model();
       $GetValuesControllers$

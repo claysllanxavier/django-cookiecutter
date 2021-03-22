@@ -675,28 +675,27 @@ class Command(BaseCommand):
         try:
             if attribute == "int":
                 if f"id{model_name.lower()}" == name.lower():
-                    __attribute = "{0}_{1}.id = int.tryParse(_{1}Form{2}.text ?? 0);\n".format(
+                    __attribute = "{0}_{1}Model.id = int.tryParse(_{1}Form{2}.text ?? 0);\n".format(
                         " " * 16, self.__to_camel_case(model_name, True), name_title)
                 else:
-                    __attribute = "{0}_{1}.{2} = int.tryParse(_{1}Form{3}.text ?? 0);\n".format(
-                        " " * 16, self.__to_camel_case(model_name, True), name,
-                        name_title)
+                    __attribute = "{0}_{1}Model.{2} = int.tryParse(_{1}Form{3}.text ?? 0);\n".format(
+                        " " * 16, self.__to_camel_case(model_name, True), name, name_title)
 
             elif attribute == "double":
-                __attribute = "{0}_{1}.{2} = double.tryParse(_{1}Form{3}.text ?? 0.0);\n".format(
+                __attribute = "{0}_{1}Model.{2} = double.tryParse(_{1}Form{3}.text ?? 0.0);\n".format(
                     " " * 16, self.__to_camel_case(model_name, True), name, name_title)
 
             elif attribute == "bool":
-                __attribute = "{0}_{1}.{2} = _{1}Form{3}.text ?? true;\n".format(
+                __attribute = "{0}_{1}Model.{2} = _{1}Form{3}.text ?? true;\n".format(
                     " " * 16, self.__to_camel_case(model_name, True), name, name_title)
 
             elif attribute == "DateTime":
-                __attribute = '{0}_{1}.{2} = '.format(" " * 16, self.__to_camel_case(model_name, True), name)
+                __attribute = '{0}_{1}Model.{2} = '.format(" " * 16, self.__to_camel_case(model_name, True), name)
                 __attribute += '_{0}Form{1}.text != "" ?Util.convertDate(_{0}Form{1}.text): null;\n'.format(
                     self.__to_camel_case(model_name, True), name_title)
 
             else:
-                __attribute = '{0}_{1}.{2} = _{1}Form{3}.text ?? "";\n'.format(
+                __attribute = '{0}_{1}Model.{2} = _{1}Form{3}.text ?? "";\n'.format(
                     " " * 16, self.__to_camel_case(model_name, True), name, name_title)
         except Exception as error:
             Utils.show_message(f"Error in __get_attributes: {error}", error=True)
@@ -717,24 +716,24 @@ class Command(BaseCommand):
         try:
             if attribute == "int":
                 if f"id{model_name.lower()}" == name.lower():
-                    __controllers_data = "{0}_{1}.id = int.tryParse(_{1}Form{2}.text ?? 0);\n".format(
+                    __controllers_data = "{0}_{1}Model.id = int.tryParse(_{1}Form{2}.text ?? 0);\n".format(
                         " " * 6, self.__to_camel_case(model_name, True), name_title)
                 else:
-                    __controllers_data = "{0}_{1}.{2} = int.tryParse(_{1}Form{3}.text ?? 0);\n".format(
+                    __controllers_data = "{0}_{1}Model.{2} = int.tryParse(_{1}Form{3}.text ?? 0);\n".format(
                         " " * 6, self.__to_camel_case(model_name, True), name, name_title)
             elif attribute == "double":
-                __controllers_data = "{0}_{1}.{2} = double.tryParse(_{1}Form{3}.text ?? 0.0);\n".format(
+                __controllers_data = "{0}_{1}Model.{2} = double.tryParse(_{1}Form{3}.text ?? 0.0);\n".format(
                     " " * 6, self.__to_camel_case(model_name, True), name, name_title)
             elif attribute == "bool":
-                __controllers_data = "{0}_{1}.{2} = _{1}Form{3}.text ?? true;\n".format(
+                __controllers_data = "{0}_{1}Model.{2} = _{1}Form{3}.text ?? true;\n".format(
                     " " * 6, self.__to_camel_case(model_name, True), name, name_title)
             elif attribute == "DateTime":
-                __controllers_data = '{0}_{1}.{2} = _{1}Form{3}.text != ""?'.format(
+                __controllers_data = '{0}_{1}Model.{2} = _{1}Form{3}.text != ""?'.format(
                     " " * 6, self.__to_camel_case(model_name, True), name, name_title)
                 __controllers_data += ' Util.convertDate(_{}Form{}.text) : null;\n'.format(
                     self.__to_camel_case(model_name, True), name_title)
             else:
-                __controllers_data = "{0}_{1}.{2} = _{1}Form{3}.text;\n".format(
+                __controllers_data = "{0}_{1}Model.{2} = _{1}Form{3}.text;\n".format(
                     " " * 6, self.__to_camel_case(model_name, True), name, name_title)
         except Exception as error:
             Utils.show_message(f"Error in __get_controllers_data: {error}", error=True)
@@ -803,7 +802,7 @@ class Command(BaseCommand):
                 if __name.startswith(f"id{app.model_name_lower}"):
                     __name = "id"
 
-                edited_attributes += "      {}.text = _{}.{}.toString();\n".format(
+                edited_attributes += "      {}.text = _{}Model.{}.toString();\n".format(
                     controller, self.__to_camel_case(app.model_name, True), __name)
 
             content = ParserContent(
