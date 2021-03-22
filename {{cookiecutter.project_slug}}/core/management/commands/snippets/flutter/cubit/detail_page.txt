@@ -33,13 +33,11 @@ class _$ModelClass$DetailPageState extends State<$ModelClass$DetailPage>
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   AnimationController _animationController;
 
-  $ModelClass$Model _$Model$ = $ModelClass$Model();
-
   @override
   void initState() {
     super.initState();
-    this._$ModelClassCamelCase$Model = widget.$ModelClassCamelCase$Model;
     _animationController = AnimationController(vsync: this);
+    _$ModelClassCamelCase$Model = widget.$ModelClassCamelCase$Model;
   }
 
   @override
@@ -48,15 +46,14 @@ class _$ModelClass$DetailPageState extends State<$ModelClass$DetailPage>
       listener: (context, state) {
         if (state is $ModelClass$ErrorState){
           _showMessage(state.error, error: true);
-          debugPrint("DebugError: No método buildPage do AppNameAddPage  -> ${state.error}");
+          DebugPrint.error("DebugError: No método buildPage do AppNameAddPage  -> ${state.error}");
         }
         if(state is $ModelClass$SuccessState){
           _showMessage(state.successMessage);
-          debugPrint("DebugSuccess: No método build do AppNameDetailPage -> ${state.successMessage}");
+          DebugPrint.print("DebugSuccess: No método build do AppNameDetailPage -> ${state.successMessage}");
         }
       },
       builder: (context, state) {
-        _$Model$ = context.bloc<$ModelClass$Cubit>().$Model$Model;
         return Scaffold(
           key: _scaffoldKey,
           extendBodyBehindAppBar: true,
@@ -70,7 +67,9 @@ class _$ModelClass$DetailPageState extends State<$ModelClass$DetailPage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => $ModelClass$UpdatePage(),
+                  builder: (context) => $ModelClass$UpdatePage(
+                    $ModelClassCamelCase$Model: _$ModelClassCamelCase$Model
+                  ),
                 ),
               );
             },
@@ -96,13 +95,11 @@ class _$ModelClass$DetailPageState extends State<$ModelClass$DetailPage>
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
           margin: EdgeInsets.only(
-               top: Util.getProportionScreenHeight(
-                    context, Config.marginHead),
-             ),
+               top: Util.getProportionScreenHeight(context, Config.marginHead)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text(_$Model$.toString()),
+              Text(_$ModelClassCamelCase$Model.toString()),
             ],
           ),
         ),

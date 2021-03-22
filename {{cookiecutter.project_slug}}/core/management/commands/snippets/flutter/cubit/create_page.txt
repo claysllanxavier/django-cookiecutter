@@ -24,7 +24,7 @@ class _$ModelClass$AddPageState extends State<$ModelClass$AddPage>
   with SingleTickerProviderStateMixin{
   final _scaffoldKey = GlobalKey<ScaffoldState>();  
   AnimationController _animationController;
-  $ModelClass$Model _$Model$;
+  $ModelClass$Model _$Model$Model;
   final _form$ModelClass$ = GlobalKey<FormState>();
   $Attributes$
 
@@ -33,7 +33,7 @@ class _$ModelClass$AddPageState extends State<$ModelClass$AddPage>
     _animationController = AnimationController(vsync: this);
     super.initState();
   }
- 
+
   @override
   void dispose() {
     super.dispose();
@@ -78,7 +78,7 @@ class _$ModelClass$AddPageState extends State<$ModelClass$AddPage>
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12.0, top: 12.0),
-                  child: customTitlePage(context, 
+                  child: customTitlePage(context,
                     'Cadastrar $ModelClass$',
                   ),
                 ),
@@ -87,15 +87,15 @@ class _$ModelClass$AddPageState extends State<$ModelClass$AddPage>
                 listener: (context, state) {
                   if (state is $ModelClass$ErrorState){
                     _showMessage(state.error, error: true);
-                    debugPrint("DebugError: No método _buildPage do $ModelClass$AddPage  -> ${state.error}");
+                    DebugPrint.error("DebugError: No método _buildPage do $ModelClass$AddPage  -> ${state.error}");
                   }
                   if(state is $ModelClass$SuccessState){
                     _showMessage(state.successMessage);
-                    debugPrint("DebugSuccess: No método _buildPage do $ModelClass$AddPage -> ${state.successMessage}");
+                    DebugPrint.print("DebugSuccess: No método _buildPage do $ModelClass$AddPage -> ${state.successMessage}");
                   }
                 },
                 builder: (context, state) {
-                    _$Model$ = context.bloc<$ModelClass$Cubit>().$Model$Model;
+                    _$Model$Model = context.read<$ModelClass$Cubit>().$Model$Model;
                     return Stack(
                     children : <Widget>[
                       Column(
@@ -161,12 +161,12 @@ class _$ModelClass$AddPageState extends State<$ModelClass$AddPage>
   void _post() async {
     final _$Model$Cubit = context.bloc<$ModelClass$Cubit>();
     try{
-      _$Model$ = $ModelClass$Model();
+      _$Model$Model = $ModelClass$Model();
       $GetValuesControllers$
-      _$Model$Cubit.$Model$Model = _$Model$;
-      _$Model$Cubit.post(_$Model$);
+      _$Model$Cubit.$Model$Model = _$Model$Model;
+      _$Model$Cubit.post(_$Model$Model);
     }catch (e){
-      debugPrint("DebugError: No método _post do $ModelClass$AddPage -> $e");
+      DebugPrint.error("DebugError: No método _post do $ModelClass$AddPage -> $e");
     }
   }
 

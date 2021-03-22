@@ -24,7 +24,7 @@ class Config {
 
 class DebugPrint {
   static const bool debuggingMode = true;
-  static void imprimir(String texto) {
+  static void print(String texto) {
     if (debuggingMode) {
       developer.log(texto.toLowerCase(), name: 'Debug:');
     }

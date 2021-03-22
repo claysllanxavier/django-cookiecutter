@@ -15,26 +15,31 @@ import '../model.dart';
 import '../cubit.dart';
 
 class $ModelClass$UpdatePage extends StatefulWidget {
+  final $ModelClass$Model $ModelClassCamelCase$Model;
+
+  const $ModelClass$UpdatePage({Key key,  this.$ModelClassCamelCase$Model}) : super(key: key);
+
   @override
   _$ModelClass$AddPageState createState() => _$ModelClass$AddPageState();
 }
 
-class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage> 
+class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
   with SingleTickerProviderStateMixin{
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _form$ModelClass$ = GlobalKey<FormState>();
 
   AnimationController _animationController;
-  $ModelClass$Model _$Model$ = $ModelClass$Model();
+  $ModelClass$Model _$Model$Model = $ModelClass$Model();
 
   $Attributes$
 
   @override
   void initState() {
-    _animationController = AnimationController(vsync: this);
     super.initState();
+    _animationController = AnimationController(vsync: this);
+    _$ModelClassCamelCase$Model = widget.$ModelClassCamelCase$Model;
   }
-  
+
   @override
   void dispose() {
     super.dispose();
@@ -51,23 +56,22 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
       body: _buildBody(),
     );
   }
-  
-    Widget _buildBody() {
+
+  Widget _buildBody() {
     return BlocConsumer<$ModelClass$Cubit, $ModelClass$State>(
       listener: (context, state) {
         if (state is $ModelClass$ErrorState){
           _showMessage(state.error, error: true);
-          debugPrint("DebugError: No método _buildPage do $ModelClass$AddPage  -> ${state.error}");
+          DebugPrint.error("DebugError: No método _buildPage do $ModelClass$AddPage  -> ${state.error}");
         }
         if(state is $ModelClass$SuccessState){
           _showMessage(state.successMessage);
-          debugPrint("DebugSuccess: No método _buildPage do $ModelClass$AddPage -> ${state.successMessage}");
-        }        
+          DebugPrint.print("DebugSuccess: No método _buildPage do $ModelClass$AddPage -> ${state.successMessage}");
+        }
       },
       builder: (context, state) {
-        _$Model$ = context.bloc<$ModelClass$Cubit>().$Model$Model;
         $EditedAttributes$
-        
+
         return Stack(
           children: <Widget>[
             HeadWidget(),
@@ -96,7 +100,7 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12.0, top: 12.0),
-                  child: customTitlePage(context, 
+                  child: customTitlePage(context,
                     'Atualizar $ModelClass$',
                   ),
                 ),
@@ -129,7 +133,7 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
       ),
     );
   }
-  
+
   Widget _createButton(context){
     return BlocConsumer<$ModelClass$Cubit, $ModelClass$State>(
       listener: (context, state) {},
@@ -158,20 +162,20 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
       },
     );
   }
-  
+
   void _clearForm(){
     $ClearData$
   }
 
   void _put() async {
-    final _$Model$Cubit = context.bloc<$ModelClass$Cubit>();
+    final _$Model$Cubit = context.read<$ModelClass$Cubit>();
 
     try{
        $GetValuesControllers$
 
-      _$Model$Cubit.put(_$Model$);
+      _$Model$Cubit.put(_$Model$Model);
     }catch (e){
-      debugPrint("DebugError: No método _put do $ModelClass$UpdatePage -> $e");
+      DebugPrint.error("DebugError: No método _put do $ModelClass$UpdatePage -> $e");
     }
   }
 

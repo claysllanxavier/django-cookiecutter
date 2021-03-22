@@ -91,11 +91,11 @@ class $ModelClass$ListPageState extends State<$ModelClass$ListPage>
       listener: (context, state) {
         if (state is $ModelClass$ErrorState){
           _showMessage(state.error, error: true);
-          debugPrint("DebugError: No método _listBuilder do AppNameListPage  -> ${state.error}");
+          DebugPrint.error("DebugError: No método _listBuilder do AppNameListPage  -> ${state.error}");
         }
         if(state is $ModelClass$SuccessState){
           _showMessage(state.successMessage);
-          debugPrint("DebugSuccess: No método _listBuilder do AppNameListPage -> ${state.successMessage}");
+          DebugPrint.print("DebugSuccess: No método _listBuilder do AppNameListPage -> ${state.successMessage}");
         }
       },
       builder: (context, state) {
@@ -123,12 +123,18 @@ class $ModelClass$ListPageState extends State<$ModelClass$ListPage>
                   shrinkWrap: true,
                   children:
                     List.generate(state.$ModelClassCamelCase$List.length, (index) {
-                      return Card(
+                      return InkWell(
+                        onTap: (){
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => $ModelClass$DetailPage($ModelClassCamelCase$Model: state.$ModelClassCamelCase$List[index])));
+                        },
+                        child: Card(
                         child: Container(
-                          child: Center(
-                            child: Text(state.$ModelClassCamelCase$List[index].toString()),
+                            child: Center(
+                              child: Text(state.$ModelClassCamelCase$List[index].toString()),
+                            ),
                           ),
-                        ),
+                        )
                       );
                     }),
                 ),
