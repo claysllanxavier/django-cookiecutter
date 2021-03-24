@@ -93,7 +93,7 @@
       Também deve ser configurada a variável API_PATH com o caminho da APIRest.
 
       Exemplo:
-         API_PATH = "https://dominio.com.br/core/api
+         API_PATH = https://dominio.com.br/core/api
 
 #### Executar
 > python manage.py flutter --init-cubit

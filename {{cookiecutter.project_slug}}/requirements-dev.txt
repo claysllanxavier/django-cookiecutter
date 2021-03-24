@@ -10,6 +10,13 @@ asgiref==3.3.1
     # via
     #   -c .\requirements.txt
     #   django
+astroid==2.4.1
+    # via
+    #   prospector
+    #   pylint
+    #   pylint-celery
+    #   pylint-flask
+    #   requirements-detector
 atomicwrites==1.4.0
     # via pytest
 attrs==20.3.0
@@ -29,10 +36,14 @@ chardet==3.0.4
     #   -c .\requirements.txt
     #   requests
 click==7.1.2
-    # via scanapi
+    # via
+    #   mkdocs
+    #   nltk
+    #   scanapi
 colorama==0.4.4
     # via
     #   ipython
+    #   pylint
     #   pytest
 coverage==5.5
     # via pytest-cov
@@ -52,12 +63,21 @@ django==3.0.5
     # via
     #   -c .\requirements.txt
     #   django-debug-toolbar
+    #   model-bakery
 docutils==0.16
     # via -r .\requirements-dev.in
+dodgy==0.2.1
+    # via prospector
 faker==6.6.0
     # via -r .\requirements-dev.in
+flake8-polyfill==1.0.2
+    # via pep8-naming
 flake8==3.8.4
-    # via -r .\requirements-dev.in
+    # via
+    #   -r .\requirements-dev.in
+    #   flake8-polyfill
+future==0.18.2
+    # via lunr
 html5lib==1.1
     # via -r .\requirements-dev.in
 idna==2.10
@@ -71,31 +91,68 @@ ipython-genutils==0.2.0
 ipython==7.21.0
     # via -r .\requirements-dev.in
 isort==4.3.21
-    # via -r .\requirements-dev.in
+    # via
+    #   -r .\requirements-dev.in
+    #   pylint
 jedi==0.18.0
     # via ipython
 jinja2==2.11.2
     # via
     #   -c .\requirements.txt
+    #   mkdocs
     #   scanapi
+joblib==1.0.1
+    # via nltk
+lazy-object-proxy==1.4.3
+    # via astroid
+livereload==2.6.3
+    # via mkdocs
+lunr[languages]==0.5.8
+    # via mkdocs
+markdown==3.3.4
+    # via
+    #   mkdocs
+    #   mkdocs-material
+    #   pymdown-extensions
 markupsafe==1.1.1
     # via
     #   -c .\requirements.txt
     #   jinja2
 mccabe==0.6.1
-    # via flake8
+    # via
+    #   flake8
+    #   prospector
+    #   pylint
+mkdocs-material-extensions==1.0.1
+    # via mkdocs-material
+mkdocs-material==7.0.6
+    # via
+    #   -r .\requirements-dev.in
+    #   mkdocs-material-extensions
+mkdocs==1.1.2
+    # via
+    #   -r .\requirements-dev.in
+    #   mkdocs-material
+model-bakery==1.2.1
+    # via -r .\requirements-dev.in
+nltk==3.5
+    # via lunr
 packaging==20.9
     # via
     #   -c .\requirements.txt
     #   pytest
 parso==0.8.1
     # via jedi
+pep8-naming==0.10.0
+    # via prospector
 pickleshare==0.7.5
     # via ipython
 pluggy==0.13.1
     # via pytest
 prompt-toolkit==3.0.17
     # via ipython
+prospector==1.3.1
+    # via -r .\requirements-dev.in
 py==1.10.0
     # via pytest
 pycodestyle==2.6.0
@@ -103,14 +160,40 @@ pycodestyle==2.6.0
     #   -r .\requirements-dev.in
     #   autopep8
     #   flake8
+    #   prospector
+pydocstyle==6.0.0
+    # via prospector
 pyflakes==2.2.0
     # via
     #   -r .\requirements-dev.in
     #   flake8
+    #   prospector
 pygments==2.8.1
     # via
     #   -r .\requirements-dev.in
     #   ipython
+    #   mkdocs-material
+pylint-celery==0.3
+    # via prospector
+pylint-django==2.1.0
+    # via prospector
+pylint-flask==0.6
+    # via prospector
+pylint-plugin-utils==0.6
+    # via
+    #   prospector
+    #   pylint-celery
+    #   pylint-django
+    #   pylint-flask
+pylint==2.5.3
+    # via
+    #   prospector
+    #   pylint-celery
+    #   pylint-django
+    #   pylint-flask
+    #   pylint-plugin-utils
+pymdown-extensions==8.1.1
+    # via mkdocs-material
 pyparsing==2.4.7
     # via
     #   -c .\requirements.txt
@@ -137,23 +220,36 @@ pytz==2021.1
     #   django
     #   tzlocal
 pyyaml==5.3.1
-    # via scanapi
+    # via
+    #   mkdocs
+    #   prospector
+    #   scanapi
 regex==2020.11.13
     # via
     #   -c .\requirements.txt
     #   dateparser
+    #   nltk
 requests==2.24.0
     # via
     #   -c .\requirements.txt
     #   curlify
     #   scanapi
+requirements-detector==0.7
+    # via prospector
 scanapi==2.1.0
     # via -r .\requirements-dev.in
+setoptconf==0.2.0
+    # via prospector
 six==1.15.0
     # via
     #   -c .\requirements.txt
+    #   astroid
     #   html5lib
+    #   livereload
+    #   lunr
     #   python-dateutil
+snowballstemmer==2.1.0
+    # via pydocstyle
 soupsieve==2.2
     # via beautifulsoup4
 sqlparse==0.4.1
@@ -167,7 +263,14 @@ toml==0.10.2
     # via
     #   -r .\requirements-dev.in
     #   autopep8
+    #   pylint
     #   pytest
+tornado==6.1
+    # via
+    #   livereload
+    #   mkdocs
+tqdm==4.59.0
+    # via nltk
 traitlets==5.0.5
     # via ipython
 tzlocal==2.1
@@ -193,6 +296,8 @@ webencodings==0.5.1
     #   html5lib
 whitenoise==5.2.0
     # via -r .\requirements-dev.in
+wrapt==1.12.1
+    # via astroid
 xmltodict==0.12.0
     # via -r .\requirements-dev.in
 
