@@ -1,0 +1,5 @@
+site_name: Boilerplate Django
+
+theme:
+  name: material
+
