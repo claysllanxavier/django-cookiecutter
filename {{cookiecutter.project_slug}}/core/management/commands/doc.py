@@ -4,7 +4,7 @@
 import os
 from django.core.management.base import BaseCommand
 from core.management.commands.utils import Utils
-from nuvols.core.settings import DOC_APPS
+from core.settings import DOC_APPS
 
 
 class Command(BaseCommand):
@@ -30,7 +30,7 @@ class Command(BaseCommand):
 
     def __parser_documentation(self):
         try:
-            self.path_core = os.path.join(self.path_root, "nuvols/core")
+            self.path_core = os.path.join(self.path_root, "core")
             content = Utils.get_snippet(os.path.join(
                 self.path_core, "management/commands/snippets/sphinx_doc/config.txt"))
 

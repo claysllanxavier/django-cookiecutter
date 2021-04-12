@@ -1,10 +1,10 @@
-/// Local Data do model Animal
+/// Local Data do model $ModelClass$
 ///
 /// Os Métodos padrões gerados são:
-///     fecthAll() -> Recupera a lista de Animal.
-///     save() -> Salva os dados de uma instância do Animal.
-///     detail() -> Recupera os detalhes de Animal.
-///     update() -> Atualiza os dados de uma instância do Animal.
+///     fecthAll() -> Recupera a lista de $ModelClass$.
+///     save() -> Salva os dados de uma instância do $ModelClass$.
+///     detail() -> Recupera os detalhes de $ModelClass$.
+///     update() -> Atualiza os dados de uma instância do $ModelClass$.
 ///     delete() -> Deleta um registro.
 ///     deleteAll() -> Deleta todos os registros.
 
@@ -41,7 +41,7 @@ class $ModelClass$Data {
       var dbPath = join(dir.path, '$project$.db');
       return await smbt_io.databaseFactoryIo.openDatabase(dbPath);
     } catch (error, exception) {
-      debugPrint(
+      DebugPrint.error(
           "Erro no método initDB -> error: $error, message: $exception");
     }
     return null;
