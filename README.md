@@ -15,6 +15,10 @@ Instale o cookiecutter
 
     $ pip install "cookiecutter>=1.7.0"
 
+Instale o pip-tools
+
+    $ pip install pip-tools
+
 ## Uso
 
 Rode o cookiecutter apontando para o repositório do projeto base Django:
