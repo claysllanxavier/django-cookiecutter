@@ -37,11 +37,11 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', IndexTemplate.as_view(), name='index'),
     path('core/', include('core.urls', namespace="core")),
     path('core/', include('usuario.urls', namespace="usuario")),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('', IndexTemplate.as_view(), name='index'),
     path('auth/', include('dj_rest_auth.urls')),
     # URL do JWT
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

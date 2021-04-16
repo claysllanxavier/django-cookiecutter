@@ -14,6 +14,7 @@
     "_copy_without_render": [
         "core/**",
         "usuario/**",
-        "scanapi_exemplo.yaml"
+        "scanapi_exemplo.yaml",
+        "docs/**"
     ]
 }
