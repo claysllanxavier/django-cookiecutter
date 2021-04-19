@@ -96,7 +96,7 @@
          API_PATH = https://dominio.com.br/core/api
 
 #### Executar
-> python manage.py flutter --init-cubit
+> python manage.py flutter --init_cubit
 
 Atualizar o arquivo de dependências
 > python manage.py flutter --yaml

@@ -42,7 +42,11 @@ Responda as perguntas sobre seu novo projeto:
 
 Instale as dependências do projeto (lembre de estar com o virtual env ativado)
 
-    ./manage.py pip-sync requirements.txt requirements-dev.txt
+    pip-sync requirements.txt requirements-dev.txt
+
+Crie as migrações do seu projeto
+
+    ./manage.py makemigrations
 
 Execute a migração dos projetos
 

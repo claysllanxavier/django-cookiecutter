@@ -22,7 +22,6 @@ import 'package:path_provider/path_provider.dart';
 import 'model.dart';
 import '../../../utils/config.dart';
 
-
 class $ModelClass$Data {
   $ModelClass$Model _$modelClass$Model = $ModelClass$Model();
   static final $ModelClass$Data _instance = $ModelClass$Data.internal();

@@ -9,7 +9,7 @@
  */
 
 import 'dart:async';
-
+import '../apps/auth/data.dart';
 import 'package:dio/dio.dart';
 import 'config.dart';
 

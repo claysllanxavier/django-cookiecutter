@@ -19,6 +19,8 @@ import '../../../../user_interface/font.dart';
 import '../../../../user_interface/widget.dart';
 
 class $ModelClass$ListPage extends StatefulWidget {
+  static const routeName = "/$ModelClassCamelCase$ListPage";
+
   @override
   $ModelClass$ListPageState createState() => $ModelClass$ListPageState();
 }

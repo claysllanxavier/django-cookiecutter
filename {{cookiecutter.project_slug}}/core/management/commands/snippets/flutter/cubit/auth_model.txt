@@ -11,6 +11,7 @@ class AuthModel {
   String password;
   String cpf;
   String phoneNumber;
+  String photoUrl;
   String token;
   String firebaseId;
 
@@ -25,7 +26,9 @@ class AuthModel {
       this.password,
       this.cpf,
       this.phoneNumber,
-      this.token});
+      this.token,
+      this.photoUrl,
+      });
 
   Future<bool> logout() async{
     try {
@@ -47,6 +50,7 @@ class AuthModel {
     cpf = json['cpf'];
     phoneNumber = json['telefone'];
     token = json['token'];
+    photoUrl = json.containsKey('photoUrl') ? json['photoUrl'] : "";
   }
 
   Map<String, dynamic> toMap() {

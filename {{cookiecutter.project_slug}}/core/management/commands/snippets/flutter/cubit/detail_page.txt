@@ -17,6 +17,8 @@ import '../cubit.dart';
 import 'update.dart';
 
 class $ModelClass$DetailPage extends StatefulWidget {
+  static const routeName = "/$ModelClassCamelCase$DetailPage";
+
   final $ModelClass$Model $ModelClassCamelCase$Model;
 
   const $ModelClass$DetailPage({Key key, this.$ModelClassCamelCase$Model})

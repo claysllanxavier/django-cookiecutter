@@ -391,6 +391,7 @@ class Command(BaseCommand):
 
         parser.add_argument(
             "--main", action="store_true", dest="main", help="Renderizar a main.dart")
+
         parser.add_argument(
             "--yaml", action="store_true", dest="yaml", help="Refatorando o YAML")
 
@@ -410,10 +411,14 @@ class Command(BaseCommand):
             "--init_cubit", action="store_true", dest="init_cubit",
             help="Gerar o projeto Flutter utilizando o Cubit como gerencia de estado.",
         )
+
         parser.add_argument(
             "--clear", action="store_true", dest="clear", help="Limpar projeto flutter.")
 
-    def __ignore_base_fields(self, field) -> bool:
+        parser.add_argument(
+            "--routers", action="store_true", dest="routers", help="Criar o arquivo de rotas nomeadas.")
+
+    def __ignore_base_fields(self, field):
         """Method to check if the model attribute should be ignored in the parser process according to
            tuple __ignore_fields
 
@@ -1519,6 +1524,51 @@ class Command(BaseCommand):
         except Exception as error:
             Utils.show_message(f"Error in _build_internationalization: {error}", error=True)
 
+    def __create_named_route(self):
+        """
+        Method responsible to create named route file
+        Path Snippet -> rotas/core/management/commands/snippets/flutter/named_route.txt
+        """
+        __pages_name_list = ['IndexPage', 'DetailPage', 'ListPage', 'UpdatePage', 'AddPage']
+        __imports_name_list = ['index', 'list', 'detail', 'update', 'create']
+        __snippet_route = "case $ClassName$$PageName$.routeName:\n"
+        __snippet_route += "    return MaterialPageRoute(builder: (_) => $ClassName$$PageName$());\n"
+        __snippet_route += "    break;\n"
+        __snippet_imports = "import './apps/$APP$/$model$/pages/$page$.dart';"
+        routers_apps = ""
+        imports_apps = ""
+        try:
+            path_routes = Path(f"{self.flutter_dir}/lib/routers.dart")
+            if Utils.check_file_is_locked(path_routes):
+                return
+
+            snippet = self.__get_snippet(f"{self.snippet_dir}named_route.txt")
+            # Looping all apps Django ptoject to get Pages
+            for app in FLUTTER_APPS:
+                __current_app = AppModel(self.flutter_project, app)
+                __app = __current_app.app_name
+                for model in __current_app.models:
+                    __model = model[1]
+                    for page_name in __pages_name_list:
+                        routers_apps += __snippet_route.replace('$ClassName$', __model.title()).replace(
+                            '$PageName$', page_name)
+                        routers_apps += "\n"
+                    for import_name in __imports_name_list:
+                        imports_apps += __snippet_imports.replace('$APP$', __app.lower()).replace(
+                            '$model$', __model.lower()).replace('$page$', import_name)
+                        imports_apps += "\n"
+            if routers_apps != "":
+                snippet = snippet.replace("$ROUTES_APPS$", routers_apps).replace("$IMPORTS$", imports_apps)
+            else:
+                print("Nada foi alterado no arquivo snippet")
+            with open(path_routes, "w", encoding="utf-8") as route_named:
+                route_named.write(snippet)
+
+            pass
+        except Exception as error:
+            print(error)
+            Utils.show_message(f"Error in __create_name_route: {error}")
+
     def __replace_main(self):
         """Method responsible for updating the main.dart file according to the chosen state management
         """
@@ -1586,6 +1636,7 @@ class Command(BaseCommand):
            mandatory parameters
         """
         if options["init_provider"] is False and options["init_mobx"] is False and options["init_cubit"] is False:
+            print("É obrigatório informar o state manager que será utilizado no projeto Flutter")
             Utils.show_message("É obrigatório informar o state manager que será utilizado no projeto Flutter",
                                error=True)
         if options["init_provider"]:
@@ -1605,6 +1656,9 @@ class Command(BaseCommand):
             return
         elif options["build_mobx"] and self.state_manager == StateManager.MobX:
             self.__build_mobx()
+            return
+        elif options["routers"]:
+            self.__create_named_route()
             return
         elif options["clear"]:
             self.__clear_project()

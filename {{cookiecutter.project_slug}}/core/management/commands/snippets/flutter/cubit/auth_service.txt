@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-import '../../utils/config.dart';
+import '../auth/data.dart';
 import '../../utils/util.dart';
+import '../../utils/config.dart';
 import '../../utils/custom_dio.dart';
+import '../usuario/usuario/model.dart';
 
 import 'model.dart';
 
@@ -104,18 +106,14 @@ class AuthService {
         auth.token = dataResponse['access'];
         final djangoUser = await signInDjangoUser(auth.login, userType);
         if (djangoUser != null) {
-          // Verificando o tipo do usuário
           auth.id = djangoUser.id;
           auth.cpf = djangoUser.cpf;
           auth.uuid = djangoUser.id;
           auth.name = djangoUser.nome;
           auth.login = djangoUser.email;
           auth.email = djangoUser.email;
-          auth.address = djangoUser.enderecoRes;
-          auth.photoUrl = djangoUser.foto;
-          auth.firebase = djangoUser.firebase;
+          auth.firebaseId = djangoUser.firebase;
           auth.phoneNumber = djangoUser.telefone;
-          auth.typeUser = userType;
           authData.save(auth);
           return auth;
         } else {
@@ -213,10 +211,42 @@ class AuthService {
     return false;
   }
 
-
-    void _success(String message, {int statusCode}) async {
+  Future<UsuarioModel> signInDjangoUser(String login, int userType) async {
+    String _uri = "${Config.uri}usuario/usuario/?email=$login";
+    int typeException = 0;
     try {
-      debugPrint("DebugSuccess: AuthService -> $message, Status: $statusCode");
+      CustomDio _dio = CustomDio(_uri);
+      var dataResponse = await _dio.getHttp(uri: _uri);
+      if (dataResponse != null) {
+        if (dataResponse["count"] == 0) {
+          return null;
+        }
+        if (dataResponse["results"][0]["aprovado"] == false) {
+          final _cpf = dataResponse["results"][0]["cpf"];
+          typeException = 0;
+          if (_cpf == null || _cpf == "") {
+            typeException = 1;
+          }
+        } else {
+          _success("Usuário logado com sucesso", statusCode: 200);
+          return UsuarioModel.fromMap(dataResponse["results"][0]);
+        }
+      }
+    } catch (error, exception) {
+      _error(error.toString(), exception.toString());
+    }
+    if (typeException == 0) {
+      throw ("Seu cadastro ainda não foi aprovado.");
+    } else if (typeException == 1) {
+      throw ("Dados Incompletos");
+    } else {
+      return null;
+    }
+  }
+
+  void _success(String message, {int statusCode}) async {
+    try {
+      DebugPrint.print("DebugSuccess: AuthService -> $message, Status: $statusCode");
     } catch (e) {
       _error("$e", "");
     }
@@ -224,11 +254,9 @@ class AuthService {
 
   void _error(String error, String exception, {int statusCode}) async {
     try {
-      debugPrint(
-          "DebugErro: AuthService -> $error | $exception");
+      DebugPrint.error("DebugErro: AuthService -> $error | $exception");
     } catch (error) {
-      debugPrint(
-          "DebugErro: AuthService ->$error");
+      DebugPrint.error("DebugErro: AuthService ->$error");
     }
   }
 }
