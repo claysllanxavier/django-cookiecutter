@@ -15,6 +15,7 @@ import 'user_interface/widget.dart';
 import 'utils/config.dart';
 import 'utils/localization.dart';
 import 'dart:async';
+import 'routers.dart';
 import 'package:flutter/scheduler.dart';
 
 $ImportViews$
@@ -76,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
         switch (index) {
           case 0:
             return CupertinoTabView(
+              onGenerateRoute: RouteGenerator.generateRoute,
               builder: (context) {
                 return CupertinoPageScaffold(child: _buildGridView(context));
               },
@@ -83,6 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
             break;
           case 1:
             return CupertinoTabView(
+              onGenerateRoute: RouteGenerator.generateRoute,
               builder: (context) {
                 return CupertinoPageScaffold(child: SettingsIndexPage());
               },
