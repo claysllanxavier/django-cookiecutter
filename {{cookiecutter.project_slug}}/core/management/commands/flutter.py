@@ -1489,7 +1489,7 @@ class Command(BaseCommand):
         except Exception as error:
             Utils.show_message(f"Error in __create_source: {error}", error=True)
 
-    def _build_internationalization(self):
+    def __build_internationalization(self):
         """Method responsible for configuring the internationalization package in the project
         """
         try:
@@ -1535,9 +1535,9 @@ class Command(BaseCommand):
         __snippet_route += "    return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$());\n"
         # Snippet para rotas de edição e detalhamento
         __snippet_route_created_updated = "case $ClassName$$PageName$.routeName:\n"
-        __snippet_route_created_updated += "  if(args is $ClassName$Model)\n"
+        __snippet_route_created_updated += "  if(args[0] is $ClassName$Model)\n"
         __snippet_route_created_updated += "    return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$(" \
-                                           "$ModelClassCamelCase$Model: args));\n"
+                                           "$ModelClassCamelCase$Model: args[0]));\n"
         __snippet_route_created_updated += "  return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$());\n"
         __snippet_imports = "import './apps/$APP$/$model$/pages/$page$.dart';"
         routers_apps = ""
@@ -1647,9 +1647,8 @@ class Command(BaseCommand):
            mandatory parameters
         """
         if options["init_provider"] is False and options["init_mobx"] is False and options["init_cubit"] is False:
-            print("É obrigatório informar o state manager que será utilizado no projeto Flutter")
-            Utils.show_message("É obrigatório informar o state manager que será utilizado no projeto Flutter",
-                               error=True)
+            options["init_cubit"] = True
+            self.state_manager = StateManager.Cubit
         if options["init_provider"]:
             self.state_manager = StateManager.Provider
         elif options["init_mobx"]:
@@ -1681,9 +1680,10 @@ class Command(BaseCommand):
             self.__build_utils()
             self.__build_user_interface()
             self.__build_custom_dio()
-            self._build_internationalization()
+            self.__build_internationalization()
             self.__build_auth_app()
             self.__build_flutter()
+            self.__create_named_route()
         else:
             Utils.show_message(
                 "É necessário passar pelo menos um dos parâmetros a seguir: --init_provider, --init_mobx, --init_cubit,"
