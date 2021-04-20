@@ -13,6 +13,7 @@ class Config {
   static const uri = "$DjangoAPIPath$";
   static const uriAuth = "$DjangoAPIPath$";
 
+  // TODO Adicionar aqui o token para ambiente de desenvolvimento.
   static const DRFToken = "Token 128ad486de8ffb2c8def82e46a71adcacdb45df1";
 
   static const String uri_media = "$DjangoAPIPath$media/";

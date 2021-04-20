@@ -17,12 +17,14 @@
 /// #FileLocked
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
 $IMPORTS$
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     /// Recuperando os agumentos passados como parâmetro
-    final args = RouteGenerator.getArgs(settings.arguments);
+    final args = settings.arguments;
 
     /// Switch para identificar qual rota está sendo invocada
     switch (settings.name) {
@@ -31,12 +33,6 @@ class RouteGenerator {
         /// Caso a rota invocada não exista será mostrado o views de erro.
         return _errorRoute();
     }
-  }
-
-  // Método para verificar qual o tipo de parâmetro passado no args
-  static dynamic getArgs(dynamic args) {
-    if (args is String) return args;
-    if (args is Map<String, dynamic>) return args;
   }
 
   // Retornando a tela de rota não encontrada. Caso deseje configurar a tela de erro basta editar o código desse método

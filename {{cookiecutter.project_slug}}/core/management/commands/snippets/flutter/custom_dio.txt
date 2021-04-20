@@ -129,12 +129,12 @@ class CustomDio {
 class CustomDioInterceptor extends Interceptor {
   @override
   Future onRequest(RequestOptions options) async {
-    // Recuperando o Token
+        // Recuperando o Token
     String accessToken = await AuthData().getJWTToken();
     if (accessToken != null) {
-      options.headers.addAll({"Authorization": "Bearer  $accessToken"});
+      options.headers.addAll({"Authorization": "Bearer $accessToken"});
     } else {
-      DebugPrint.error("Não foi possível recuperar o Token");
+      options.headers.addAll({"Authorization": "${Config.DRFToken}"});
     }
     options.connectTimeout = 50000;
     options.receiveTimeout = 50000;

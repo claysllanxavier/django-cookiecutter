@@ -24,15 +24,10 @@ import 'model.dart';
 
 class AuthData {
   final AuthModel _authModel = AuthModel();
-
   static final AuthData _instance = AuthData.internal();
-
   factory AuthData() => _instance;
-
   AuthData.internal();
-
   smbt.Database _db;
-
   final String _storeName = "AuthStoreDB";
 
   Future<smbt.Database> initDb() async {
@@ -46,7 +41,7 @@ class AuthData {
       // open the database
       return await smbt_io.databaseFactoryIo.openDatabase(dbPath);
     } catch (error, exception) {
-      debugPrint(
+      DebugPrint.error(
           "DebugErro: no método initDB do AuthData -> $error | $exception");
     }
     return null;
@@ -61,7 +56,7 @@ class AuthData {
           .map((snapshot) => AuthModel.fromMap(snapshot.value))
           .toList();
     } catch (error, exception) {
-      debugPrint(
+      DebugPrint.error(
           "DebugErro: no método fetchAll do AuthData -> $error | $exception");
       return null;
     } finally {
@@ -70,14 +65,18 @@ class AuthData {
   }
 
   Future<AuthModel> get(int id) async {
-    try {
+     try {
       _db = await initDb();
       final _store = smbt.intMapStoreFactory.store(_storeName);
-      final _data = await _store.findFirst(_db);
-      return AuthModel.fromMap(_data.value);
+      if (_store != null) {
+        final _data = await _store.findFirst(_db);
+        if (_data != null) {
+          return AuthModel.fromMap(_data.value);
+        }
+      }
+      return null;
     } catch (error, exception) {
-      debugPrint(
-          "DebugErro: no método get do AuthData -> $error | $exception");
+      DebugPrint.error("DebugErro: no método get do AuthData -> $error | $exception");
       return null;
     } finally {
       _db.close();
@@ -92,7 +91,7 @@ class AuthData {
       await _store.add(_db, auth.toMap());
       return true;
     } catch (error, exception) {
-      debugPrint(
+      DebugPrint.error(
           "DebugErro: no método save do AuthData -> $error | $exception");
       return false;
     } finally {
@@ -107,7 +106,7 @@ class AuthData {
       await _store.delete(_db);
       return true;
     } catch (error, exception) {
-      debugPrint(
+      DebugPrint.error(
           "DebugErro: no método deleteAll do AuthData -> $error | $exception");
       return false;
     } finally {
@@ -122,7 +121,7 @@ class AuthData {
       await _store.delete(_db);
       return true;
     } catch (error, exception) {
-      debugPrint(
+      DebugPrint.error(
           "DebugErro: no método delete do AuthData -> $error | $exception");
       return false;
     } finally {
@@ -136,7 +135,7 @@ class AuthData {
       final _store = smbt.intMapStoreFactory.store(_storeName);
       return true;
     } catch (error, exception) {
-      debugPrint(
+      DebugPrint.error(
           "DebugErro: No método save do AuthData -> $error | $exception");
       return false;
     } finally {
@@ -148,9 +147,11 @@ class AuthData {
   Future<String> getJWTToken() async {
     try {
       final _data = await get(0);
-      final String token = _data.token ?? "";
-      if (token.isNotEmpty) {
-        return token;
+      if (_data != null) {
+        final String token = _data?.token ?? "";
+        if (token.isNotEmpty) {
+          return token;
+        }
       }
       return null;
     } catch (e) {

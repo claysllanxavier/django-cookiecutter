@@ -1532,8 +1532,13 @@ class Command(BaseCommand):
         __pages_name_list = ['IndexPage', 'DetailPage', 'ListPage', 'UpdatePage', 'AddPage']
         __imports_name_list = ['index', 'list', 'detail', 'update', 'create']
         __snippet_route = "case $ClassName$$PageName$.routeName:\n"
-        __snippet_route += "    return MaterialPageRoute(builder: (_) => $ClassName$$PageName$());\n"
-        __snippet_route += "    break;\n"
+        __snippet_route += "    return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$());\n"
+        # Snippet para rotas de edição e detalhamento
+        __snippet_route_created_updated = "case $ClassName$$PageName$.routeName:\n"
+        __snippet_route_created_updated += "  if(args is $ClassName$Model)\n"
+        __snippet_route_created_updated += "    return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$(" \
+                                           "$ModelClassCamelCase$Model: args));\n"
+        __snippet_route_created_updated += "  return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$());\n"
         __snippet_imports = "import './apps/$APP$/$model$/pages/$page$.dart';"
         routers_apps = ""
         imports_apps = ""
@@ -1550,8 +1555,14 @@ class Command(BaseCommand):
                 for model in __current_app.models:
                     __model = model[1]
                     for page_name in __pages_name_list:
-                        routers_apps += __snippet_route.replace('$ClassName$', __model.title()).replace(
-                            '$PageName$', page_name)
+                        if page_name in ["UpdatePage", "DetailPage"]:
+                            routers_apps += __snippet_route_created_updated.replace(
+                                '$ClassName$', __model.title()).replace(
+                                '$ModelClassCamelCase$', self.__to_camel_case(__model, True)).replace(
+                                '$PageName$', page_name)
+                        else:
+                            routers_apps += __snippet_route.replace('$ClassName$', __model.title()).replace(
+                                '$PageName$', page_name)
                         routers_apps += "\n"
                     for import_name in __imports_name_list:
                         imports_apps += __snippet_imports.replace('$APP$', __app.lower()).replace(

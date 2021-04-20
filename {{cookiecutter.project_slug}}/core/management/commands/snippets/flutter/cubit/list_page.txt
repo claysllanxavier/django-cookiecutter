@@ -53,7 +53,7 @@ class $ModelClass$ListPageState extends State<$ModelClass$ListPage>
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => $ModelClass$AddPage()));
+          Navigator.pushNamed(context, $ModelClass$AddPage.routeName);
         },
       ),
     );
@@ -127,8 +127,7 @@ class $ModelClass$ListPageState extends State<$ModelClass$ListPage>
                     List.generate(state.$ModelClassCamelCase$List.length, (index) {
                       return InkWell(
                         onTap: (){
-                          Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => $ModelClass$DetailPage($ModelClassCamelCase$Model: state.$ModelClassCamelCase$List[index])));
+                          Navigator.pushNamed(context, $ModelClass$DetailPage.routeName, arguments: state.$ModelClassCamelCase$List[index]);
                         },
                         child: Card(
                         child: Container(

@@ -66,14 +66,7 @@ class _$ModelClass$DetailPageState extends State<$ModelClass$DetailPage>
               Icons.update,
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => $ModelClass$UpdatePage(
-                    $ModelClassCamelCase$Model: _$ModelClassCamelCase$Model
-                  ),
-                ),
-              );
+              Navigator.pushNamed(context, $ModelClass$UpdatePage.routeName, arguments: _$ModelClassCamelCase$Model);
             },
           ),
         );
