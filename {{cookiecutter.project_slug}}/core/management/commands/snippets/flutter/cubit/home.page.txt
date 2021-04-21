@@ -21,6 +21,7 @@ import 'package:flutter/scheduler.dart';
 $ImportViews$
 
 class MyHomePage extends StatefulWidget {
+  final String title;
   MyHomePage({Key key, this.title}) : super(key: key);
 
   @override

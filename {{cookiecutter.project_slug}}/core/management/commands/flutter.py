@@ -1551,7 +1551,7 @@ class Command(BaseCommand):
         __snippet_route_created_updated += "    return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$(" \
                                            "$ModelClassCamelCase$Model: args));\n"
         __snippet_route_created_updated += "  return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$());\n"
-        __snippet_imports = "import './apps/$APP$/$model$/pages/$page$.dart';"
+        __snippet_imports = "import 'apps/$APP$/$model$/pages/$page$.dart';"
         routers_apps = ""
         imports_apps = ""
         try:
@@ -1579,6 +1579,8 @@ class Command(BaseCommand):
                         imports_apps += __snippet_imports.replace('$APP$', __app.lower()).replace(
                             '$model$', __model.lower()).replace('$page$', import_name)
                         imports_apps += "\n"
+                    imports_apps += "import 'apps/$APP$/$model$/model.dart';".replace(
+                        '$APP$', __app.lower()).replace('$model$', __model.lower())
             if routers_apps != "":
                 snippet = snippet.replace("$ROUTES_APPS$", routers_apps).replace("$IMPORTS$", imports_apps)
             else:
@@ -1694,6 +1696,7 @@ class Command(BaseCommand):
             self.__build_auth_app()
             self.__build_flutter()
             self.__create_named_route()
+            self.__create_exception_class()
         else:
             Utils.show_message(
                 "É necessário passar pelo menos um dos parâmetros a seguir: --init_provider, --init_mobx, --init_cubit,"

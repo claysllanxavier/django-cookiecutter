@@ -4,35 +4,40 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 
-// Width Height constants
 const heightAppBarPage = 22.0;
 const marginTopCustomAppBar = 12.0;
 const marginHorizontalSectionsDataPage = 12.0;
-const bool debuggingMode = true;
+// Chave para determinar se a versão está em desenvolvimento ou produção
+const bool releaseVersion = false;
+// TODO Altere o valor dessa constante para o IP do projeto Django
+// URI para desenvolvimento
+// URI definida do settings do Projeto Django -> $DjangoAPIPath$
+const String uriDeveloper = "http://192.168.0.8:8080/core/api/";
+// URI para produção
+const String uriRelease = "";
 
 class Config {
-  static const uri = "$DjangoAPIPath$";
-  static const uriAuth = "$DjangoAPIPath$";
+  static const uri = releaseVersion ? uriRelease : uriDeveloper;
+  static const uriAuth = "";
 
   // TODO Adicionar aqui o token para ambiente de desenvolvimento.
-  static const DRFToken = "Token 128ad486de8ffb2c8def82e46a71adcacdb45df1";
+  static const DRFToken = "Token 3dbbc954facb05e423646dc1ef16e47fce4876d6";
 
-  static const String uri_media = "$DjangoAPIPath$media/";
-  static const String app_title = "$AppName$";
+  static const String uri_media = "media/";
+  static const String app_title = "Rotas ";
   static const bool usingURL = false;
   static const double marginHead = 0.25;
-  
 }
 
 class DebugPrint {
   static void print(String texto) {
-    if (debuggingMode) {
+    if (releaseVersion == false) {
       developer.log(texto.toLowerCase(), name: 'Debug:');
     }
   }
 
   static void error(String error) {
-    if (debuggingMode) {
+    if (releaseVersion == false) {
       String _error = "\n##########\n";
       _error += "${error.toUpperCase()}\n";
       _error += "##########\n";
