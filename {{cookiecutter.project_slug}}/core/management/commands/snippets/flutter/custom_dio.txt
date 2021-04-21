@@ -9,16 +9,17 @@
  */
 
 import 'dart:async';
-import '../apps/auth/data.dart';
+
 import 'package:dio/dio.dart';
+import '../utils/exception.dart';
+import '../apps/auth/data.dart';
 import 'config.dart';
 
 class CustomDio {
   Dio _dio;
   String _url;
   // ignore: unused_field
-  String _errorMessage =
-      "Ocorreu um erro ao executar a consulta, favor tentar novamente.";
+  String _errorMessage = "Ocorreu um erro ao executar a consulta, favor tentar novamente.";
 
   CustomDio(
     String url, {
@@ -33,10 +34,7 @@ class CustomDio {
         baseUrl: url,
         connectTimeout: 5000,
         receiveTimeout: 5000,
-        headers: {
-          'Authorization':
-              token != null ? '$token' : '${Config.DRFToken}'
-        });
+        headers: {'Authorization': token != null ? '$token' : '${Config.DRFToken}'});
     _dio = Dio(options);
     _dio.interceptors.add(CustomDioInterceptor());
 
@@ -55,10 +53,16 @@ class CustomDio {
       }
       return null;
     } on DioError catch (error) {
-      DebugPrint.error("DebugError: No método get do Dio -> $error | " +
-          "\nResponse:${error.response.data.toString()} \nRequest: ${error.request.uri} " +
-          "\nHeader: ${error.request.headers.toString().replaceAll(",", "\n    ")} \nData: ${error.request.data.toString()}");
-
+      ExceptionCustom.dio(
+        error?.response?.statusCode ?? 0,
+        "Ocorreu um erro ao tentar executar o GetHttp",
+        error?.message ?? "Ocorreu um erro desconhecido no método GetHttp",
+        error?.request?.uri?.toString() ?? "Url desconhecida",
+        error,
+      );
+      return null;
+    } catch (errorGeneral) {
+      ExceptionCustom.general("Ocorreu um erro desconhecido no método GetHttp do Dio", errorGeneral.toString());
       return null;
     }
   }
@@ -71,9 +75,17 @@ class CustomDio {
       }
       return null;
     } on DioError catch (error) {
-      DebugPrint.error("DebugError: No método post do Dio -> $error |" +
-          "\nResponse:${error.response.data.toString()} \nRequest: ${error.request.uri} " +
-          "\nHeader: ${error.request.headers.toString().replaceAll(",", "\n    ")} \nData: ${error.request.data.toString()}");
+      ExceptionCustom.dio(
+        error?.response?.statusCode ?? 0,
+        "Ocorreu um erro ao tentar executar o PostHttp",
+        error?.message ?? "Ocorreu um erro desconhecido no método PostHttp",
+        error?.request?.uri?.toString() ?? "Url desconhecida",
+        error,
+      );
+      return null;
+    } catch (errorGeneral) {
+      ExceptionCustom.general("Ocorreu um erro desconhecido no método PostHttp do Dio", errorGeneral.toString());
+      return null;
     }
   }
 
@@ -85,11 +97,17 @@ class CustomDio {
       }
       return null;
     } on DioError catch (error) {
-      DebugPrint.error("DebugError: No método put do Dio -> $error | " +
-          "\nResponse:${error.response.data.toString()} \nRequest: ${error.request.uri} " +
-          "\nHeader: ${error.request.headers.toString().replaceAll(",", "\n    ")} \nData: ${error.request.data.toString()}");
+      ExceptionCustom.dio(
+        error?.response?.statusCode ?? 0,
+        "Ocorreu um erro ao tentar executar o PutHttp",
+        error?.message ?? "Ocorreu um erro desconhecido no método PutHttp",
+        error?.request?.uri?.toString() ?? "Url desconhecida",
+        error,
+      );
+      return null;
     } catch (errorGeneral) {
-      DebugPrint.error("Erro geral: $errorGeneral");
+      ExceptionCustom.general("Ocorreu um erro desconhecido no método PutHttp do Dio", errorGeneral.toString());
+      return null;
     }
   }
 
@@ -101,10 +119,16 @@ class CustomDio {
       }
       return null;
     } on DioError catch (error) {
-      DebugPrint.error("DebugError: No método patch do Dio -> $error |" +
-          "\nResponse:${error.response.data.toString()} \nRequest: ${error.request.uri} " +
-          "\nHeader: ${error.request.headers.toString().replaceAll(",", "\n    ")} \nData: ${error.request.data}");
-
+      ExceptionCustom.dio(
+        error?.response?.statusCode ?? 0,
+        "Ocorreu um erro ao tentar executar o PatchHttp",
+        error?.message ?? "Ocorreu um erro desconhecido no método PatchHttp",
+        error?.request?.uri?.toString() ?? "Url desconhecida",
+        error,
+      );
+      return null;
+    } catch (errorGeneral) {
+      ExceptionCustom.general("Ocorreu um erro desconhecido no método PatchHttp do Dio", errorGeneral.toString());
       return null;
     }
   }
@@ -117,10 +141,16 @@ class CustomDio {
       }
       return null;
     } on DioError catch (error) {
-      DebugPrint.error("DebugError: No método delete do Dio -> $error | " +
-          "\nResponse:${error.response.data.toString()} \nRequest: ${error.request.uri} " +
-          "\nHeader: ${error.request.headers.toString().replaceAll(",", "\n    ")} \nData: ${error.request.data.toString()}");
-
+      ExceptionCustom.dio(
+        error?.response?.statusCode ?? 0,
+        "Ocorreu um erro ao tentar executar o DeleteHttp",
+        error?.message ?? "Ocorreu um erro desconhecido no método DeleteHttp",
+        error?.request?.uri?.toString() ?? "Url desconhecida",
+        error,
+      );
+      return null;
+    } catch (errorGeneral) {
+      ExceptionCustom.general("Ocorreu um erro desconhecido no método DeleteHttp do Dio", errorGeneral.toString());
       return null;
     }
   }
@@ -129,7 +159,7 @@ class CustomDio {
 class CustomDioInterceptor extends Interceptor {
   @override
   Future onRequest(RequestOptions options) async {
-        // Recuperando o Token
+    // Recuperando o Token
     String accessToken = await AuthData().getJWTToken();
     if (accessToken != null) {
       options.headers.addAll({"Authorization": "Bearer $accessToken"});

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 const heightAppBarPage = 22.0;
 const marginTopCustomAppBar = 12.0;
 const marginHorizontalSectionsDataPage = 12.0;
+const bool debuggingMode = true;
 
 class Config {
   static const uri = "$DjangoAPIPath$";
@@ -24,7 +25,6 @@ class Config {
 }
 
 class DebugPrint {
-  static const bool debuggingMode = true;
   static void print(String texto) {
     if (debuggingMode) {
       developer.log(texto.toLowerCase(), name: 'Debug:');
@@ -33,12 +33,10 @@ class DebugPrint {
 
   static void error(String error) {
     if (debuggingMode) {
-      String _error = "**********\n";
+      String _error = "\n##########\n";
+      _error += "${error.toUpperCase()}\n";
       _error += "##########\n";
-      _error += "\n${error.toUpperCase()}\n";
-      _error += "##########\n";
-      _error += "**********";
-      developer.log("erro", name: 'Error:', error: "****\n$_error\n****");
+      developer.log("erro", name: 'Error:', error: "$_error");
     }
   }
 }

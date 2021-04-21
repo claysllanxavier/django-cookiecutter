@@ -1524,10 +1524,22 @@ class Command(BaseCommand):
         except Exception as error:
             Utils.show_message(f"Error in _build_internationalization: {error}", error=True)
 
+    def __create_exception_class(self):
+        """Method responsible to create exception class"""
+        try:
+            path_exceptions = Path(f"{self.flutter_dir}/lib/utils/exception.dart")
+            if Utils.check_file_is_locked(path_exceptions):
+                return
+            snippet_exception = self.__get_snippet(f"{self.snippet_dir}exception.txt")
+            with open(path_exceptions, "w", encoding="utf-8") as exception_file:
+                exception_file.write(snippet_exception)
+        except Exception as error:
+            print(f"Error in __create_exception_class: {error}")
+            Utils.show_message(f"Error in __create_exception_class: {error}")
+
     def __create_named_route(self):
         """
         Method responsible to create named route file
-        Path Snippet -> rotas/core/management/commands/snippets/flutter/named_route.txt
         """
         __pages_name_list = ['IndexPage', 'DetailPage', 'ListPage', 'UpdatePage', 'AddPage']
         __imports_name_list = ['index', 'list', 'detail', 'update', 'create']
@@ -1535,9 +1547,9 @@ class Command(BaseCommand):
         __snippet_route += "    return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$());\n"
         # Snippet para rotas de edição e detalhamento
         __snippet_route_created_updated = "case $ClassName$$PageName$.routeName:\n"
-        __snippet_route_created_updated += "  if(args[0] is $ClassName$Model)\n"
+        __snippet_route_created_updated += "  if(args is $ClassName$Model)\n"
         __snippet_route_created_updated += "    return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$(" \
-                                           "$ModelClassCamelCase$Model: args[0]));\n"
+                                           "$ModelClassCamelCase$Model: args));\n"
         __snippet_route_created_updated += "  return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$());\n"
         __snippet_imports = "import './apps/$APP$/$model$/pages/$page$.dart';"
         routers_apps = ""
@@ -1546,7 +1558,6 @@ class Command(BaseCommand):
             path_routes = Path(f"{self.flutter_dir}/lib/routers.dart")
             if Utils.check_file_is_locked(path_routes):
                 return
-
             snippet = self.__get_snippet(f"{self.snippet_dir}named_route.txt")
             # Looping all apps Django ptoject to get Pages
             for app in FLUTTER_APPS:
@@ -1574,7 +1585,6 @@ class Command(BaseCommand):
                 print("Nada foi alterado no arquivo snippet")
             with open(path_routes, "w", encoding="utf-8") as route_named:
                 route_named.write(snippet)
-
             pass
         except Exception as error:
             print(error)

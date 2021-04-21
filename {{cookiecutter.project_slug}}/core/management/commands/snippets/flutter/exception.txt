@@ -1,0 +1,93 @@
+import 'package:dio/dio.dart';
+
+import 'config.dart';
+
+enum CustomTypeException { dio, service, data, state, general }
+
+class ExceptionCustom implements Exception {
+  int code;
+  String friendlyMessage;
+  String errorMessage;
+  String url;
+  CustomTypeException typeException;
+  DioError dioError;
+
+  ExceptionCustom(codigo, mensagemAmigavel, mensagemErro, tipo) {
+    this.code = codigo;
+    this.friendlyMessage = mensagemAmigavel;
+    this.errorMessage = mensagemErro;
+    this.typeException = tipo;
+  }
+
+  ExceptionCustom.dio(codigo, mensagemAmigavel, mensagemErro, url, dioError) {
+    this.code = codigo;
+    this.friendlyMessage = mensagemAmigavel;
+    this.errorMessage = mensagemErro;
+    this.url = url;
+    this.typeException = CustomTypeException.dio;
+    this.dioError = dioError;
+    DebugPrint.error(this.toString());
+  }
+
+  ExceptionCustom.data(mensagemAmigavel, mensagemErro) {
+    this.friendlyMessage = mensagemAmigavel;
+    this.errorMessage = mensagemErro;
+    this.typeException = CustomTypeException.data;
+    DebugPrint.error(this.toString());
+  }
+
+  ExceptionCustom.service(mensagemAmigavel, mensagemErro) {
+    this.friendlyMessage = mensagemAmigavel;
+    this.errorMessage = mensagemErro;
+    this.typeException = CustomTypeException.service;
+    DebugPrint.error(this.toString());
+  }
+
+  ExceptionCustom.state(mensagemAmigavel, mensagemErro) {
+    this.friendlyMessage = mensagemAmigavel;
+    this.errorMessage = mensagemErro;
+    this.typeException = CustomTypeException.state;
+    DebugPrint.error(this.toString());
+  }
+
+  ExceptionCustom.general(mensagemAmigavel, mensagemErro) {
+    this.friendlyMessage = mensagemAmigavel;
+    this.errorMessage = mensagemErro;
+    this.typeException = CustomTypeException.general;
+    DebugPrint.error(this.toString());
+  }
+
+  CustomTypeException get getTipo {
+    return this.typeException;
+  }
+
+  @override
+  String toString() {
+    switch (this.typeException.index) {
+      case 0:
+        return "Dio Error\n Code: $code\n ErrorMessage: $errorMessage\n ErrorFriendly:$friendlyMessage\n\n URL: $url\n\n DioError: ${dioError.toString()}";
+      case 1:
+        return "Service Error\n ErrorMessage: $errorMessage\n ErrorFriendly:$friendlyMessage ";
+      case 2:
+        return "Data Error\n ErrorMessage: $errorMessage\n ErrorFriendly:$friendlyMessage";
+      case 3:
+        return "State Error\n ErrorMessage: $errorMessage\n ErrorFriendly:$friendlyMessage";
+      case 4:
+        return "General Error\n ErrorMessage: $errorMessage\n ErrorFriendly:$friendlyMessage";
+      default:
+        return 'Unknow Error: {$code, $friendlyMessage, $errorMessage, $typeException}';
+    }
+  }
+
+  String get getFriendlyMessage {
+    return this.friendlyMessage;
+  }
+
+  String get getErrorMessage {
+    return this.errorMessage;
+  }
+
+  int get getCodeError {
+    return this.code;
+  }
+}
