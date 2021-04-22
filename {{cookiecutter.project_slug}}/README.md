@@ -96,7 +96,10 @@
          API_PATH = https://dominio.com.br/core/api
 
 #### Executar
-> python manage.py flutter --init_cubit
+> python manage.py flutter
+
+> Com o comando acima o projeto flutter é criado e todas as demais rotinas para gerar o arquivo
+> yaml e atualizar o main também são chamadas, não sendo necessário executar os demais comandos abaixo.
 
 Atualizar o arquivo de dependências
 > python manage.py flutter --yaml
