@@ -8,11 +8,11 @@ class UsuarioSerializer(ModelSerializer):
     """ Class do serializer do model Usuario para os métodos POST, PUT, PATCH, DELETE """
     class Meta:
         model = Usuario
-        fields = '__all__'
+        exclude = ['deleted', 'enabled']
 
 
 class UsuarioGETSerializer(FieldsListSerializerMixin, ModelSerializer):
     """ Class do serializer do model Usuario para o método GET """
     class Meta:
         model = Usuario
-        fields = '__all__'
+        exclude = ['deleted', 'enabled']

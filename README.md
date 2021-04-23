@@ -17,8 +17,8 @@ Acesse o diretório criado na etapa anterior
 Crie e habilite um ambiente python
     
     $ python -m venv venv
-    $ source .venv\Script\activate | windows
-    $  . .venv/bin/activate | linux e macOs
+    $ source venv\Script\activate | windows
+    $  . venv/bin/activate | linux e macOs
 
 Instale o cookiecutter
 
@@ -65,13 +65,30 @@ Execute a migração dos projetos
 
     python manage.py migrate
 
+Esse projeto já traz por padrão a app de Usuario/usuario. Ao executar o comando migrate já foi adicionado no banco 
+de dados as tabelas relativas a essa app, agora é necessário executar o comando abaixo para que os arquivos 
+boilerplates da app/model sejam criados.
+
+    python manage.py build usuario
+
+Para criar um usuário padrão para desenvolvimento.
+
+    python mock_superuser.py
+
+Para criar dados mocados na app de usuário execute o comando abaixo
+
+    python mock_data.py
+
 Rode a aplicação Django
 
     python manage.py runserver
 
-Para criar um usuário
+Com o comando acima será criado um superusuário padrão para ser utilizado no desenvolvimento.  
+Dados do usuário criado:
 
-    python manage.py createsuperuser
+    login: admin  
+    senha: asdf@1234  
+    DRF Token: 2b817ddbb5b974e5a451a8156963de586d72079e
 
 Para rodar os testes
 
