@@ -20,9 +20,16 @@ class Utils(object):
         """
         try:
             if error:
+                print("#"*100)
+                print("*"*100)
+                print(f"ERRO: {text}\n\nPor favor consulte a documentação.\nBasta "
+                      f"executar o comando:\nmkdoks serve -a 127.0.0.1:8080")
+                print("*"*100)
+                print("#"*100)
                 __log.error(f"\n{'!=' * len(text)}\nERROR: {text.upper()}\n")
                 sys.exit()
             else:
+                print(text)
                 __log.warning(text)
         except Exception as error:
             logging.error(error)
@@ -168,15 +175,3 @@ class Utils(object):
             Utils.show_message(f"Error in Utils.check_file: {error}", error=True)
         finally:
             return __content
-
-    # @staticmethod
-    # def XPTO(path):
-    #     __process_result = False
-    #     try:
-    #         if Utils.check_file(path):
-    #             pass
-    #         Utils.show_message("Arquivo não encontrado para análise")
-    #     except Exception as error:
-    #         Utils.show_message(f"Error in Utils.check_file: {error}", error=True)
-    #     finally:
-    #         return __process_result
