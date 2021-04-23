@@ -16,7 +16,7 @@ Acesse o diretório criado na etapa anterior
 
 Crie e habilite um ambiente python
     
-    $ python -m venv .venv
+    $ python -m venv venv
     $ source .venv\Script\activate | windows
     $  . .venv/bin/activate | linux e macOs
 
