@@ -2,18 +2,27 @@
 
 ## Pré requisitos
 
+Faça o clone desse projeto para o diretório
+
+    $ git clone https://github.com/AgtecPalmas/django_cookiecutter.git
+
 Crie um diretório para o seu projeto
 
-    $ mkdir nome_do_seu_projeto"
+    $ mkdir "nome_do_seu_projeto"
+
+Acesse o diretório criado na etapa anterior
+
+    $ cd "nome_do_seu_projeto" 
 
 Crie e habilite um ambiente python
     
     $ python -m venv .venv
-    $ source .venv\Script\activate
+    $ source .venv\Script\activate | windows
+    $  . .venv/bin/activate | linux e macOs
 
 Instale o cookiecutter
 
-    $ pip install "cookiecutter>=1.7.0"
+    $ pip install cookiecutter==1.7.0
 
 Instale o pip-tools
 
@@ -21,9 +30,9 @@ Instale o pip-tools
 
 ## Uso
 
-Rode o cookiecutter apontando para o repositório do projeto base Django:
+Rode o cookiecutter apontando para o diretório do projeto django_cookiecutter:
 
-    cookiecutter ...
+    cookiecutter ../django_cookiecutter
 
 Responda as perguntas sobre seu novo projeto:
 > Para todas as perguntas que a opção for main basta apenas aceitar
@@ -40,25 +49,29 @@ Responda as perguntas sobre seu novo projeto:
     domain_name [informeseudominio.com.br]: Digite o domínio 
     email [informe@seu.email]: Digite seu e-mail institucional
 
+Acesse o subdiretório criado pelo cookie cutter que contém o projeto Django
+
+    $ cd nome_do_seu_projeto
+
 Instale as dependências do projeto (lembre de estar com o virtual env ativado)
 
     pip-sync requirements.txt requirements-dev.txt
 
 Crie as migrações do seu projeto
 
-    ./manage.py makemigrations
+    python manage.py makemigrations
 
 Execute a migração dos projetos
 
-    ./manage.py migrate
+    python manage.py migrate
 
 Rode a aplicação Django
 
-    ./manage.py runserver
+    python manage.py runserver
 
 Para criar um usuário
 
-    ./manage.py createsuperuser
+    python manage.py createsuperuser
 
 Para rodar os testes
 
