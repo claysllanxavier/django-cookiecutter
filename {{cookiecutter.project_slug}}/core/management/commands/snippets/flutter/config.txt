@@ -24,7 +24,9 @@ class Config {
   static const uriAuth = "";
 
   // TODO Adicionar aqui o token para ambiente de desenvolvimento.
-  static const DRFToken = "Token 3dbbc954facb05e423646dc1ef16e47fce4876d6";
+  /// O token abaixo é o mesmo do super usuário do projeto django, caso você tenha executado o comando
+  /// python mcok_superuser.py lá no projeto Django
+  static const DRFToken = "Token 2b817ddbb5b974e5a451a8156963de586d72079e";
 
   static const String uri_media = "media/";
   static const String app_title = "Rotas ";

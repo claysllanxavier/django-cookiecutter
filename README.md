@@ -2,18 +2,27 @@
 
 ## Pré requisitos
 
+Faça o clone desse projeto para o diretório
+
+    $ git clone https://github.com/AgtecPalmas/django_cookiecutter.git
+
 Crie um diretório para o seu projeto
 
-    $ mkdir nome_do_seu_projeto"
+    $ mkdir "nome_do_seu_projeto"
+
+Acesse o diretório criado na etapa anterior
+
+    $ cd "nome_do_seu_projeto" 
 
 Crie e habilite um ambiente python
     
-    $ python -m venv .venv
-    $ source .venv\Script\activate
+    $ python -m venv venv
+    $ source venv\Script\activate | windows
+    $  . venv/bin/activate | linux e macOs
 
 Instale o cookiecutter
 
-    $ pip install "cookiecutter>=1.7.0"
+    $ pip install cookiecutter==1.7.0
 
 Instale o pip-tools
 
@@ -21,9 +30,9 @@ Instale o pip-tools
 
 ## Uso
 
-Rode o cookiecutter apontando para o repositório do projeto base Django:
+Rode o cookiecutter apontando para o diretório do projeto django_cookiecutter:
 
-    cookiecutter ...
+    $ cookiecutter ../django_cookiecutter
 
 Responda as perguntas sobre seu novo projeto:
 > Para todas as perguntas que a opção for main basta apenas aceitar
@@ -40,26 +49,53 @@ Responda as perguntas sobre seu novo projeto:
     domain_name [informeseudominio.com.br]: Digite o domínio 
     email [informe@seu.email]: Digite seu e-mail institucional
 
+Acesse o subdiretório criado pelo cookie cutter que contém o projeto Django
+
+    $ cd nome_do_seu_projeto
+
 Instale as dependências do projeto (lembre de estar com o virtual env ativado)
 
-    pip-sync requirements.txt requirements-dev.txt
+    $ pip-sync requirements.txt requirements-dev.txt
 
 Crie as migrações do seu projeto
 
-    ./manage.py makemigrations
+    $ python manage.py makemigrations
 
 Execute a migração dos projetos
 
-    ./manage.py migrate
+    $ python manage.py migrate
+
+Esse projeto já traz por padrão a app de Usuario/usuario. Ao executar o comando migrate já foi adicionado no banco 
+de dados as tabelas relativas a essa app, agora é necessário executar o comando abaixo para que os arquivos 
+boilerplates da app/model sejam criados.
+
+    $ python manage.py build usuario
+
+Para criar um usuário padrão para desenvolvimento.
+
+    $ python mock_superuser.py
+
+Para criar dados mocados na app de usuário execute o comando abaixo
+
+    $ python mock_data.py
 
 Rode a aplicação Django
 
-    ./manage.py runserver
+    $ python manage.py runserver
 
-Para criar um usuário
+Com o comando acima será criado um superusuário padrão para ser utilizado no desenvolvimento.  
+Dados do usuário criado:
 
-    ./manage.py createsuperuser
+    login: admin  
+    senha: asdf@1234  
+    DRF Token: 2b817ddbb5b974e5a451a8156963de586d72079e
 
 Para rodar os testes
 
     pytest
+
+### Documentação do Projeto
+
+Para consultar a documentação do projeto basta no seu projeto com o virtual env ativo executar:
+
+    $ mkdocs serve
