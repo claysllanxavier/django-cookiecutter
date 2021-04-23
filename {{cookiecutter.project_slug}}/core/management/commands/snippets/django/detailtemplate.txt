@@ -4,10 +4,10 @@ Caso deseje bloquear o parser nesse arquivo, basta adicionar o caracter #(cerqui
 FileLocked
 -->
 
-{% extends 'core/index_detail.html' %} 
+{% extends 'core/index_detail.html' %}
 {% load static %}
 {% load base %}
-{% block title_modulo %}}$title${% endblock title_modulo %} 
+{% block title_modulo %}$title${% endblock title_modulo %}
 {% block menu_app %}
     {% for app in apps %}
         {% if app.real_name_app.lower == '$app_name$' %}
@@ -30,8 +30,7 @@ FileLocked
 {% block detail %}
     <div class="container-fluid m-3">
         <div class="row">
-            <!-- TODO: Após ajustar o layout remover o for abaixo -->
-            {% comment %} <div id="div-table" class="col-md-12">
+            <div id="div-table" class="col-md-12">
                 {% for field in object_list %}
                     <div class="row">
                         <div class="col-md-2">
@@ -43,17 +42,17 @@ FileLocked
                     </div>
                 {%  endfor  %}
                 <br>
-            </div> {% endcomment %}
+            </div>
         </div>
 
-        {% comment %} 
+
             {% for field in many_fields  %}
                 <strong>{{ field.0|capfirst }}</strong><br>
                 {% for obj in field.1.all %}
                     {{ obj }}<br>
                 {% endfor %}
-            {% endfor %} 
-        {% endcomment %}
+            {% endfor %}
+
 
 
         <div id="div-barra-acao" class="row">
