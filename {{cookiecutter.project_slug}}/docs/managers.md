@@ -50,11 +50,11 @@ No projeto existem dois managers para auxiliar o desenvolvimento do projeto Djan
 
 ### Manager Flutter
 > Para que esse manager funcione de forma correta devem ser configurados no arquivos settings.py do projeto os seguintes valores:  
->   1. **FLUTTER_APPS = []**  
+>   1. **FLUTTER_APPS = ['usuario', ]**  
 >   2. **API_PATH** = https://dominio.com.br/core/api
 
 #### Executar
-    python manage.py flutter --init_cubit
+    python manage.py flutter
 
 Os comando abaixo devem ser utilizado caso seja criada uma nova app no projeto Django e você queirar gerar o correspondente no projeto Flutter
 
@@ -66,6 +66,3 @@ Para atualizar o arquivo main.dart com todas as apps do projeto
 
 
 Como resultado desse comando será criado um diretório de nome flutter no mesmo nível do diretório raiz do projeto e dentro desse diretório estará o projeto flutter.
-
-
-

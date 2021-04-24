@@ -1,4 +1,4 @@
-# Nova app
+# Novas app do seu projeto
 
 Após a configuração inicial do projeto quando forem criadas novas apps django no projeto, os seguintes passos devem 
 ser seguidos para que os managers funcionem de forma correta.
