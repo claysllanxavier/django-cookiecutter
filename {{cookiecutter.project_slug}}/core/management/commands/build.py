@@ -929,20 +929,12 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_render_html : {error}")
 
     def __verified_options_flag_is_false(self, options):
+        __flags = ['templates', 'api', 'url', 'forms', 'views', 'renderhtml']
         result = False
         try:
-            if options['templates'] is True:
-                result = True
-            if options['api'] is True:
-                result = True
-            if options['url'] is True:
-                result = True
-            if options['forms'] is True:
-                result = True
-            if options['views'] is True:
-                result = True
-            if options['renderhtml'] is True:
-                result = True
+            for flag in __flags:
+                if options[flag] is True:
+                    result = True
         finally:
             return result
 
