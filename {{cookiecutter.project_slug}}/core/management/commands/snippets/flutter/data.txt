@@ -21,6 +21,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'model.dart';
 import '../../../utils/config.dart';
+import '../../../utils/exception.dart';
 
 class $ModelClass$Data {
   $ModelClass$Model _$modelClass$Model = $ModelClass$Model();
@@ -32,7 +33,7 @@ class $ModelClass$Data {
 
   final String _storeName = "$ModelClass$StoreDB";
 
-  /// Método para inicialiar o banco de dados criando a tabela.  
+  /// Método para inicialiar o banco de dados criando a tabela.
   Future<smbt.Database> initDb() async {
     try {
       var dir = await getApplicationDocumentsDirectory();
@@ -40,8 +41,10 @@ class $ModelClass$Data {
       var dbPath = join(dir.path, '$project$.db');
       return await smbt_io.databaseFactoryIo.openDatabase(dbPath);
     } catch (error, exception) {
-      DebugPrint.error(
-          "Erro no método initDB -> error: $error, message: $exception");
+      ExceptionCustom.data(
+        "Ocorreu no método initDb do $ModelClass$Data",
+        "Error: ${error.toString()}\nException: ${exception.toString()}",
+      );
     }
     return null;
   }
@@ -58,7 +61,11 @@ class $ModelClass$Data {
       return _data.map((snapshot){
         return $ModelClass$Model.fromMap(snapshot.value);
       }).toList();
-    } catch (e) {
+    } catch (error, exception) {
+      ExceptionCustom.data(
+        "Ocorreu no método fetchAll do $ModelClass$Data",
+        "Error: ${error.toString()}\nException: ${exception.toString()}",
+      );
       return null;
     } finally {
       _db.close();
@@ -75,7 +82,11 @@ class $ModelClass$Data {
       var _store = smbt.intMapStoreFactory.store(_storeName);
       var _data = await _store.findFirst(_db);
       return $ModelClass$Model.fromMap(_data.value);
-    } catch (e) {
+    } catch (error, exception) {
+      ExceptionCustom.data(
+        "Ocorreu no método get do $ModelClass$Data",
+        "Error: ${error.toString()}\nException: ${exception.toString()}",
+      );
       return null;
     } finally {
       _db.close();
@@ -94,6 +105,10 @@ class $ModelClass$Data {
       await _store.add(_db, $modelClass$.toMap());
       return true;
     } catch (error, exception) {
+      ExceptionCustom.data(
+        "Ocorreu no método save do $ModelClass$Data",
+        "Error: ${error.toString()}\nException: ${exception.toString()}",
+      );
       return false;
     } finally {
       _db.close();
@@ -112,13 +127,17 @@ class $ModelClass$Data {
       await _store.delete(_db);
       return true;
     } catch (error, exception) {
+      ExceptionCustom.data(
+        "Ocorreu no método deletar do $ModelClass$Data",
+        "Error: ${error.toString()}\nException: ${exception.toString()}",
+      );
       return false;
     } finally {
       _db.close();
     }
   }
 
-  /// Método para deletar um registro do(a) #@AppName@#
+  /// Método para deletar um registro do(a) $ModelClass$
   ///
   /// returns:
   ///    bool -> true salvo com sucesso, false ocorreu um erro
@@ -129,13 +148,17 @@ class $ModelClass$Data {
       await _store.delete(_db);
       return true;
     } catch (error, exception) {
+      ExceptionCustom.data(
+        "Ocorreu no método deletar do $ModelClass$Data",
+        "Error: ${error.toString()}\nException: ${exception.toString()}",
+      );
       return false;
     } finally {
       _db.close();
     }
   }
 
-  /// Método para deletar um registro do(a) #@AppName@#
+  /// Método para atualizar um registro do(a) $ModelClass$
   ///
   /// returns:
   ///    bool -> true salvo com sucesso, false ocorreu um erro
@@ -151,6 +174,10 @@ class $ModelClass$Data {
       );
       return true;
     } catch (error, exception) {
+      ExceptionCustom.data(
+        "Ocorreu no método update do $ModelClass$Data",
+        "Error: ${error.toString()}\nException: ${exception.toString()}",
+      );
       return false;
     } finally {
       _db.close();

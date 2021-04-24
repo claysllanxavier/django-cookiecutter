@@ -12,8 +12,9 @@
 /// FileLocked
 
 import '../../../utils/util.dart';
+import '../../../utils/exception.dart';
 
-class $ModelClass$Model {  
+class $ModelClass$Model {
   String id;
   String nextUrl;
   String previousUrl;
@@ -21,7 +22,7 @@ class $ModelClass$Model {
 
   $ModelClass$Model({
     this.id,
-    this.nextUrl, 
+    this.nextUrl,
     this.previousUrl,
     $ConstructorModelClass$
   });
@@ -32,16 +33,23 @@ class $ModelClass$Model {
       nextUrl = json.containsKey('nextUrl') ? json['nextUrl'] : "";
       previousUrl = json.containsKey('previousUrl') ? json['previousUrl'] : "";
       $ParserfromMap$
-    } catch (e){
-
+    } catch (error){
+      ExceptionCustom.general("Ocorreu um erro no método fromMap do $ModelClass$Model", error.toString());
     }
   }
 
-  Map<String, dynamic> toMap() => {
-      "nextUrl": nextUrl == null ? null : nextUrl,
-      "previousUrl": previousUrl == null ? null : previousUrl,
-      $ParserToMap$
-  };
+  Map<String, dynamic> toMap(){
+    try{
+      return {
+        "nextUrl": nextUrl == null ? null : nextUrl,
+        "previousUrl": previousUrl == null ? null : previousUrl,
+        $ParserToMap$
+      };
+    } catch (error) {
+      ExceptionCustom.general("Ocorreu um erro no método toMap do $ModelClass$Model", error.toString());
+      return null;
+    }
+  }
  
   /// Sobscrevendo o método toString para retornar todos os atributos da classe.
   @override

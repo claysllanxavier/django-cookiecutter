@@ -928,6 +928,16 @@ class Command(BaseCommand):
         except Exception as error:
             Utils.show_message(f"Error in __manage_render_html : {error}")
 
+    def __verified_options_flag_is_false(self, options):
+        __flags = ['templates', 'api', 'url', 'forms', 'views', 'renderhtml']
+        result = False
+        try:
+            for flag in __flags:
+                if options[flag] is True:
+                    result = True
+        finally:
+            return result
+
     def call_methods(self, options):
         if options['templates']:
             Utils.show_message("Trabalhando apenas os templates.")
@@ -965,12 +975,14 @@ class Command(BaseCommand):
             self.__manage_templates()
             self.__manage_render_html()
             self.__apply_pep()
-            return
 
     def handle(self, *args, **options):
-        Utils.show_message("Gerando os arquivos da app")
         app = options['App'] or None
         if Utils.contain_number(app) is False:
+            if app != "usuario" and self.__verified_options_flag_is_false(options) is False:
+                Utils.show_message("Apenas a app usuario aceita o comando build sem as flags", error=True)
+                return
+            Utils.show_message("Gerando os arquivos da app")
             self.app = app.strip()
             self.path_root = os.getcwd()
             self.path_app = Path(f"{self.path_root}/{app}")

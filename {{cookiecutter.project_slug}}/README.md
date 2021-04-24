@@ -30,8 +30,13 @@
 
 ### Manager build
 
+Esse projeto já traz por padrão a app de Usuario/usuario. Ao executar o comando migrate já foi adicionado no banco 
+de dados as tabelas relativas a essa app, agora é necessário executar o comando abaixo para que os arquivos 
+boilerplates da app/model sejam criados.
+
+    $ python manage.py build usuario  
+
 #### Executar
-> python manage.py build
 
       Esse manager é responsável por gerar os códigos boilerplates baseados nas classes de cada app.
 
@@ -64,6 +69,34 @@
          8. format [Opcional] - Dever ser executado para formatar o código utilizando a PEP 8.
          9. api [Opcional] - Deve ser executado para gerar todo o código (CRUD) boilerplate da APIRest.
 
+Para criar um usuário padrão para desenvolvimento.
+
+    $ python mock_superuser.py
+
+Para criar dados mocados na app de usuário execute o comando abaixo
+
+    $ python mock_data.py
+
+Rode a aplicação Django
+
+    $ python manage.py runserver
+
+Com o comando acima será criado um superusuário padrão para ser utilizado no desenvolvimento.  
+Dados do usuário criado:
+
+    login: admin  
+    senha: asdf@1234  
+    DRF Token: 2b817ddbb5b974e5a451a8156963de586d72079e
+
+Para rodar os testes
+
+    pytest
+
+### Documentação do Projeto
+
+Para consultar a documentação do projeto basta no seu projeto com o virtual env ativo executar:
+
+    $ mkdoks serve -a 127.0.0.1:8080
 
 ### Manager Flutter
       Esse manager é responsável por gerar o projeto flutter baseado nas apps/models do projeto Django.

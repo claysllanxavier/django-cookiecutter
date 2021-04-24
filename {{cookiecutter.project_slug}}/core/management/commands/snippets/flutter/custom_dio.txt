@@ -11,8 +11,9 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import '../utils/exception.dart';
+
 import '../apps/auth/data.dart';
+import '../utils/exception.dart';
 import 'config.dart';
 
 class CustomDio {
@@ -57,7 +58,7 @@ class CustomDio {
         error?.response?.statusCode ?? 0,
         "Ocorreu um erro ao tentar executar o GetHttp",
         error?.message ?? "Ocorreu um erro desconhecido no método GetHttp",
-        error?.request?.uri?.toString() ?? "Url desconhecida",
+        error?.requestOptions?.uri?.toString() ?? "Url desconhecida",
         error,
       );
       return null;
@@ -79,7 +80,7 @@ class CustomDio {
         error?.response?.statusCode ?? 0,
         "Ocorreu um erro ao tentar executar o PostHttp",
         error?.message ?? "Ocorreu um erro desconhecido no método PostHttp",
-        error?.request?.uri?.toString() ?? "Url desconhecida",
+        error?.requestOptions?.uri?.toString() ?? "Url desconhecida",
         error,
       );
       return null;
@@ -101,7 +102,7 @@ class CustomDio {
         error?.response?.statusCode ?? 0,
         "Ocorreu um erro ao tentar executar o PutHttp",
         error?.message ?? "Ocorreu um erro desconhecido no método PutHttp",
-        error?.request?.uri?.toString() ?? "Url desconhecida",
+        error?.requestOptions?.uri?.toString() ?? "Url desconhecida",
         error,
       );
       return null;
@@ -123,7 +124,7 @@ class CustomDio {
         error?.response?.statusCode ?? 0,
         "Ocorreu um erro ao tentar executar o PatchHttp",
         error?.message ?? "Ocorreu um erro desconhecido no método PatchHttp",
-        error?.request?.uri?.toString() ?? "Url desconhecida",
+        error?.requestOptions?.uri?.toString() ?? "Url desconhecida",
         error,
       );
       return null;
@@ -145,7 +146,7 @@ class CustomDio {
         error?.response?.statusCode ?? 0,
         "Ocorreu um erro ao tentar executar o DeleteHttp",
         error?.message ?? "Ocorreu um erro desconhecido no método DeleteHttp",
-        error?.request?.uri?.toString() ?? "Url desconhecida",
+        error?.requestOptions?.uri?.toString() ?? "Url desconhecida",
         error,
       );
       return null;
@@ -158,8 +159,7 @@ class CustomDio {
 
 class CustomDioInterceptor extends Interceptor {
   @override
-  Future onRequest(RequestOptions options) async {
-    // Recuperando o Token
+  Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     String accessToken = await AuthData().getJWTToken();
     if (accessToken != null) {
       options.headers.addAll({"Authorization": "Bearer $accessToken"});
@@ -168,16 +168,6 @@ class CustomDioInterceptor extends Interceptor {
     }
     options.connectTimeout = 50000;
     options.receiveTimeout = 50000;
-    return super.onRequest(options);
-  }
-
-  @override
-  Future onResponse(Response response) {
-    return super.onResponse(response);
-  }
-
-  @override
-  Future onError(DioError err) {
-    return super.onError(err);
+    return super.onRequest(options, handler);
   }
 }

@@ -98,4 +98,4 @@ Para rodar os testes
 
 Para consultar a documentação do projeto basta no seu projeto com o virtual env ativo executar:
 
-    $ mkdocs serve
+    $ mkdoks serve -a 127.0.0.1:8080
