@@ -25,12 +25,8 @@ No projeto existem dois managers para auxiliar o desenvolvimento do projeto Djan
             class Exemplo(Base):
                 ...
                 class Meta:
-                    fields_display = ["atributo_um", 
-                                      "atributo_dois"', 
-                                      "atributo_n"]
-                    fk_fields_modal = ["foreignkey_um", 
-                                       "foreignkey_dois", 
-                                       "foreignkey_n"]
+                    fields_display = ["atributo_um", "atributo_dois"', "atributo_n"]
+                    fk_fields_modal = ["foreignkey_um", "foreignkey_dois", "foreignkey_n"]
 
 
 4. url [Opcional] - Deve ser executado para criar as urls.
@@ -49,6 +45,13 @@ No projeto existem dois managers para auxiliar o desenvolvimento do projeto Djan
 -----
 
 ### Manager Flutter
+
+### Observação
+> Para que o projeto funcione corretamente é necessário ter na sua máquina o Dart 2.12.3 e o Flutter 2.0.5 na versão 
+> mínima.  
+> 
+> Para baixar as ferramentas acesse https://flutter.dev/
+
 > Para que esse manager funcione de forma correta devem ser configurados no arquivos settings.py do projeto os seguintes valores:  
 >   1. **FLUTTER_APPS = ['usuario', ]**  
 >   2. **API_PATH** = https://dominio.com.br/core/api
