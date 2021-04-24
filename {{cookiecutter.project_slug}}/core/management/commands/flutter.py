@@ -494,7 +494,7 @@ class Command(BaseCommand):
         try:
             if not Utils.check_dir(self.flutter_dir):
                 Utils.show_message("Criando o projeto flutter.")
-                __cmd_flutter_create = "flutter create --androidx {}".format(
+                __cmd_flutter_create = "flutter create {}".format(
                     self.flutter_dir)
                 subprocess.call(__cmd_flutter_create, shell=True)
                 Utils.show_message("Projeto criado com sucesso.")
