@@ -4,6 +4,9 @@
 Esse projeto foi desenvolvimento para facilitar o desenvolvimento de sistemas Django trazendo diversas tecnologias 
 embarcadas para expander o conceito Dont Repeat Yourself (DRY), além das tecnologias já embarcadas temos dois managers para automatizar a geração de cógido do projeto
 
+## Como Utilizar
+[Primeiros Passos](/aprenda_a_usar/)
+
 ## Principais bibliotecas embarcadas no projeto
 
 * [Django rest framework](https://www.django-rest-framework.org/)
