@@ -4,7 +4,7 @@
 
 Faça o clone desse projeto para o diretório
 
-    $ git clone https://github.com/nuvolsti/django-cookiecutter.git
+    $ git clone https://github.com/.../django-cookiecutter.git
 
 Crie um diretório para o seu projeto
 
