@@ -18,7 +18,7 @@ Abaixo temos as etapas a serem executadas quando o projeto for criado.
 1. Instale as dependências  
     ```pip-sync requirements.txt requirements-dev.txt``` 
 1. Execute o comando de criação das migrações  
-    ```python manage.py makemigration```
+    ```python manage.py makemigrations```
 1. Execute o comando de aplicação das migrações    
     ```python manage.py migrate```
 1. Crie os códigos boilerplates da app usuario  
