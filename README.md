@@ -4,8 +4,6 @@
 
 Faça o clone desse projeto para o diretório
 
-    $ git clone https://github.com/AgtecPalmas/django_cookiecutter.git
-
 Crie um diretório para o seu projeto
 
     $ mkdir "nome_do_seu_projeto"
