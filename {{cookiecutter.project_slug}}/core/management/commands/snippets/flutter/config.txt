@@ -30,6 +30,9 @@ const String uriDeveloper = "http://192.168.0.3:8080/core/api/";
 // URI para produção
 const String uriRelease = "";
 
+// URL para os termos de uso
+const String urlTermoUso = "";
+
 class Config {
   static const uri = releaseVersion ? uriRelease : uriDeveloper;
   static const uriAuth = "";
