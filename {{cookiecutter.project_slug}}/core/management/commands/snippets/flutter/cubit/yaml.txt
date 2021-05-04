@@ -27,7 +27,8 @@ dependencies:
   location: ^4.1.1 #Lib para localização do usuário e utilização de mapa se necessário.
   flutter_keyboard_visibility: ^5.0.1
   path_provider: ^2.0.1
-  flutter_launcher_icons: ^0.7.3 #Lib para gerar o ícone do aplicativo para quando for submetido para as lojas.
+  webview_flutter: ^1.0.7
+  flutter_launcher_icons: ^0.9.0 #Lib para gerar o ícone do aplicativo para quando for submetido para as lojas.
   font_awesome_flutter: ^8.5.0 #Lib para utilização dos ícones do site Font Awesome.
   sembast: ^2.4.4+3 #Banco de dados NoSQL
   # Libs do Cubit
