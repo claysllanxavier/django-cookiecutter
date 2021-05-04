@@ -1568,11 +1568,11 @@ class Command(BaseCommand):
                     for page_name in __pages_name_list:
                         if page_name in ["UpdatePage", "DetailPage"]:
                             routers_apps += __snippet_route_created_updated.replace(
-                                '$ClassName$', __model.title()).replace(
+                                '$ClassName$', __model).replace(
                                 '$ModelClassCamelCase$', self.__to_camel_case(__model, True)).replace(
                                 '$PageName$', page_name)
                         else:
-                            routers_apps += __snippet_route.replace('$ClassName$', __model.title()).replace(
+                            routers_apps += __snippet_route.replace('$ClassName$', __model).replace(
                                 '$PageName$', page_name)
                         routers_apps += "\n"
                     for import_name in __imports_name_list:
