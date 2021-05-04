@@ -15,6 +15,8 @@ from core.management.commands.parser_content import ParserContent
 from core.models import Base
 from base.settings import FLUTTER_APPS, SYSTEM_NAME, API_PATH
 
+# TODO Acrescentar no build do Flutter o parser das páginas de autenticação
+
 
 class StateManager(Enum):
     Provider = 1

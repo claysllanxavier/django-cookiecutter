@@ -1,0 +1,805 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
+/// [Travar o arquivo]
+/// Caso deseje \"travar\" o arquivo para não ser parseado novamente
+/// pelo manage do Django adicione um # antes da palavra abaixo
+/// #FileLocked
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:oralx/apps/auth/cubit.dart';
+import 'package:oralx/apps/auth/data.dart';
+import 'package:oralx/apps/auth/model.dart';
+import 'package:oralx/apps/auth/pages/termo_uso.dart';
+import 'package:oralx/user_interface/font.dart';
+import 'package:oralx/utils/config.dart';
+import 'package:oralx/utils/util.dart';
+
+import '../../../user_interface/widget.dart';
+
+class SignupPage extends StatefulWidget {
+  @override
+  _SignupPageState createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateMixin {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _formSignup = GlobalKey<FormState>();
+  AnimationController _animationController;
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  FacebookLogin facebookLogin = FacebookLogin();
+  bool _isProcessing = false;
+  bool iAgree = false;
+  bool _registerWithEmail = false;
+  bool _registerWithOTP = false;
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _loginController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _phoneOTPController = TextEditingController();
+  TextEditingController _emailOTPController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(vsync: this);
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      _loadData();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _loadData() async {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
+    return Stack(children: <Widget>[
+      HeadWidget(),
+      _buildPage(),
+    ]);
+  }
+
+  Widget _buildPage() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          customTitleSection(context, "Registrar usando: "),
+          SizedBox(height: 8),
+          Visibility(
+            visible: enabledFacebookAccount && !_registerWithEmail && !_registerWithOTP,
+            child: _buildFacebookAccount(context),
+          ),
+          Visibility(
+            visible: enabledGoogleAccount && !_registerWithEmail && !_registerWithOTP,
+            child: _buildGoogleAccount(context),
+          ),
+          Visibility(
+            visible: enabledEmailAccount && !_registerWithEmail && !_registerWithOTP,
+            child: _buildEmailAccount(context),
+          ),
+          Visibility(
+            visible: enabledOTPAccount && !_registerWithEmail && !_registerWithOTP,
+            child: _buildOTPAccount(context),
+          ),
+          Visibility(
+            visible: _registerWithEmail && !_registerWithOTP,
+            child: _buildEmailRegisterArea(),
+          ),
+          Visibility(
+            visible: _registerWithOTP && !_registerWithEmail,
+            child: _buildOTPRegisterArea(),
+          ),
+          SizedBox(height: 10),
+          _buildIAgreeArea(context),
+        ],
+      ),
+    );
+  }
+
+  ///
+  ///
+  /// Áre para registro com Facebook
+  ///
+  ///
+
+  _buildFacebookAccount(BuildContext context) {
+    try {
+      return Container(
+        child: SignInButton(
+          Buttons.FacebookNew,
+          text: "Sign up with Facebook",
+          onPressed: () async {
+            signUpFacebook();
+          },
+        ),
+      );
+    } catch (e) {
+      DebugPrint.error("DebugError: Erro $e ao executar o _buildFacebookAccount do _SignupPageState");
+      return Container();
+    }
+  }
+
+  Future<void> signUpFacebook() async {
+    try {
+      setState(() {
+        _isProcessing = true;
+      });
+      final result = await facebookLogin.logIn(['email']);
+      switch (result.status) {
+        case FacebookLoginStatus.loggedIn:
+          final FacebookAccessToken accessToken = result.accessToken;
+          if (accessToken != null) {
+            final AuthCredential credential = FacebookAuthProvider.credential(accessToken.token);
+            if (credential != null) {
+              signInFacebook(credential);
+            }
+          }
+          break;
+        case FacebookLoginStatus.cancelledByUser:
+          break;
+        case FacebookLoginStatus.error:
+          break;
+      }
+    } catch (e) {
+      DebugPrint.error("DebugError: Erro $e ao executar signUpFacebook");
+    }
+  }
+
+  Future<void> signInFacebook(AuthCredential authCredential) async {
+    try {
+      setState(() {
+        _isProcessing = true;
+      });
+      final user = await firebaseAuth.signInWithCredential(authCredential);
+      if (user != null) {
+        // Cadastrando o usuário no Backend
+        AuthModel authModel = AuthModel(
+            name: user.user.displayName,
+            email: user.user.email ?? user.user.providerData[0].email,
+            phoneNumber: user.user.phoneNumber,
+            photoUrl: user.user.photoURL,
+            firebaseId: user.user.uid);
+        final authCubit = context.read<AuthCubit>();
+        await authCubit.signUp(authModel);
+        if (authCubit.state is AuthSuccessState) {
+          signUpDjangoUser(authModel);
+        }
+        if (authCubit.state is AuthErrorState) {
+          _showMessage(authCubit.state.props[0].toString().replaceAll("Exception:", ""), error: true);
+        }
+      }
+    } catch (e) {
+      debugPrint("DebugError: Erro $e ao executar signInFacebook");
+    } finally {
+      setState(() {
+        _isProcessing = false;
+      });
+    }
+  }
+
+  ///
+  ///
+  /// Área para registro com o Google
+  ///
+  ///
+
+  _buildGoogleAccount(BuildContext context) {
+    try {
+      return Container(
+        child: SignInButton(
+          Buttons.Google,
+          text: "Registrar com o Google",
+          onPressed: iAgree
+              ? () async {
+                  signUpGoogle();
+                }
+              : () {
+                  _showMessage("Antes de registrar é necessário concordar com os termos de uso");
+                },
+        ),
+      );
+    } catch (e) {
+      DebugPrint.error("DebugError: Erro $e ao executar o _buildGoogleAccount do _SignupPageState");
+      return Container();
+    }
+  }
+
+  Future<void> signUpGoogle() async {
+    final localUser = await checkLocalUser();
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    String accessToken, idToken;
+    GoogleAuthCredential credential;
+    try {
+      setState(() {
+        _isProcessing = true;
+      });
+      if (localUser != null && localUser.validateLocalUserSignInWithGoogle() == true) {
+        accessToken = localUser.accessToken;
+        idToken = localUser.idToken;
+        credential = GoogleAuthProvider.credential(
+          accessToken: localUser.accessToken,
+          idToken: localUser.idToken,
+        );
+      } else {
+        accessToken = googleAuth.accessToken;
+        idToken = googleAuth.idToken;
+        credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+      }
+      if (credential != null) {
+        _showMessage("Usuário autorizado para registro, aguarde...");
+        signInGoogle(credential, accessToken, idToken);
+      } else {
+        _showMessage("Erro ao recuperar credenciais do usuário, tente novamente", error: true);
+        setState(() {
+          _isProcessing = false;
+        });
+      }
+      return null;
+    } catch (e) {
+      _showMessage(
+          "Ocorreu o erro ${e.toString()} ao tentar autenticar com o GoogleAuthProvider utilizando os parâmetros: ${googleAuth.accessToken}, ${googleAuth.idToken}");
+      DebugPrint.error("DebugError: Erro $e ao executar o sigInGoogle do IntroScreen");
+      setState(() {
+        _isProcessing = false;
+      });
+    }
+  }
+
+  Future<void> signInGoogle(AuthCredential authCredential, String accessToken, String idToken) async {
+    try {
+      setState(() {
+        _isProcessing = true;
+      });
+      final user = await firebaseAuth.signInWithCredential(authCredential);
+      if (user != null) {
+        _showMessage("Registrando usuário, aguarde...");
+        // Cadastrando o usuário no Backend
+        AuthModel authModel = AuthModel(
+            name: user.user.displayName,
+            email: user.user.email ?? user.user.providerData[0].email,
+            phoneNumber: user.user.phoneNumber,
+            photoUrl: user.user.photoURL,
+            firebaseId: user.user.uid,
+            accessToken: accessToken,
+            idToken: idToken);
+        final authCubit = context.read<AuthCubit>();
+        await authCubit.signUp(authModel);
+        if (authCubit.state is AuthSuccessState) {
+          // Salvando os dados locais do usuário autenticado
+          final authSignInData = AuthData();
+          await authSignInData.saveSignInData(authModel);
+          signUpDjangoUser(authModel);
+        }
+        if (authCubit.state is AuthErrorState) {
+          _showMessage(authCubit.state.props[0].toString().replaceAll("Exception:", ""), error: true);
+        }
+      } else {
+        _showMessage("Ocorreu um erro ao tentar registrar o usuário, por favor tente novamente.");
+      }
+    } catch (e) {
+      _showMessage("Ocorreu o erro ${e.toString()} ao tentar efetuar o signInGoogle com ${authCredential.toString()}",
+          error: true);
+      debugPrint("DebugError: Erro $e ao executar signInGoogle");
+    } finally {
+      setState(() {
+        _isProcessing = false;
+      });
+    }
+  }
+
+  ///
+  ///
+  ///  Área para registro com email e senha
+  ///
+  ///
+
+  _buildEmailAccount(BuildContext context) {
+    try {
+      return SignInButton(
+        Buttons.Email,
+        text: "Registrar com email",
+        onPressed: iAgree
+            ? () {
+                setState(() {
+                  _registerWithEmail = true;
+                });
+              }
+            : () {
+                _showMessage("Antes de registrar é necessário concordar com os termos de uso");
+              },
+      );
+    } catch (e) {
+      DebugPrint.error("DebugError: Erro $e ao executar o _buildEmailAccount do _SignupPageState");
+      return Container();
+    }
+  }
+
+  /// Método para construir o formulário de registro utilizando o email e senha
+  Widget _buildEmailRegisterArea() {
+    return Visibility(
+      visible: _registerWithEmail,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+        width: double.infinity,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 22),
+              TextFormField(
+                controller: _nameController,
+                keyboardType: TextInputType.name,
+                style: TextStyle(color: CustomTheme.defaultColor),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.person, color: Colors.black45),
+                  hintText: 'Informe seu nome',
+                  hintStyle: TextStyle(color: Colors.black45),
+                  labelStyle: TextStyle(color: Colors.black45),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black45),
+                  ),
+                ),
+                validator: (String value) {
+                  return value.isEmpty ? 'Esse campo é obrigatório' : null;
+                },
+              ),
+              SizedBox(height: 22),
+              TextFormField(
+                controller: _loginController,
+                keyboardType: TextInputType.emailAddress,
+                style: TextStyle(color: Colors.black45),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.email, color: Colors.black45),
+                  hintText: 'Informe seu email',
+                  hintStyle: TextStyle(color: Colors.black45),
+                  labelStyle: TextStyle(color: Colors.black45),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black45),
+                  ),
+                ),
+                validator: (String value) {
+                  return value.isEmpty ? 'Esse campo é obrigatório' : null;
+                },
+              ),
+              SizedBox(height: 22),
+              TextFormField(
+                controller: _passwordController,
+                keyboardType: TextInputType.emailAddress,
+                obscureText: true,
+                style: TextStyle(color: Colors.black45),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.security_rounded, color: Colors.black45),
+                  hintText: 'Informe sua senha',
+                  hintStyle: TextStyle(color: Colors.black45),
+                  labelStyle: TextStyle(color: Colors.black45),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black45),
+                  ),
+                ),
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return "Esse campo é obrigatório";
+                  }
+                  if (value.length < 6) {
+                    return "A senha deve conter no mínimo 6 caracteres";
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RaisedButton(
+                      color: Colors.black45,
+                      textColor: Colors.black,
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          signInEmail(_loginController.text.trim(), _passwordController.text.trim());
+                        }
+                      },
+                      child: Text("Cadastrar")),
+                  OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        _registerWithEmail = false;
+                      });
+                    },
+                    child: Text("Cancelar"),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> signInEmail(String email, String password) async {
+    try {
+      setState(() {
+        _isProcessing = true;
+      });
+      UserCredential user;
+      final localUser = await checkLocalUser();
+      if (localUser != null && localUser.validateLocalUserSignInWithEmail() == true) {
+        if (localUser.email == _loginController.text.trim()) {
+          try {
+            user = await firebaseAuth.signInWithEmailAndPassword(email: localUser.email, password: localUser.password);
+          } catch (e) {
+            user = await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+            DebugPrint.error("DebugError: Erro $e ao executar o signInEmail do _SignUpPageState");
+          }
+        } else {
+          try {
+            user = await firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+          } catch (e) {
+            user = await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+            DebugPrint.error("DebugError: Erro $e ao executar o signInEmail do _SignUpPageState");
+          }
+        }
+      } else {
+        user = await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      }
+      if (user != null) {
+        // Cadastrando o usuário no Backend
+        AuthModel authModel = AuthModel(
+          name: _nameController.text.trim(),
+          email: user.user.email ?? user.user.providerData[0].email,
+          phoneNumber: user.user.phoneNumber,
+          photoUrl: user.user.photoURL,
+          firebaseId: user.user.uid,
+          password: _passwordController.text.trim(),
+        );
+        final authCubit = context.read<AuthCubit>();
+        await authCubit.signUp(authModel);
+        if (authCubit.state is AuthSuccessState) {
+          // Salvando os dados locais do usuário autenticado
+          final authSignInData = AuthData();
+          await authSignInData.saveSignInData(authModel);
+          signUpDjangoUser(authModel);
+        }
+        if (authCubit.state is AuthErrorState) {
+          _showMessage(authCubit.state.props[0].toString().replaceAll("Exception:", ""), error: true);
+        }
+      }
+    } catch (e) {
+      if (e.toString().contains("already")) {
+        _showMessage("O email informado já foi utilizado para efetuar um cadastro", error: true);
+      } else {
+        DebugPrint.error(e.toString());
+      }
+    } finally {
+      setState(() {
+        _isProcessing = false;
+      });
+    }
+  }
+
+  ///
+  ///
+  /// Área para registro utilizando o OTP
+  ///
+  ///
+
+  _buildOTPAccount(BuildContext context) {
+    try {
+      return InkWell(
+        onTap: iAgree
+            ? () {
+                setState(() {
+                  _registerWithOTP = true;
+                });
+              }
+            : () {
+                _showMessage("Antes de registrar é necessário concordar com os termos de uso");
+              },
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          width: Util.getProportionScreenWidth(context, 0.61),
+          padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
+          decoration: BoxDecoration(
+            color: Colors.orange,
+            borderRadius: BorderRadius.circular(3.4),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(Icons.phone),
+              SizedBox(width: 8),
+              Text("Registrar com número"),
+            ],
+          ),
+        ),
+      );
+    } catch (e) {
+      DebugPrint.error("DebugError: Erro $e ao executar o _buildOTPAccount do _SignupPageState");
+      return Container();
+    }
+  }
+
+  /// Método para construir o formulário de registro utilizando o email e senha
+  Widget _buildOTPRegisterArea() {
+    return Visibility(
+      visible: _registerWithOTP,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+        width: double.infinity,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 22),
+              TextFormField(
+                controller: _phoneOTPController,
+                keyboardType: TextInputType.phone,
+                style: TextStyle(color: CustomTheme.defaultColor),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.person, color: Colors.black45),
+                  hintText: 'Informe seu telefone',
+                  hintStyle: TextStyle(color: Colors.black45),
+                  labelStyle: TextStyle(color: Colors.black45),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black45),
+                  ),
+                ),
+                validator: (String value) {
+                  return value.isEmpty ? 'Esse campo é obrigatório' : null;
+                },
+              ),
+              SizedBox(height: 22),
+              TextFormField(
+                controller: _emailOTPController,
+                keyboardType: TextInputType.emailAddress,
+                style: TextStyle(color: Colors.black45),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.email, color: Colors.black45),
+                  hintText: 'Informe seu email',
+                  hintStyle: TextStyle(color: Colors.black45),
+                  labelStyle: TextStyle(color: Colors.black45),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black45),
+                  ),
+                ),
+                validator: (String value) {
+                  return value.isEmpty ? 'Esse campo é obrigatório' : null;
+                },
+              ),
+              SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          signUpWithOTP();
+                        }
+                      },
+                      child: Text("Cadastrar")),
+                  OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        _registerWithOTP = false;
+                      });
+                    },
+                    child: Text("Cancelar"),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> signUpWithOTP() async {
+    try {
+      setState(() {
+        _isProcessing = true;
+      });
+      var phoneNumber = "+55${_phoneOTPController.text.trim()}";
+      await FirebaseAuth.instance.verifyPhoneNumber(
+          phoneNumber: phoneNumber,
+          verificationCompleted: (PhoneAuthCredential credential) async {
+            await FirebaseAuth.instance.signInWithCredential(credential).then((value) async {
+              if (value.user != null) {
+                DebugPrint.print("Usuário logado: ${value.user.toString()}");
+                // Navigator.pushAndRemoveUntil(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => Home()),
+                //   (route) => false,
+                // );
+              }
+            });
+          },
+          verificationFailed: (FirebaseAuthException e) {
+            print(e.message);
+          },
+          codeSent: (String verificationID, int resendToken) {
+            setState(() {
+              DebugPrint.print("Verification ID: $verificationID");
+            });
+          },
+          codeAutoRetrievalTimeout: (String verificationID) {
+            setState(() {
+              DebugPrint.print("Verification ID: $verificationID");
+            });
+          },
+          timeout: Duration(seconds: 120));
+      // var verifyPhoneNumber = firebaseAuth.verifyPhoneNumber(
+      //   phoneNumber: phoneNumber,
+      //   verificationCompleted: (phoneAuthCredential) async {
+      //     firebaseAuth.signInWithCredential(phoneAuthCredential).then((user) {
+      //       if (user != null) {
+      //         DebugPrint.print("Usuário autenticado: $user");
+      //       }
+      //     });
+      //     // final _signInWithCredential = await firebaseAuth.signInWithCredential(phoneAuthCredential);
+      //     // if (_signInWithCredential != null) {
+      //     //   DebugPrint.print("Usuário: ${_signInWithCredential.toString()} registrado");
+      //     // }
+      //   },
+      //   verificationFailed: (FirebaseAuthException error) {
+      //     DebugPrint.error("Erro ao enviar o código: $error");
+      //     setState(() {
+      //       _isProcessing = false;
+      //     });
+      //   },
+      //   codeSent: (verificationId, [forceResendingToken]) {
+      //     DebugPrint.print("Código: $verificationId");
+      //     setState(() {
+      //       _isProcessing = false;
+      //     });
+      //   },
+      //   codeAutoRetrievalTimeout: (String verificationId) {
+      //     DebugPrint.print("Código: $verificationId");
+      //     setState(() {
+      //       _isProcessing = false;
+      //     });
+      //   },
+      //   timeout: Duration(seconds: 60),
+      // );
+      // await verifyPhoneNumber;
+    } catch (e) {
+      DebugPrint.error("DebugError: Erro $e ao executar o signUpWithOTP do _SignupPageState");
+    } finally {
+      setState(() {
+        _isProcessing = false;
+      });
+    }
+  }
+
+  _buildIAgreeArea(BuildContext context) {
+    try {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CupertinoSwitch(
+                    value: iAgree,
+                    onChanged: (value) {
+                      setState(() {
+                        iAgree = value;
+                      });
+                    }),
+                Flexible(
+                  child: Text(
+                    "Aceito os termos",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16),
+          InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => TermoUso()));
+            },
+            child: Text(
+              "Termos de uso e política de privacidade",
+              style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold),
+            ),
+          )
+        ],
+      );
+    } catch (e) {
+      DebugPrint.error("DebugError: Erro $e ao executar o _buildIAgreeArea do _SignupPageState");
+      return Container();
+    }
+  }
+
+  _showMessage(String message, {bool error = false}) {
+    setState(() {
+      _scaffoldKey.currentState.showSnackBar(
+        error == false ? customSuccessSnackbar(message) : customErrorSnackbar(message),
+      );
+    });
+  }
+
+  // Método para verificar se tem um usuário local.
+  Future<AuthModel> checkLocalUser() async {
+    try {
+      final authData = AuthData();
+      final List<AuthModel> users = await authData.fetchAll();
+      if (users != null && users.length > 0) {
+        return users.last;
+      }
+      return null;
+    } catch (e) {
+      DebugPrint.error("DebugError: Erro $e ao executar o checkLocalUser do _SignUpPageState");
+      return null;
+    }
+  }
+
+  /// Método para logar o usuário no Django após ter se registrado utilizando uma
+  /// das opções disponíveis
+  Future<void> signUpDjangoUser(AuthModel authModel) async {
+    final authCubit = context.read<AuthCubit>();
+    if (authCubit.state is AuthErrorState) {
+      final error = authCubit.state.props.first.toString().split(":")[1];
+      _showMessage(error, error: true);
+    } else {
+      // TODO Implementar a funcionalidade para tratar o usuário que acaba de ser criado
+    }
+  }
+
+  _hideKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(FocusNode());
+  }
+
+  _makeToast(String texto) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(''),
+          content: Text(texto),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancelar'),
+              onPressed: () => Navigator.pop(context),
+            ),
+            FlatButton(
+              child: Text('Excluir'),
+              onPressed: () {},
+            )
+          ],
+        );
+      },
+    );
+  }
+}
