@@ -14,59 +14,34 @@ class AuthModel {
   String photoUrl;
   String token;
   String firebaseId;
+  String firebaseToken;
+  String accessToken;
+  String idToken;
 
-  AuthModel(
-      {this.id,
-      this.uuid,
-      this.name,
-      this.email,
-      this.login,
-      this.socialProfileLogin,
-      this.account,
-      this.password,
-      this.cpf,
-      this.phoneNumber,
-      this.token,
-      this.photoUrl,
-      });
+  AuthModel({
+    this.id,
+    this.uuid,
+    this.name,
+    this.email,
+    this.login,
+    this.socialProfileLogin,
+    this.account,
+    this.password,
+    this.cpf,
+    this.phoneNumber,
+    this.token,
+    this.photoUrl,
+    this.firebaseId,
+    this.accessToken,
+    this.idToken,
+    this.firebaseToken,
+  });
 
-  Future<bool> logout() async{
+  Future<bool> logout() async {
     try {
-      AuthData _authData= AuthData();
+      AuthData _authData = AuthData();
       _authData.deleteAll();
-    } catch (e) {
-    }
-  }
-
-  AuthModel.fromMap(Map<String, dynamic> json) {
-    id = json['id'];
-    uuid = json['uuid'];
-    name = json['name'];
-    email = json['email'];
-    password = json['password'];
-    login = json['login'];
-    socialProfileLogin = json['socialProfileLogin'];
-    account = json['account'];
-    cpf = json['cpf'];
-    phoneNumber = json['telefone'];
-    token = json['token'];
-    photoUrl = json.containsKey('photoUrl') ? json['photoUrl'] : "";
-  }
-
-  Map<String, dynamic> toMap() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['uuid'] = this.uuid;
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['password'] = this.password;
-    data['login'] = this.login;
-    data['socialProfileLogin'] = this.socialProfileLogin;
-    data['account'] = this.account;
-    data['cpf'] = this.cpf;
-    data['telefone'] = this.phoneNumber;
-    data['token'] = this.token;
-    return data;
+    } catch (e) {}
   }
 
   String get profileName {
@@ -77,8 +52,73 @@ class AuthModel {
     return "";
   }
 
+  bool validateLocalUserSignInWithGoogle() {
+    bool result = true;
+    if (accessToken == null || accessToken.isEmpty) {
+      result = false;
+    }
+    if (idToken == null || idToken.isEmpty) {
+      result = false;
+    }
+    return result;
+  }
+
+  bool validateLocalUserSignInWithEmail() {
+    bool result = true;
+    if (email == null || email.isEmpty) {
+      result = false;
+    }
+    if (password == null || password.isEmpty) {
+      result = false;
+    }
+    return result;
+  }
+
   @override
   String toString() {
     return 'AuthModel{id: $id, uuid: $uuid, name: $name, email: $email, login: $login, socialProfileLogin: $socialProfileLogin, account: $account, password: $password, cpf: $cpf, token: $token}';
+  }
+
+  factory AuthModel.fromMap(Map<String, dynamic> map) {
+    return new AuthModel(
+      id: map['id'] as String,
+      uuid: map['uuid'] as String,
+      name: map['name'] as String,
+      email: map['email'] as String,
+      login: map['login'] as String,
+      socialProfileLogin: map['socialProfileLogin'] as String,
+      account: map['account'] as String,
+      password: map['password'] as String,
+      cpf: map['cpf'] as String,
+      phoneNumber: map['phoneNumber'] as String,
+      photoUrl: map['photoUrl'] as String,
+      token: map['token'] as String,
+      firebaseId: map['firebaseId'] as String,
+      firebaseToken: map['firebaseToken'] as String,
+      accessToken: map['accessToken'] as String,
+      idToken: map['idToken'] as String,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    // ignore: unnecessary_cast
+    return {
+      'id': this.id,
+      'uuid': this.uuid,
+      'name': this.name,
+      'email': this.email,
+      'login': this.login,
+      'socialProfileLogin': this.socialProfileLogin,
+      'account': this.account,
+      'password': this.password,
+      'cpf': this.cpf,
+      'phoneNumber': this.phoneNumber,
+      'photoUrl': this.photoUrl,
+      'token': this.token,
+      'firebaseId': this.firebaseId,
+      'firebaseToken': this.firebaseToken,
+      'accessToken': this.accessToken,
+      'idToken': this.idToken,
+    } as Map<String, dynamic>;
   }
 }

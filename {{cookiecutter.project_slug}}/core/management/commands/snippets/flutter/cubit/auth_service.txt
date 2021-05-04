@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 
-import '../auth/data.dart';
-import '../../utils/util.dart';
+import 'package:dio/dio.dart';
+
 import '../../utils/config.dart';
 import '../../utils/custom_dio.dart';
+import '../../utils/util.dart';
+import '../auth/data.dart';
 import '../usuario/usuario/model.dart';
-
 import 'model.dart';
 
 class AuthService {
@@ -44,11 +43,7 @@ class AuthService {
   Future<void> signUpUserFirebase(String url) async {
     try {
       final CustomDio _dio = CustomDio(url);
-      var _dataPost = json.encode({
-        'email': auth.email,
-        'password': auth.password,
-        'returnSecureToken': true
-      });
+      var _dataPost = json.encode({'email': auth.email, 'password': auth.password, 'returnSecureToken': true});
       final data = await _dio.postHttp(_dataPost, uri: url);
       if (data != null) {
         auth.firebaseId = data['localId'];
@@ -64,8 +59,7 @@ class AuthService {
     AuthModel _authModel = AuthModel();
     try {
       CustomDio _dio = CustomDio(_uri);
-      FormData _data =
-          FormData.fromMap({"username": login, "password": password});
+      FormData _data = FormData.fromMap({"username": login, "password": password});
       var dataResponse = await _dio.postHttp(_data, uri: _uri);
       if (dataResponse != null) {
         _authModel.token = dataResponse['access'];
@@ -94,8 +88,38 @@ class AuthService {
     return null;
   }
 
+  Future<String> signUp(AuthModel authModel) async {
+    String _uri = "";
+    final bool result = await this.verifyingEmailAlreadyExists(authModel.email);
+    if (result == true) {
+      throw new Exception("Já existe um usuário com o email informado");
+    }
+    _uri = "${Config.uri}usuario/usuario/";
+    try {
+      final CustomDio _dio = CustomDio(_uri);
+      final _data = json.encode({
+        "cpf": authModel.cpf,
+        "nome": authModel.name,
+        "email": authModel.email,
+        "telefone": authModel.phoneNumber,
+        "password": authModel.password,
+        "firebase": authModel.firebaseId,
+        "id_token": authModel.idToken,
+        "access_token": authModel.accessToken
+      });
+      final data = await _dio.postHttp(_data, uri: _uri);
+      if (data != null) {
+        _success("Usuário criado com sucesso", statusCode: Process.statusCode);
+        return data["id"];
+      }
+    } catch (e, exception) {
+      _error(e.toString(), exception.toString());
+    }
+    return null;
+  }
+
   Future<AuthModel> login(AuthModel auth) async {
-     String _uri = "${Config.uriAuth}";
+    String _uri = "${Config.uriAuth}";
     try {
       CustomDio _dio = CustomDio(_uri);
       final _data = json.encode({"username": auth.login, "password": auth.password});
@@ -124,6 +148,55 @@ class AuthService {
       }
     } catch (error) {
       throw (error);
+    }
+  }
+
+  Future<bool> verifyingEmailAlreadyExists(String email) async {
+    bool result = false;
+    String _uri = "";
+    try {
+      _uri = "${Config.uri}usuario/usuario/?email=$email";
+      final CustomDio _dio = CustomDio(_uri);
+      final dataResult = await _dio.getHttp(uri: _uri);
+      if (dataResult != null) {
+        result = dataResult['count'] != 0;
+      }
+    } catch (e) {
+      DebugPrint.error("Erro $e ao executar o verifyingEmailAlreadyExists no AuthService");
+    }
+    return result;
+  }
+
+  Future<UsuarioModel> signInDjangoUser(String login, int userType) async {
+    String _uri = "${Config.uri}usuario/usuario/?email=$login";
+    int typeException = 0;
+    try {
+      CustomDio _dio = CustomDio(_uri);
+      var dataResponse = await _dio.getHttp(uri: _uri);
+      if (dataResponse != null) {
+        if (dataResponse["count"] == 0) {
+          return null;
+        }
+        if (dataResponse["results"][0]["aprovado"] == false) {
+          final _cpf = dataResponse["results"][0]["cpf"];
+          typeException = 0;
+          if (_cpf == null || _cpf == "") {
+            typeException = 1;
+          }
+        } else {
+          _success("Usuário logado com sucesso", statusCode: 200);
+          return UsuarioModel.fromMap(dataResponse["results"][0]);
+        }
+      }
+    } catch (error, exception) {
+      _error(error.toString(), exception.toString());
+    }
+    if (typeException == 0) {
+      throw ("Seu cadastro ainda não foi aprovado.");
+    } else if (typeException == 1) {
+      throw ("Dados Incompletos");
+    } else {
+      return null;
     }
   }
 
@@ -209,39 +282,6 @@ class AuthService {
       _error(error.toString(), exception.toString());
     }
     return false;
-  }
-
-  Future<UsuarioModel> signInDjangoUser(String login, int userType) async {
-    String _uri = "${Config.uri}usuario/usuario/?email=$login";
-    int typeException = 0;
-    try {
-      CustomDio _dio = CustomDio(_uri);
-      var dataResponse = await _dio.getHttp(uri: _uri);
-      if (dataResponse != null) {
-        if (dataResponse["count"] == 0) {
-          return null;
-        }
-        if (dataResponse["results"][0]["aprovado"] == false) {
-          final _cpf = dataResponse["results"][0]["cpf"];
-          typeException = 0;
-          if (_cpf == null || _cpf == "") {
-            typeException = 1;
-          }
-        } else {
-          _success("Usuário logado com sucesso", statusCode: 200);
-          return UsuarioModel.fromMap(dataResponse["results"][0]);
-        }
-      }
-    } catch (error, exception) {
-      _error(error.toString(), exception.toString());
-    }
-    if (typeException == 0) {
-      throw ("Seu cadastro ainda não foi aprovado.");
-    } else if (typeException == 1) {
-      throw ("Dados Incompletos");
-    } else {
-      return null;
-    }
   }
 
   void _success(String message, {int statusCode}) async {

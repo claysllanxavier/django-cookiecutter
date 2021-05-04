@@ -9,7 +9,6 @@
 /// Caso deseje "travar" o arquivo para não ser parseado novamente
 /// pelo manage do Django adicione um # antes da palavra abaixo
 /// FileLocked
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -19,9 +18,8 @@ import 'service.dart';
 part 'state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-
   AuthService _service;
-  AuthModel _user;
+  AuthModel user;
 
   AuthCubit() : super(AuthInitial()) {
     _service = AuthService();
@@ -47,6 +45,24 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> signUp(AuthModel user) async {
+    try {
+      emit(AuthProcessState());
+      final result = await _service.signUp(user);
+      if (result != null) {
+        user.id = result;
+        emit(AuthSuccessState(
+          successMessage: "Usuário cadastrado com sucesso",
+          user: user,
+        ));
+      } else {
+        emit(AuthErrorState("Ocorreu um erro ao tentar criar o usuário"));
+      }
+    } catch (e) {
+      emit(AuthErrorState(e.toString()));
+    }
+  }
+
   Future<void> signIn(String login, String password) async {
     try {
       emit(AuthProcessState());
@@ -66,7 +82,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthErrorState(e.toString()));
     }
   }
-  
+
   Future<void> logout(AuthModel auth) async {
     try {
       emit(AuthProcessState());
@@ -76,7 +92,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthErrorState(e.toString()));
     }
   }
-  
+
   Future<void> changePassword(AuthModel auth) async {
     try {
       emit(AuthProcessState());
@@ -86,7 +102,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthErrorState(e.toString()));
     }
   }
-  
+
   Future<void> recoverPassword(AuthModel auth) async {
     try {
       emit(AuthProcessState());
@@ -96,7 +112,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthErrorState(e.toString()));
     }
   }
-  
+
   Future<void> createAccount(AuthModel auth) async {
     try {
       emit(AuthProcessState());
@@ -106,7 +122,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthErrorState(e.toString()));
     }
   }
-  
+
   Future<void> disableAccount(AuthModel auth) async {
     try {
       emit(AuthProcessState());
@@ -116,7 +132,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthErrorState(e.toString()));
     }
   }
-  
+
   Future<void> excludeAccount(AuthModel auth) async {
     try {
       emit(AuthProcessState());
@@ -126,5 +142,4 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthErrorState(e.toString()));
     }
   }
-
 }

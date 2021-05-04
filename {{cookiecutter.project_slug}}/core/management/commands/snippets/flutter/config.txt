@@ -33,6 +33,12 @@ const String uriRelease = "";
 // URL para os termos de uso
 const String urlTermoUso = "";
 
+// Área para configuração das modalidades de registro e login
+const bool enabledFacebookAccount = false;
+const bool enabledGoogleAccount = false;
+const bool enabledEmailAccount = false;
+const bool enabledOTPAccount = false;
+
 class Config {
   static const uri = releaseVersion ? uriRelease : uriDeveloper;
   static const uriAuth = "";
