@@ -7,12 +7,12 @@ import 'package:flutter/scheduler.dart';
 
 import '../../../user_interface/widget.dart';
 
-class SiginPage extends StatefulWidget {
+class SigninPage extends StatefulWidget {
   @override
-  _SiginPageState createState() => _SiginPageState();
+  _SigninPageState createState() => _SigninPageState();
 }
 
-class _SiginPageState extends State<SiginPage> with SingleTickerProviderStateMixin {
+class _SigninPageState extends State<SigninPage> with SingleTickerProviderStateMixin {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   AnimationController _animationController;
   final _formSigin = GlobalKey<FormState>();

@@ -6,14 +6,13 @@ import time
 from enum import Enum
 from pathlib import Path
 
+from base.settings import FLUTTER_APPS, SYSTEM_NAME, API_PATH
+from core.management.commands.parser_content import ParserContent
+from core.management.commands.utils import Utils
+from core.models import Base
 from django.apps import apps
 from django.core.management.base import BaseCommand
 
-from core.management.commands.utils import Utils
-
-from core.management.commands.parser_content import ParserContent
-from core.models import Base
-from base.settings import FLUTTER_APPS, SYSTEM_NAME, API_PATH
 
 # TODO Acrescentar no build do Flutter o parser das páginas de autenticação
 
@@ -897,12 +896,9 @@ class Command(BaseCommand):
 
             os.makedirs(__auth_file)
 
-            __data_file = Path(
-                "{}/lib/apps/auth/data.dart".format(self.flutter_dir))
-            __model_file = Path(
-                "{}/lib/apps/auth/model.dart".format(self.flutter_dir))
-            __service_file = Path(
-                "{}/lib/apps/auth/service.dart".format(self.flutter_dir))
+            __data_file = Path("{}/lib/apps/auth/data.dart".format(self.flutter_dir))
+            __model_file = Path("{}/lib/apps/auth/model.dart".format(self.flutter_dir))
+            __service_file = Path("{}/lib/apps/auth/service.dart".format(self.flutter_dir))
 
             with open(__data_file, "w", encoding="utf-8") as data_file:
                 data_file.write(__data_snippet)
@@ -936,6 +932,30 @@ class Command(BaseCommand):
 
             with open(__service_file, "w", encoding="utf-8") as service_file:
                 service_file.write(__service_snippet)
+
+            # TODO Criar o tratamento para as páginas
+            # Criando o diretório pages
+            os.makedirs(Path(__auth_file, "pages"))
+
+            __auth_pages_names_list = ['index', 'signin', 'signup', 'termo_uso']
+            __auth_snippets_list = ['auth_index_page', 'auth_signin_page', 'auth_signup_page', 'auth_termo_uso_page']
+            # Recuperando os snippets
+
+            for auth_page in __auth_pages_names_list:
+                __auth_file = Path("{}/lib/apps/auth/pages/{}.dart".format(self.flutter_dir, auth_page))
+                __auth_snippet = self.__get_snippet(file_name=f"auth_{auth_page}_page.txt", state_manager=True)
+
+                with open(__auth_file, "w", encoding="utf-8") as auth_page_file:
+                    auth_page_file.write(__auth_snippet)
+
+            # __index_page_auth_file = Path("{}/lib/apps/auth/pages/index.dart".format(self.flutter_dir))
+            # __snippet_indexpage_auth = self.__get_snippet(file_name="auth_index_page.txt", state_manager=True)
+            # __sigin_page_auth_file = Path("{}/lib/apps/auth/pages/sigin.dart".format(self.flutter_dir))
+            # __snippet_signpage_auth = self.__get_snippet(file_name="auth_signin_page.txt", state_manager=True)
+            # __signup_page_auth_file = Path("{}/lib/apps/auth/pages/signup.dart".format(self.flutter_dir))
+            # __snippet_signuppage_auth = self.__get_snippet(file_name="auth_signup_page.txt", state_manager=True)
+            # __useterms_page_auth_file = Path("{}/lib/apps/auth/pages/temo_uso.dart".format(self.flutter_dir))
+            # __snippet_usertermspage_auth = self.__get_snippet(file_name="auth_termo_uso_page.txt", state_manager=True)
 
         except Exception as error:
             Utils.show_message(f"Error in __build_auth_app {error}", error=True)
