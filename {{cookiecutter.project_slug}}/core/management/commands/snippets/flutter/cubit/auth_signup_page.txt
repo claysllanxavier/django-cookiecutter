@@ -32,16 +32,19 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
   AnimationController _animationController;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   FacebookLogin facebookLogin = FacebookLogin();
+  final _formKey = GlobalKey<FormState>();
   bool _isProcessing = false;
   bool iAgree = false;
   bool _registerWithEmail = false;
   bool _registerWithOTP = false;
-  final _formKey = GlobalKey<FormState>();
+  bool _inputCodeConfirmationOTP = false;
+  String _verificationID;
   TextEditingController _nameController = TextEditingController();
   TextEditingController _loginController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _phoneOTPController = TextEditingController();
   TextEditingController _emailOTPController = TextEditingController();
+  TextEditingController _codeOTPController = TextEditingController();
 
   @override
   void initState() {
@@ -104,8 +107,12 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
             child: _buildEmailRegisterArea(),
           ),
           Visibility(
-            visible: _registerWithOTP && !_registerWithEmail,
+            visible: _registerWithOTP && !_registerWithEmail && !_inputCodeConfirmationOTP,
             child: _buildOTPRegisterArea(),
+          ),
+          Visibility(
+            visible: _registerWithOTP && _inputCodeConfirmationOTP && !_registerWithEmail,
+            child: _buildOTPInputCodeArea(context),
           ),
           SizedBox(height: 10),
           _buildIAgreeArea(context),
@@ -627,72 +634,89 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
       var phoneNumber = "+55${_phoneOTPController.text.trim()}";
       await FirebaseAuth.instance.verifyPhoneNumber(
           phoneNumber: phoneNumber,
+          // Método chamado quando o processo de validação do usuário baseado no telefone finalizar
           verificationCompleted: (PhoneAuthCredential credential) async {
-            await FirebaseAuth.instance.signInWithCredential(credential).then((value) async {
-              if (value.user != null) {
-                DebugPrint.print("Usuário logado: ${value.user.toString()}");
-                // Navigator.pushAndRemoveUntil(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => Home()),
-                //   (route) => false,
-                // );
-              }
-            });
+            final userAuth = await firebaseAuth.signInWithCredential(credential);
+            if (userAuth != null) {
+              DebugPrint.print("Usuário Logado: ${userAuth.user.toString()}");
+            }
+            // await firebaseAuth.signInWithCredential(credential).then((value) async {
+            //   if (value.user != null) {
+            //     DebugPrint.print("Usuário logado: ${value.user.toString()}");
+            //   }
+            // });
           },
+          // Callback disparado quando ocorre algum erro no Firebase
           verificationFailed: (FirebaseAuthException e) {
-            print(e.message);
+            DebugPrint.error("Ocorreu o erro: ${e.message} ao tentar autenticar com o número do telefone");
           },
+          // Callback chamado quando o Firebase retorna o código baseado no número informado pelo usuário
+          // deve ser utilizado para atualizar a tela seguindo as regras de negócio do projeto
           codeSent: (String verificationID, int resendToken) {
             setState(() {
-              DebugPrint.print("Verification ID: $verificationID");
+              _inputCodeConfirmationOTP = true;
+              _verificationID = verificationID;
             });
+            DebugPrint.print("Verification ID: $verificationID");
           },
+          // Callback chamado quando o timeout informado abaixo expirar
           codeAutoRetrievalTimeout: (String verificationID) {
-            setState(() {
-              DebugPrint.print("Verification ID: $verificationID");
-            });
+            DebugPrint.print("Verification ID: $verificationID");
           },
           timeout: Duration(seconds: 120));
-      // var verifyPhoneNumber = firebaseAuth.verifyPhoneNumber(
-      //   phoneNumber: phoneNumber,
-      //   verificationCompleted: (phoneAuthCredential) async {
-      //     firebaseAuth.signInWithCredential(phoneAuthCredential).then((user) {
-      //       if (user != null) {
-      //         DebugPrint.print("Usuário autenticado: $user");
-      //       }
-      //     });
-      //     // final _signInWithCredential = await firebaseAuth.signInWithCredential(phoneAuthCredential);
-      //     // if (_signInWithCredential != null) {
-      //     //   DebugPrint.print("Usuário: ${_signInWithCredential.toString()} registrado");
-      //     // }
-      //   },
-      //   verificationFailed: (FirebaseAuthException error) {
-      //     DebugPrint.error("Erro ao enviar o código: $error");
-      //     setState(() {
-      //       _isProcessing = false;
-      //     });
-      //   },
-      //   codeSent: (verificationId, [forceResendingToken]) {
-      //     DebugPrint.print("Código: $verificationId");
-      //     setState(() {
-      //       _isProcessing = false;
-      //     });
-      //   },
-      //   codeAutoRetrievalTimeout: (String verificationId) {
-      //     DebugPrint.print("Código: $verificationId");
-      //     setState(() {
-      //       _isProcessing = false;
-      //     });
-      //   },
-      //   timeout: Duration(seconds: 60),
-      // );
-      // await verifyPhoneNumber;
     } catch (e) {
       DebugPrint.error("DebugError: Erro $e ao executar o signUpWithOTP do _SignupPageState");
-    } finally {
-      setState(() {
-        _isProcessing = false;
-      });
+    }
+  }
+
+  _buildOTPInputCodeArea(BuildContext context) {
+    try {
+      return Container(
+        margin: const EdgeInsets.only(top: 12),
+        child: Column(
+          children: [
+            Text("Informe o código de validação"),
+            Form(
+              child: TextFormField(
+                controller: _codeOTPController,
+                keyboardType: TextInputType.emailAddress,
+                style: TextStyle(color: Colors.black45),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.email, color: Colors.black45),
+                  hintText: 'Informe seu email',
+                  hintStyle: TextStyle(color: Colors.black45),
+                  labelStyle: TextStyle(color: Colors.black45),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black45),
+                  ),
+                ),
+                validator: (String value) {
+                  return value.isEmpty ? 'Esse campo é obrigatório' : null;
+                },
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  // Autenticando com o ID de verificação e o código SMS recebido anteriormente
+                  PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
+                      verificationId: _verificationID, smsCode: _codeOTPController.text.trim());
+
+                  final userAuth = await firebaseAuth.signInWithCredential(phoneAuthCredential);
+                  if (userAuth != null) {
+                    DebugPrint.print("Usuário Logado: ${userAuth.user.toString()}");
+                  }
+                } catch (e) {
+                  DebugPrint.error("DebugError: Erro $e ao executar o _buildOTPInputCodeArea do _SignupPageState");
+                }
+              },
+              child: Text("Validar Código"),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      DebugPrint.error("DebugError: Erro $e ao executar o _buildOTPInputCodeArea do _SignupPageState");
     }
   }
 
