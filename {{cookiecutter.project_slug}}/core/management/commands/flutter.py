@@ -1046,7 +1046,10 @@ class Command(BaseCommand):
                 attribute = self._flutter_types[self._django_types.index(field_type)]
 
                 content_attributes += "{} {};\n  ".format(attribute, __name_dart)
-                content_string_return += "{}: ${}\\n".format(__name_dart.upper(), __name_dart)
+
+                if __name_dart not in ["django_user", "token", "firebase", "id_token", "enabled", "deleted",
+                                       "created_on", "updated_on"]:
+                    content_string_return += "{}: ${}\\n".format(__name_dart.upper(), __name_dart)
 
                 content_constructor += "this.{},\n".format(__name_dart)
 
