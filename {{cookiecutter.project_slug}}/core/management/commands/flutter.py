@@ -1047,8 +1047,8 @@ class Command(BaseCommand):
 
                 content_attributes += "{} {};\n  ".format(attribute, __name_dart)
 
-                if __name_dart not in ["django_user", "token", "firebase", "id_token", "enabled", "deleted",
-                                       "created_on", "updated_on"]:
+                if __name_dart not in ["djangoUser", "token", "firebase", "id_token", "id", "enabled", "deleted",
+                                       "createdOn", "created_on", "updatedOn", "updatedOn"]:
                     content_string_return += "{}: ${}\\n".format(__name_dart.upper(), __name_dart)
 
                 content_constructor += "this.{},\n".format(__name_dart)

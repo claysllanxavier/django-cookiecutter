@@ -23,6 +23,13 @@ String currentLanguage = "";
 
 void main() async {
   /// TODO
+  /// 1 - Adicionar o multiDexEnabled para poder trabalhar com pacotes maiores de 64K no arquivo
+  ///     build.gradle no caminho android/app/build.gradle
+  ///    defaultConfig {
+  ///      ...
+  ///      multiDexEnabled true
+  ///      ...
+  ///    }
   /// 1 - Criar o projeto no Firebase [https://firebase.google.com/]
   /// 2 - Ativar a funcionalidade de autenticacao
   /// 3 - Baixar o arquivo google
