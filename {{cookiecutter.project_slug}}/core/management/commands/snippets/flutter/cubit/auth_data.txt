@@ -57,7 +57,7 @@ class AuthData {
       DebugPrint.error("DebugErro: no método fetchAll do AuthData -> $error | $exception");
       return null;
     } finally {
-      _db.close();
+      _db?.close();
     }
   }
 
@@ -76,7 +76,7 @@ class AuthData {
       DebugPrint.error("DebugErro: no método get do AuthData -> $error | $exception");
       return null;
     } finally {
-      _db.close();
+      _db?.close();
     }
   }
 
@@ -91,7 +91,7 @@ class AuthData {
       DebugPrint.error("DebugErro: no método save do AuthData -> $error | $exception");
       return false;
     } finally {
-      _db.close();
+      _db?.close();
     }
   }
 
@@ -105,7 +105,7 @@ class AuthData {
     } catch (error) {
       return false;
     } finally {
-      _db.close();
+      _db?.close();
     }
   }
 
@@ -119,7 +119,7 @@ class AuthData {
       DebugPrint.error("DebugErro: no método deleteAll do AuthData -> $error | $exception");
       return false;
     } finally {
-      _db.close();
+      _db?.close();
     }
   }
 
@@ -133,11 +133,11 @@ class AuthData {
       DebugPrint.error("DebugErro: no método delete do AuthData -> $error | $exception");
       return false;
     } finally {
-      _db.close();
+      _db?.close();
     }
   }
 
-  Future<bool> update(AuthModel Auth) async {
+  Future<bool> update(AuthModel auth) async {
     try {
       _db = await initDb();
       final _store = smbt.intMapStoreFactory.store(_storeName);
@@ -146,7 +146,7 @@ class AuthData {
       DebugPrint.error("DebugErro: No método save do AuthData -> $error | $exception");
       return false;
     } finally {
-      _db.close();
+      _db?.close();
     }
   }
 

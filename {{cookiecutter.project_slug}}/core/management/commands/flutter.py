@@ -14,9 +14,6 @@ from django.apps import apps
 from django.core.management.base import BaseCommand
 
 
-# TODO Acrescentar no build do Flutter o parser das páginas de autenticação
-
-
 class StateManager(Enum):
     Provider = 1
     MobX = 2
@@ -1045,10 +1042,8 @@ class Command(BaseCommand):
                 if __name_dart in [f"id{app.model_name_lower}", "id"]:
                     continue
 
-                field_type = (
-                    str(str(type(field)).split(".")[-1:]).replace('["', "").replace("'>\"]", ""))
-                attribute = self._flutter_types[self._django_types.index(
-                    field_type)]
+                field_type = (str(str(type(field)).split(".")[-1:]).replace('["', "").replace("'>\"]", ""))
+                attribute = self._flutter_types[self._django_types.index(field_type)]
 
                 content_attributes += "{} {};\n  ".format(attribute, __name_dart)
                 content_string_return += "{}: ${}\\n".format(__name_dart.upper(), __name_dart)
@@ -1093,6 +1088,10 @@ class Command(BaseCommand):
                 if str(field_type) == "TimeField":
                     content_to_map += "'{}': this.{} != null ?Util.stringDateTimeSplit".format(__name, __name_dart)
                     content_to_map += "(this.{}, returnType: \"t\"): null, \n".format(__name_dart)
+                    continue
+                if str(field_type) in ["FloatField", "DecimalField"]:
+                    content_to_map += "'{0}': this.{1} != null? this.{1}: 0.0,\n{2}".format(
+                        __name, __name_dart, " " * 8)
                     continue
                 if str(attribute) == "bool":
                     if __name_dart.lower() == "enabled":
