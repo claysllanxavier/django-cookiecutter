@@ -536,22 +536,23 @@ Widget customButtonOutline(
 /// }),
 /// ```
 ///
-Widget customTextFormField(
-    {@required String labelText,
-    @required String hintText,
-    @required TextEditingController controller,
-    @required BuildContext context,
-    Function validator,
-    bool outline = false}) {
+Widget customTextFormField({
+  @required String labelText,
+  @required String hintText,
+  @required TextEditingController controller,
+  @required BuildContext context,
+  Function validator,
+  bool outline = false,
+  TextInputType keyBoardType = TextInputType.text,
+}) {
   try {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
           controller: controller,
+          keyboardType: keyBoardType,
           decoration: InputDecoration(
-              labelText: labelText,
-              hintText: hintText,
-              border: outline == true ? OutlineInputBorder() : null),
+              labelText: labelText, hintText: hintText, border: outline == true ? OutlineInputBorder() : null),
           validator: validator != null ? validator : null),
     );
   } catch (error, exception) {

@@ -356,56 +356,37 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 22),
-              TextFormField(
+              customTextFormField(
+                hintText: 'Informe seu nome',
+                labelText: 'Informe seu nome',
                 controller: _nameController,
-                keyboardType: TextInputType.name,
-                style: TextStyle(color: CustomTheme.defaultColor),
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.person, color: Colors.black45),
-                  hintText: 'Informe seu nome',
-                  hintStyle: TextStyle(color: Colors.black45),
-                  labelStyle: TextStyle(color: Colors.black45),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black45),
-                  ),
-                ),
+                context: context,
                 validator: (String value) {
-                  return value.isEmpty ? 'Esse campo é obrigatório' : null;
+                  if (value.isEmpty) {
+                    return "Esse campo é obrigatório";
+                  }
+                  return null;
                 },
               ),
               SizedBox(height: 22),
-              TextFormField(
+              customTextFormField(
+                hintText: 'Informe seu email',
+                labelText: 'Informe seu email',
                 controller: _loginController,
-                keyboardType: TextInputType.emailAddress,
-                style: TextStyle(color: Colors.black45),
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.email, color: Colors.black45),
-                  hintText: 'Informe seu email',
-                  hintStyle: TextStyle(color: Colors.black45),
-                  labelStyle: TextStyle(color: Colors.black45),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black45),
-                  ),
-                ),
+                context: context,
                 validator: (String value) {
-                  return value.isEmpty ? 'Esse campo é obrigatório' : null;
+                  if (value.isEmpty) {
+                    return "Esse campo é obrigatório";
+                  }
+                  return null;
                 },
               ),
               SizedBox(height: 22),
-              TextFormField(
+              customTextFormField(
+                hintText: 'Informe sua senha',
+                labelText: 'Informe sua senha',
                 controller: _passwordController,
-                keyboardType: TextInputType.emailAddress,
-                obscureText: true,
-                style: TextStyle(color: Colors.black45),
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.security_rounded, color: Colors.black45),
-                  hintText: 'Informe sua senha',
-                  hintStyle: TextStyle(color: Colors.black45),
-                  labelStyle: TextStyle(color: Colors.black45),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black45),
-                  ),
-                ),
+                context: context,
                 validator: (String value) {
                   if (value.isEmpty) {
                     return "Esse campo é obrigatório";
@@ -420,15 +401,14 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  RaisedButton(
-                      color: Colors.black45,
-                      textColor: Colors.black,
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          signInEmail(_loginController.text.trim(), _passwordController.text.trim());
-                        }
-                      },
-                      child: Text("Cadastrar")),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        signInEmail(_loginController.text.trim(), _passwordController.text.trim());
+                      }
+                    },
+                    child: Text("Cadastrar"),
+                  ),
                   OutlinedButton(
                     onPressed: () {
                       setState(() {
@@ -563,37 +543,21 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 22),
-              TextFormField(
+              customTextFormField(
+                hintText: 'Informe seu telefone',
+                labelText: 'Informe seu telefone',
                 controller: _phoneOTPController,
-                keyboardType: TextInputType.phone,
-                style: TextStyle(color: CustomTheme.defaultColor),
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.person, color: Colors.black45),
-                  hintText: 'Informe seu telefone',
-                  hintStyle: TextStyle(color: Colors.black45),
-                  labelStyle: TextStyle(color: Colors.black45),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black45),
-                  ),
-                ),
+                context: context,
                 validator: (String value) {
                   return value.isEmpty ? 'Esse campo é obrigatório' : null;
                 },
               ),
               SizedBox(height: 22),
-              TextFormField(
+              customTextFormField(
+                hintText: 'Informe seu email',
+                labelText: 'Informe seu email',
                 controller: _emailOTPController,
-                keyboardType: TextInputType.emailAddress,
-                style: TextStyle(color: Colors.black45),
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.email, color: Colors.black45),
-                  hintText: 'Informe seu email',
-                  hintStyle: TextStyle(color: Colors.black45),
-                  labelStyle: TextStyle(color: Colors.black45),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black45),
-                  ),
-                ),
+                context: context,
                 validator: (String value) {
                   return value.isEmpty ? 'Esse campo é obrigatório' : null;
                 },
