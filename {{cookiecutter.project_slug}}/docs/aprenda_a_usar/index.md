@@ -9,16 +9,16 @@ Abaixo temos as etapas a serem executadas quando o projeto for criado.
 
 ### Ativar o virtualenv
 
-    $ source venv\Script\activate | windows
+    $ venv\Script\activate | windows
     $  . venv/bin/activate | linux e macOs
 
 ### Comandos a serem executados após a criação do projeto
 
+1. Acessar o subdiretório do projeto que foi criado após o comando *cookiecutter ..\django-cookiecutter*   
 1. Gerar a secret_key do projeto Django
    > import secrets  
    > print(secrets.token_urlsafe())   
    > **Caso necessário é possível informar a quantidade caracteres na chamada do** ***secrets.token_urlsafe(n)*** 
-1. Acessar o subdiretório do projeto que foi criado após o comando *cookiecutter ..\django-cookiecutter* 
 1. Instale as dependências  
     ```pip-sync requirements.txt requirements-dev.txt``` 
 1. Execute o comando de criação das migrações  
