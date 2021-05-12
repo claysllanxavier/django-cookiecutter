@@ -951,6 +951,7 @@ class Command(BaseCommand):
         elif options['url']:
             Utils.show_message("Trabalhando apenas as urls.")
             self.__manage_url()
+            self.__apply_pep()
             return
         elif options['forms']:
             Utils.show_message("Trabalhando apenas os forms.")

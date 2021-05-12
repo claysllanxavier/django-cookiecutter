@@ -14,9 +14,11 @@
 > {{ cookiecutter.author_name }}  
 {{ cookiecutter.email }}
 
-## Documentação
-> Para entender como utilizar o projeto basta acessar a documentação.  
-  Para isso basta acessar o link a seguir   
+### Documentação do Projeto
+
+Para consultar a documentação do projeto basta no seu projeto com o virtual env ativo executar:
+
+    $ mkdoks serve -a 127.0.0.1:9090  
 
 ## Licença
 [here](LICENSE)
