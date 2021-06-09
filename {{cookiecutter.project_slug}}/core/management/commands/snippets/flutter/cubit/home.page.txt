@@ -17,6 +17,7 @@ import 'utils/localization.dart';
 import 'dart:async';
 import 'routers.dart';
 import 'package:flutter/scheduler.dart';
+import 'utils/config.dart';
 
 $ImportViews$
 
@@ -32,7 +33,6 @@ class _MyHomePageState extends State<MyHomePage> {
   bool bottomNavigationEnable = true;
   int _currentIndexPage;
 
-
   // Declarando o inteiro para controlar qual página deve ser exibida
   int _indexCurrentPage;
 
@@ -43,11 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _currentIndexPage = 0;
-    SchedulerBinding.instance.addPostFrameCallback(
-      (_) {
-        _itensMenuGridView.make();
-      },
-    );
+    _itensMenuGridView.make();
   }
 
   @override
@@ -56,13 +52,57 @@ class _MyHomePageState extends State<MyHomePage> {
       onWillPop: () async {
         return false;
       },
-      child: Scaffold(
-        body: IndexedStack(
-          index: _currentIndexPage,
-        ),
-        bottomNavigationBar: _buildCupertinoTabScaffold(context),
-      ),
+      child: enabledBottomNavigationBar ? _buildScaffoldWithBottomNavigationBar(context) : _buildScaffold(context),
     );
+  }
+
+  Widget _buildScaffoldWithBottomNavigationBar(context) {
+    return Scaffold(
+      body: _buildBodyWithBottomNavigationBar(context),
+      bottomNavigationBar: _buildCupertinoTabScaffold(context),
+    );
+  }
+
+  Widget _buildScaffold(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(Config.app_title),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                  child: Icon(Icons.settings),
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsIndexPage()));
+                  },
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+      body: _buildBody(context),
+    );
+  }
+
+  /// Método para construir o corpo da página.
+  Widget _buildBody(BuildContext context) {
+    return Container(
+      height: Util.getProportionScreenHeight(context, 1),
+      color: Colors.white,
+      child: _buildGridView(context),
+    );
+  }
+
+  /// Método para construir o corpo da página utilizando o BottomNavigationBar
+  Widget _buildBodyWithBottomNavigationBar(BuildContext context) {
+    return IndexedStack(index: _currentIndexPage);
   }
 
   /// Componente de navegação CupertinoTabScaffold
