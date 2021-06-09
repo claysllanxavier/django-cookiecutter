@@ -38,6 +38,9 @@ dependencies:
   bloc: ^6.0.2
   flutter_bloc: ^6.0.1
 
+  # Sentry Plataforma de monitoramento de bugs
+  sentry_flutter: ^5.1.0
+
   flutter_localizations: #Lib para trabalhar com internacionalização dos textos fixos da app. Ex:. Label de um button
       sdk: flutter
 
