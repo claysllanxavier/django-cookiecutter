@@ -297,6 +297,8 @@ class Command(BaseCommand):
             self.app_configuration = "{}/lib/apps/configuracao/".format(self.flutter_dir)
             self.app_configuration_page_file = f"{self.app_configuration}/index.page.dart"
             self.app_configuration_controller_file = f"{self.app_configuration}/controller.dart"
+            self.app_configuration_cubit_state_file = f"{self.app_configuration}/state.dart"
+            self.app_configuration_cubit_file = f"{self.app_configuration}/cubit.dart"
 
         self.current_app_model = None
 
@@ -841,7 +843,6 @@ class Command(BaseCommand):
             with open(__service_file, "w", encoding="utf-8") as service_file:
                 service_file.write(__service_snippet)
 
-            # TODO Criar o tratamento para as páginas
             # Criando o diretório pages
             os.makedirs(Path(__auth_file, "pages"))
 

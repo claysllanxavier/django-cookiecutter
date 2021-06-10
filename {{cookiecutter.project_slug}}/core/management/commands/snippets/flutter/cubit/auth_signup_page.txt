@@ -11,13 +11,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:oralx/apps/auth/cubit.dart';
-import 'package:oralx/apps/auth/data.dart';
-import 'package:oralx/apps/auth/model.dart';
-import 'package:oralx/apps/auth/pages/termo_uso.dart';
-import 'package:oralx/user_interface/font.dart';
-import 'package:oralx/utils/config.dart';
-import 'package:oralx/utils/util.dart';
+import '../cubit.dart';
+import '../data.dart';
+import '../model.dart';
+import '../pages/termo_uso.dart';
+import '../../../user_interface/font.dart';
+import '../../../utils/config.dart';
+import '../../../utils/util.dart';
 
 import '../../../user_interface/widget.dart';
 

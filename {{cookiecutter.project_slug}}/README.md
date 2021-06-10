@@ -18,7 +18,7 @@
 
 Para consultar a documentação do projeto basta no seu projeto com o virtual env ativo executar:
 
-    $ mkdoks serve -a 127.0.0.1:9090  
+    $ mkdocs serve -a 127.0.0.1:9090  
 
 ## Licença
 [here](LICENSE)
