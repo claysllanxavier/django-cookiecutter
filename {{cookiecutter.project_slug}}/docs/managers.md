@@ -59,7 +59,15 @@ No projeto existem dois managers para auxiliar o desenvolvimento do projeto Djan
 #### Executar
     python manage.py flutter
 
-Os comando abaixo devem ser utilizado caso seja criada uma nova app no projeto Django e você queirar gerar o correspondente no projeto Flutter
+### Configuração Projeto Android
+>    Para que o projeto Android funcione de forma correta é necessário adicionar o parâmetro:  
+>  **multiDexEnabled true**
+> Vide exemplo abaixo
+
+![Confugração Android. Bundle](images/configuracao_android.png)
+
+
+Os comandos abaixo devem ser utilizado caso seja criada uma nova app no projeto Django e você queirar gerar o correspondente no projeto Flutter
 
 Para gerar os arquivos flutter de uma determinada App/Model
 > python manage.py flutter --model NomeDaApp nome_do_model
