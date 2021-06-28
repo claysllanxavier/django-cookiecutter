@@ -4,8 +4,8 @@
 /// #FileLocked
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:oralx/apps/auth/pages/signup.dart';
-import 'package:oralx/utils/util.dart';
+import 'signup.dart';
+import '../../../utils/util.dart';
 
 import '../../../user_interface/widget.dart';
 

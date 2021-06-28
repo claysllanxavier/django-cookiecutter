@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:oralx/utils/config.dart';
+import '../../../utils/config.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class TermoUso extends StatelessWidget {

@@ -53,7 +53,8 @@ Acesse o subdiretório criado pelo cookie cutter que contém o projeto Django
 
 Instale as dependências do projeto (lembre de estar com o virtual env ativado)
 
-    $ pip-sync requirements.txt requirements-dev.txt
+    $ pip install -r requirements.txt 
+    $ pip install -r requirements-dev.txt (ambiente de debug/homologação)
 
 Crie as migrações do seu projeto
 
@@ -96,4 +97,4 @@ Para rodar os testes
 
 Para consultar a documentação do projeto basta no seu projeto com o virtual env ativo executar:
 
-    $ mkdoks serve -a 127.0.0.1:8080
+    $ mkdocs serve -a 127.0.0.1:8080

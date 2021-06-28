@@ -17,7 +17,7 @@ import 'utils/localization.dart';
 import 'dart:async';
 import 'routers.dart';
 import 'package:flutter/scheduler.dart';
-import 'utils/config.dart';
+import 'utils/util.dart';
 
 $ImportViews$
 
