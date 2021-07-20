@@ -47,8 +47,7 @@ class Command(BaseCommand):
         self._snippet_modal_foreign_key = self.__get_snippet(
             Path(f"{self.path_core}/management/commands/snippets/django/modal_form.txt"))
         self._snippet_api_router = self.__get_snippet(
-            Path(
-                f"{self.path_core}/management/commands/snippets/django/api_router.txt"))
+            Path(f"{self.path_core}/management/commands/snippets/django/api_router.txt"))
         self._snippet_api_routers = self.__get_snippet(
             Path(f"{self.path_core}/management/commands/snippets/django/api_router_urls.txt"))
         self._snippet_api_view = self.__get_snippet(
@@ -676,6 +675,25 @@ class Command(BaseCommand):
         except Exception as error:
             Utils.show_message(f"Error in __manage_views : {error}")
 
+    def __manage_urls_api_app(self):
+        """Método para adicionar o path da app ao arquivo urls_api.py
+        """
+        try:
+            content_exist = False
+            new_data = ""
+            content_include = "    path('$app_name$/api/v1/', include('$app_name$.api_urls')),".replace("$app_name$", self.app_lower)
+            with open(Path(f"{self.BASE_DIR}/base/urls_api.py"), 'r', encoding='utf-8') as urlsapi:
+                new_data = urlsapi.read()
+                if self.app_lower in new_data:
+                    return 
+                new_data = new_data.replace("]", f"{content_include}\n]")
+            if content_exist is True:
+                return 
+            with open(Path(f"{self.BASE_DIR}/base/urls_api.py"), 'w', encoding='utf-8') as urlsapi:
+                urlsapi.write(new_data)
+        except Exception as error:
+            print(f"Erro ao executar o __manage_urls_api_app de Build: {error}")
+
     def __manage_url(self):
         """Method responsible for creating the urls file for the model
         """
@@ -947,6 +965,8 @@ class Command(BaseCommand):
             self.__manage_serializer()
             self.__manage_api_view()
             self.__manage_api_url()
+            self.__manage_urls_api_app()
+            self.__apply_pep()
             return
         elif options['url']:
             Utils.show_message("Trabalhando apenas as urls.")
