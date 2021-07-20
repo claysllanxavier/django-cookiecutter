@@ -9,7 +9,6 @@ app_name = 'usuario'
 
 # URLs do Models Usuario
 urlpatterns = [
-    path('api/usuario/', include('usuario.api_urls')),
     path('usuario/', UsuarioIndexTemplateView.as_view(), name='usuario-index'),
     path('usuario/usuario/', UsuarioListView.as_view(), name='usuario-list'),
     path('usuario/usuario/create/', UsuarioCreateView.as_view(), name='usuario-create'),

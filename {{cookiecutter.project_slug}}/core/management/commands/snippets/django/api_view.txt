@@ -26,6 +26,5 @@ class $ModelName$GETAPI(OptimizedQuerySetMixin, ReadOnlyModelViewSet):
     queryset = $ModelName$.objects.select_related().all()
     serializer_class = $ModelName$GETSerializer
     filter_backend = [filters.SearchFilter]
-    # TODO Configure os parâmetros de filtro (filterset_fields) e buscar (search_fields)
     filterset_fields = []
     search_fields = []
