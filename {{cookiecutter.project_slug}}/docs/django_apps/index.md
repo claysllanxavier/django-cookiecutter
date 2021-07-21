@@ -18,13 +18,12 @@ forma logo após a criação inicial do projeto, aonde temos apenas a app usuari
 1. Executar o comando **python manage.py build nome_da_app** com as flags na ordem a seguir:
     1. **python manage.py build nome_da_app --forms** *serão geradas as forms dos models da app informada*
     1. **python manage.py build nome_da_app --views** *serão geradas as views dos models da app informada*
-    1. **python manage.py build nome_da_app --urls** *serão geradas as urls dos models da app informada*
+    1. **python manage.py build nome_da_app --urls** *serão geradas as urls dos models da p informada*
     1. ***Agora adicione no arquivos urls.py do projeto (base) o path para as urls da app***
-    1. ***Acesse o arquivo urls.py da app informada e comente a linha do path da api***  
-           path('api/xpto/', include('xpto.api_urls')),
-    1. **python manage.py build nome_da_app --templates** *serão geradas os templates html dos models da app 
+        path('core/', include('nome_da_app.urls', namespace="nome_da_app")),
+    2. **python manage.py build nome_da_app --templates** *serão geradas os templates html dos models da app 
    informada*
     1. **python manage.py build nome_da_app --parserhtml** *serão realizados os parser dos templates HTML contendo os 
    atributos dos models da app informada*    
     1. **python manage.py build nome_da_app --api** *serão gerados os arquivos da APIRest dos models da app informada*
-    1. ***descomente a linha da da etapa 5.e***
+    2. ***descomente a linha da da etapa 5.e***
