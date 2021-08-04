@@ -425,13 +425,6 @@ class Command(BaseCommand):
                 for line in api_views_file:
                     if line.startswith('from .models import'):
                         line = line.replace("\n", "") + f", {self.model} \n"
-                        # TODO Verificar se não ocorre erro após essa alteração.
-                        # models = line.split('import')[-1].rstrip()
-                        # if len(content_models.split()) == 0:
-                        #     continue
-                        # import_model = ', ' + content_models.split()[-1]
-                        # models += import_model
-                        # line = 'from .models import{}\n'.format(models)
                     data.append(line)
                 api_views_file.close()
 
@@ -960,6 +953,7 @@ class Command(BaseCommand):
         if options['templates']:
             Utils.show_message("Trabalhando apenas os templates.")
             self.__manage_templates()
+            self.__apply_pep()
             return
         elif options['api']:
             self.__manage_serializer()
@@ -976,10 +970,13 @@ class Command(BaseCommand):
         elif options['forms']:
             Utils.show_message("Trabalhando apenas os forms.")
             self.__manage_form()
+            self.__apply_pep()
             return
         elif options['views']:
             Utils.show_message("Trabalhando apenas as views.")
             self.__manage_views()
+            self.__apply_pep()
+            return
         elif options['renderhtml']:
             self.__manage_render_html()
             return

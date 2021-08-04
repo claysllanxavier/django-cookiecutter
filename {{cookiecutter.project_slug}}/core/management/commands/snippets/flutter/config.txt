@@ -52,7 +52,7 @@ class Config {
   static const DRFToken = "Token 2b817ddbb5b974e5a451a8156963de586d72079e";
 
   static const String uri_media = "media/";
-  static const String app_title = "Rotas ";
+  static const String app_title = "App Flutter";
   static const bool usingURL = false;
   static const double marginHead = 0.25;
 }
