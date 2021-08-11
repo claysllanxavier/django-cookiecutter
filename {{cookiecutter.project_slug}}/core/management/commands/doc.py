@@ -1,4 +1,6 @@
-"""Manager to generate project documentation for the development team using the Sphinx package
+"""
+Esse manager não é mais utilizado por que por decisão de padrão de projeto achamos melhor não gerar documentação
+baseada nas DocString's, dessa forma esse arquivo não tem recebido nenhum tipo de manutenção/atualização.
 """
 
 import os

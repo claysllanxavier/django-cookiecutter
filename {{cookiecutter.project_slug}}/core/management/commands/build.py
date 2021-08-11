@@ -1,5 +1,5 @@
-"""Manager responsible for creating CRUD boilerplates generating templates, urls,
-views and creating Rest API using DRF
+"""Esse manager é responsável por gerar os arquivos padrões de um projeto Django (templates, urls, views, forms)
+baseado nas informações contidas na classe da App do projeto Django.
 """
 
 import fileinput
@@ -14,8 +14,7 @@ from django.urls import resolve, reverse
 
 
 class Command(BaseCommand):
-    help = "Manager responsible for creating CRUD boilerplates generating templates, urls, views and creating " \
-           "Rest API using DRF"
+    help = "Manager responsável por gerar os arquivos padrões de um projeto Django."
 
     BASE_DIR = os.path.dirname(os.path.dirname(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -68,13 +67,6 @@ class Command(BaseCommand):
             f"{self.path_core}/management/commands/snippets/django/deletetemplate.txt"))
 
     def add_arguments(self, parser):
-        """Method for adding positional arguments (required) and optional arguments
-
-        Parameters
-        ----------
-        parser
-        """
-
         parser.add_argument('App', type=str)
         parser.add_argument('Model', type=str, nargs='?')
         parser.add_argument('--templates', action='store_true', dest='templates', help='Criar apenas os Templates')
@@ -87,91 +79,31 @@ class Command(BaseCommand):
         parser.add_argument('--format', action='store_true', dest='format', help='Aplicar PEP8 nos arquivos')
 
     def __get_verbose_name(self, app_name=None, model_name=None):
-        """
-
-        Parameters
-        ----------
-        app_name
-        model_name
-
-        Returns
-        -------
-
-        """
+        """Método responsável por recuperar o verbose_name do model da App Django."""
         return Utils.get_verbose_name(apps, app_name=app_name, model_name=model_name)
 
     def __check_dir(self, path) -> bool:
-        """
-
-        Parameters
-        ----------
-        path
-
-        Returns
-        -------
-
-        """
+        """Método responsável por verificar se o diretório já existe."""
         return Utils.check_dir(path)
 
     def __check_file(self, path):
-        """
-
-        Parameters
-        ----------
-        path
-
-        Returns
-        -------
-
-        """
+        """Método responsável por verificar se o arquivo já existe no caminho informado."""
         return Utils.check_file(path)
 
     def __check_content(self, path, text_check):
-        """
-
-        Parameters
-        ----------
-        path
-        text_check
-
-        Returns
-        -------
-
-        """
+        """Método responsável por verificar se o texto passado com parâmetro existe no conteúdo do arquivo."""
         return Utils.check_content(path, text_check)
 
     def __check_file_is_locked(self, path):
-        """
-
-        Parameters
-        ----------
-        path
-
-        Returns
-        -------
-
-        """
+        """Método responsável por verificar se o arquivo está travado para renderização/conversão"""
         return Utils.check_file_is_locked(path)
 
     def __get_snippet(self, path):
-        """
-
-        Parameters
-        ----------
-        path
-
-        Returns
-        -------
-
-        """
+        """Método para recuperar o conteúdo do arquivo de modelo para ser utilizado na geração dos demais arquivos."""
         return Utils.get_snippet(path)
 
     def __get_model(self):
-        """Method responsible for retrieving the App model instance
-
-        Returns:
-            Models instance or None
-        """
+        """Método responsável para recuperar a instância da class da App"""
         try:
             return apps.get_model(self.app, self.model)
         except Exception as error:
@@ -179,8 +111,6 @@ class Command(BaseCommand):
             return None
 
     def __apply_pep(self):
-        """Method responsible for applying the rules of PEP8 in the generated file
-        """
         try:
             __items_apply_pep8 = [self.path_urls, self.path_form, self.path_views, self.path_serializer,
                                   self.path_api_urls, self.path_api_views]
@@ -192,7 +122,7 @@ class Command(BaseCommand):
             pass
 
     def __manage_index_template(self):
-        """Method responsible for generating the App / Model index.html template"""
+        """Método responsável por gerar o template index.html da app"""
         try:
             Utils.show_message("Trabalhando na configuração do template inicial da APP")
             path = Path(f"{self.path_template_dir}/index.html")
@@ -209,9 +139,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_index_template: {error}", error=True)
 
     def __manage_detail_template(self):
-        """Method responsible for generating the App / Model detail.html template
-        """
-
+        """Método responsável por gerar o template detail.html da app"""
         try:
             Utils.show_message("Trabalhando na configuração do template de Detalhamento.")
             path = Path(
@@ -229,8 +157,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_detail_template : {error}")
 
     def __manage_list_template(self):
-        """Method responsible for generating the App / Model list.html template
-        """
+        """Método responsável por gerar o template list.html da app"""
         try:
             Utils.show_message("Trabalhando na configuração do template de Listagem.")
             path = Path(f"{self.path_template_dir}/{self.model_lower}_list.html")
@@ -249,13 +176,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_list_template : {error}")
 
     def __manage_update_template(self):
-        """
-        Method responsible for generating the App / Model update.html template
-
-        Returns
-        -------
-        None
-        """
+        """Método responsável por gerar o template update.html da app"""
         try:
             Utils.show_message("Trabalhando na configuração do template de Atualização.")
             path = Path(f"{self.path_template_dir}/{self.model_lower}_update.html")
@@ -274,8 +195,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_update_template: {error}")
 
     def __manage_create_template(self):
-        """Method responsible for generating the App / Model create.html template
-        """
+        """Método responsável por gerar o template create.html da app"""
         try:
             Utils.show_message("Trabalhando na configuração do template de Criação.")
             path = Path(f"{self.path_template_dir}/{self.model_lower}_create.html")
@@ -292,8 +212,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_create_template : {error}")
 
     def __manage_delete_template(self):
-        """Method responsible for generating the App / Model delete.html template
-        """
+        """Método responsável por gerar o template delete.html da app"""
         try:
             Utils.show_message("Trabalhando na configuração do template de Exclusão.")
             path = Path(f"{self.path_template_dir}/{self.model_lower}_delete.html")
@@ -311,8 +230,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_delete_template : {error}")
 
     def __manage_templates(self):
-        """Method responsible for generating the App / Model templates
-        """
+        """Método principal para chamar os demais métodos de geração dos templates da App/Model"""
         try:
             if self.__check_dir(self.path_template_dir) is False:
                 Utils.show_message("Criando o diretório dos Templates")
@@ -327,8 +245,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_templates : {error}", error=True)
 
     def __manage_api_url(self):
-        """Method responsible for creating the Rest API urls file for the model
-        """
+        """Método responsável por criar/configurar o arquivo de urls para a APIRest (DRF) """
         try:
             Utils.show_message("Trabalhando na configuração das Urls API do model {}".format(self.model))
             content = self._snippet_api_router
@@ -371,8 +288,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Ocorreu o erro : {error} no __manage_api_url")
 
     def __manage_api_view(self):
-        """Method responsible for creating the Rest API VIEWS file for the model
-        """
+        """Método responsável por criar/configurar o arquivo de views para a APIRest (DRF) """
         try:
             Utils.show_message("Trabalhando na configuração das Views da API do model {} ".format(self.model))
             content = self._snippet_api_view
@@ -459,8 +375,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_api_view: {error}", error=True)
 
     def __manage_serializer(self):
-        """Method responsible for creating the Rest API Serializer file for the model
-        """
+        """Método responsável por criar/configurar o arquivo de serializer para a APIRest (DRF) """
         try:
             Utils.show_message("Trabalhando na configuração do Serializer do model {}".format(self.model))
             content = self._snippet_serializer
@@ -512,8 +427,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_serializer : {error}")
 
     def __manage_form(self):
-        """Method responsible for creating the form class for the model
-        """
+        """Método responsável por criar/configurar o arquivo forms.py"""
         try:
             Utils.show_message("Trabalhando na configuração do Form do model {}".format(self.model))
             content = self._snippet_form
@@ -559,8 +473,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_form : {error}")
 
     def __manage_views(self):
-        """Method responsible for creating the ClassBasedViews CRUD file for the model
-        """
+        """Método responsável por criar/configurar o views.py"""
         try:
             __snippet_index_template = self._snippet_index_view
             Utils.show_message("Trabalhando na configuração das Views do model {}".format(self.model))
@@ -669,8 +582,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_views : {error}")
 
     def __manage_urls_api_app(self):
-        """Método para adicionar o path da app ao arquivo urls_api.py
-        """
+        """Método para adicionar o path da app ao arquivo urls_api.py"""
         try:
             content_exist = False
             new_data = ""
@@ -688,8 +600,7 @@ class Command(BaseCommand):
             print(f"Erro ao executar o __manage_urls_api_app de Build: {error}")
 
     def __manage_url(self):
-        """Method responsible for creating the urls file for the model
-        """
+        """Método para criar/configurar o arquivo urls.py do model"""
         try:
             Utils.show_message("Trabalhando na configuração das Urls do model {}".format(self.model))
             content = self._snippet_url
@@ -767,18 +678,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_url : {error}")
 
     def __render_modal_foreign_key(self, model, app, model_lower, field_name) -> str:
-        """Method responsible for rendering the HTML code block to manipulate values of a field of type foreignKey
-
-        Arguments:
-            model {Django Model} -- Django App model instance
-            app {Django App} -- Django App Instance
-            model_lower {str} -- Model name in lower case
-            field_name {str} -- Field name that references the other model
-
-        Returns:
-            (str) -- HTML code fragment to manipulate attribute data of type foreign key
-        """
-
+        """Método responsável por criar o código que gerencia os dados de um campo Fk utilizando um modal do Bootstrap"""
         try:
             content = self._snippet_modal_foreign_key
             content = content.replace("$ModelName$", model)
@@ -790,14 +690,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Ocorreu o erro : {error}")
 
     def __render_input(self, field) -> str:
-        """Method responsible for generating the fields of the HTML form
-
-        Arguments:
-            field {str} -- Model attribute instance
-
-        Returns:
-            (str) -- String containing the HTML code of the model attribute
-        """
+        """Método responsável por renderizar os elementos de formulários para os templates HTML"""
         try:
             types = ['AutoField', 'BLANK_CHOICE_DASH', 'BigAutoField', 'BigIntegerField', 'BinaryField', 'BooleanField',
                      'CharField', 'CommaSeparatedIntegerField', 'DateField', 'DateTimeField', 'DecimalField',
@@ -871,7 +764,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __render_input : {error}")
 
     def __manage_render_html(self):
-        """Method for rendering models CRUD templates"""
+        """Método para renderizar o código HTML a ser inserido nos arquivos de template do models."""
         try:
             model = self.__get_model()
             if model is None:
