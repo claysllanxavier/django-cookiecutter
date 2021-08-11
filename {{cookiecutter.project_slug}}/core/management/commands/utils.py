@@ -8,16 +8,15 @@ from django.contrib.contenttypes.models import ContentType
 class Utils(object):
     @staticmethod
     def show_message(text: str, error: bool = False):
-        __log = logging.getLogger('logger')
-        __log.setLevel(logging.INFO)
-        """Method do show message in console"""
-        """Method for displaying friendly messages on the flow of script execution on the terminal.
+        """ Método para mostrar uma mensagem no console do python com mensagem de erro ou não
 
         Arguments:
-            message {str} -- Message to be displayed on the terminal
-            error {bool} -- Attribute that determines whether the message is an error,
-                            being an error message the execution of the program is ended
+            message {str} -- String contendo a mensagem que será mostrada no console
+            error {bool} -- Booleano para determinar se a mensagem é de erro ou não. Sendo mensagem de erro o processo 
+                            é finalizado com o comando sys.exit()
         """
+        __log = logging.getLogger('logger')
+        __log.setLevel(logging.INFO)
         try:
             if error:
                 print("#"*100)
@@ -36,14 +35,6 @@ class Utils(object):
 
     @staticmethod
     def contain_number(text: str) -> bool:
-        """Method to check the text passed as a parameter has numeric characters
-
-        Arguments:
-            text {String} -- Text to be validated
-
-        Returns:
-            bool -- True if there is any number in the text parameter
-        """
         try:
             return any(character.isdigit() for character in text)
         except Exception as error:
@@ -52,15 +43,6 @@ class Utils(object):
 
     @staticmethod
     def get_verbose_name(apps, app_name: str = None, model_name: str = None) -> str:
-        """Method get verbose name class
-
-        Arguments:
-            app_name String -- App Name lower()
-            model_name String -- Model Name lower()
-
-        Returns:
-            String -- Verbose name model
-        """
         try:
             if app_name is not None and model_name is not None:
                 _model = ContentType.objects.get(
@@ -76,13 +58,13 @@ class Utils(object):
 
     @staticmethod
     def check_dir(path: str) -> bool:
-        """Method to check if the directory exists
+        """Método para verificar se o diretório passado como parâmetro existe
 
         Arguments:
-            path {str} -- Directory path
+            path {str} -- Caminho do diretório
 
         Returns:
-            bool -- True if the directory exists and False if not.
+            bool -- True se o diretório existir e False caso contrário.
         """
         __process_result = False
         try:
@@ -94,13 +76,13 @@ class Utils(object):
 
     @staticmethod
     def check_file(path: str) -> bool:
-        """Method to check if the file passed as a parameter exists
+        """Método para verificar se o arquivo existe no caminho passado como parâmetro
 
          Arguments:
-             path {str} - Path to the file
+             path {str} - Caminho do arquivo
 
          Returns:
-             bool - True if the file exists and False if not.
+             bool - True se o arquivo existir e False caso contrário
         """
         __process_result = False
         try:
@@ -112,14 +94,14 @@ class Utils(object):
 
     @staticmethod
     def check_content(path: str, text: str) -> bool:
-        """Method to check if the text exists within the file
+        """Método para verificar se o conteúdo do parâmetro 
 
          Arguments:
-             path {str} - Absolute path to the file to be analyzed
-             text {str} - Text to be searched within the given file
+             path {str} - Caminho do arquivo
+             text {str} - Texto para ser verificado se existe no conteúdo do arquivo passado no path
 
          Returns:
-             bool - True if the content is found and False if not.
+             bool - True se o conteúdo existir no arquivo e False caso contrário
         """
         __process_result = False
         try:
@@ -134,14 +116,14 @@ class Utils(object):
 
     @staticmethod
     def check_file_is_locked(path: str) -> bool:
-        """ Method to check if the file is locked
-         thus preventing it from being parsed again
+        """ Método para verificar se no arquivo passado como parâmetro existe a palavra FileLocked
+            caso existe o processo de parser do arquivo não será executado
 
          Arguments:
-             path {str} - Absolute path to the file to be analyzed
+             path {str} - Caminho para o arquivo a ser analizado
 
          Returns:
-             bool - True if it contains the word #FileLocked
+             bool - True se a palavra existir e False caso contrário
         """
         __process_result = False
         try:
@@ -156,15 +138,15 @@ class Utils(object):
 
     @staticmethod
     def get_snippet(path: str) -> str:
-        """Method to retrieve the value of the snippet file to be converted by merging with the values based on models
-           from the Django project
+        """Método para retornar o conteúdo do arquivo a ser utilizado como modelos para gerar o 
+           arquivo baseado no models, gerando os arquivos de templates, views, urls, serializers, 
+           forms e também os arquivos do projeto Flutter.
 
         Arguments:
-            path {str} - Absolute path to the optional file,
-                         must be passed when the snippet path is in the same flutter directory
+            path {str} - Caminho para o arquivo que serve como base para criar os arquivos do projeto
 
         Returns:
-            str -- Text to be used to interpolate model data
+            str -- Texto do snippet para ser parseado e depois gerar o arquivo do projeto Django/Flutter
         """
         __content = ""
         try:
