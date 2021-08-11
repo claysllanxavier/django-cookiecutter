@@ -21,14 +21,25 @@ class StateManager(Enum):
 
 
 class AppModel:
-    """Auxiliary class for accessing template files as well as recurring methods
+    """Classe responsável por todo o processo de análise do models do Django para 
+    gerar os arquivos tantos do projeto Django como do Flutter
+
+    Arquivos Django Gerados:
+        1 - templates (create, list, update, detail, delete)
+        2 - forms
+        3 - views
+        4 - urls
+        5 - api_views
+        6 - api_urls
+        7 - serializers
 
     Arguments:
-        path_flutter {String} -- Flutter project path
-        app_name {String} -- Name of the App to be mapped
+        path_flutter {String} -- Caminho do projeto Flutter
+        app_name {String} -- Nome do app do projeto que será mapeada para gerar os arquivos do projeto
 
     Keyword Arguments:
-        model_name {String} -- Name of the model to be mapped (default: {None})
+        model_name {String} -- Nome do models a ser mapeado, caso não seja passado o script fará a 
+                               análise de todos os models da app (default: {None})
     """
 
     def __init__(self, path_flutter, app_name, model_name=None):
@@ -52,33 +63,21 @@ class AppModel:
             raise error
 
     def get_path_app_dir(self):
-        """Method to return the app path in the Flutter project
-
-        Returns:
-            String -- Path of the app directory in the Flutter project
-        """
+        """Método para retornar o caminho aonde será criado o projeto Flutter"""
         try:
             return Path("{}/lib/apps/{}".format(self.path_flutter, self.app_name_lower))
         except Exception as error:
             Utils.show_message(f"Error in get_path_app_dir: {error}", error=True)
 
     def get_path_app_model_dir(self):
-        """ Method to return the model path in the Flutter project
-
-        Returns:
-            String -- Model directory path in the Flutter project
-        """
+        """ Método para retornar o caminho aonde será criado a app Flutter correspondente à app do projeto Django"""
         try:
             return Path("{}/lib/apps/{}/{}".format(self.path_flutter, self.app_name_lower, self.model_name_lower))
         except Exception as error:
             Utils.show_message(f"Error in get_path_app_model_dir {error}", error=True)
 
     def get_path_views_dir(self):
-        """Method to return the views directory path
-
-        Returns:
-            String -- Views directory path in the Flutter project
-        """
+        """Método para retornar o caminho aonde será criado o diretório das páginas/telas da app no projeto Flutter"""
         try:
             return Path("{}/lib/apps/{}/{}/pages/".format(self.path_flutter, self.app_name_lower,
                                                           self.model_name_lower))
@@ -86,11 +85,7 @@ class AppModel:
             Utils.show_message(f"Error in get_path_views_dir {error}", error=True)
 
     def get_path_files_views(self):
-        """Method to return the files of the pages in the Flutter project
-
-        Returns:
-            List<String> -- Path of each page file in create, detail, index, list and update
-        """
+        """Método para retornar a lista com os caminhos aonde serão criados os arquivos das páginas no projeto Flutter"""
         try:
             __create = Path("{}/lib/apps/{}/{}/pages/create.dart".format(self.path_flutter, self.app_name_lower,
                                                                          self.model_name_lower))
@@ -108,11 +103,8 @@ class AppModel:
             Utils.show_message(f"Error in get_path_files_views: {error}", error=True)
 
     def get_path_data_file(self):
-        """Method to retrieve data.dart file path
-
-        Returns:
-            String -- Path to file data.dart
-        """
+        """Método para retornar o o caminho aonde será criado o arquivo de persistência local do modelo no projeto
+        Flutter"""
         try:
             return Path("{}/lib/apps/{}/{}/data.dart".format(self.path_flutter, self.app_name_lower,
                                                              self.model_name_lower))
@@ -120,11 +112,7 @@ class AppModel:
             Utils.show_message(f"Error in get_path_data_file: {error}", error=True)
 
     def get_path_model_file(self):
-        """Method to retrieve the model.dart file path
-
-        Returns:
-            String -- Path to file model.dart
-        """
+        """Método para retornar o o caminho aonde será criado o arquivo do modelo no projeto Flutter"""
         try:
             return Path("{}/lib/apps/{}/{}/model.dart".format(self.path_flutter, self.app_name_lower,
                                                               self.model_name_lower))
@@ -132,11 +120,8 @@ class AppModel:
             Utils.show_message(f"Error in get_path_model_file {error}", error=True)
 
     def get_path_controller_file(self):
-        """Method to retrieve the path to the controller.dart file
-
-        Returns:
-            String -- Path to file controller.dart
-        """
+        """Método para retornar o o caminho aonde será criado o arquivo do controller no projeto Flutter.
+        Utilizado apenas nos projetos que utilizam a gerência de estado do Provider (deprecated)"""
         try:
             return Path("{}/lib/apps/{}/{}/controller.dart".format(self.path_flutter, self.app_name_lower,
                                                                    self.model_name_lower))
@@ -144,11 +129,8 @@ class AppModel:
             Utils.show_message(f"Error in get_path_controller_file {error}", error=True)
 
     def get_path_provider_file(self):
-        """Method to retrieve the path to the provider.dart file
-
-        Returns:
-            String -- Path to file controller.dart
-        """
+        """Método para retornar o o caminho aonde será criado o arquivo do provider no projeto Flutter.
+        Utilizado apenas nos projetos que utilizam a gerência de estado do Provider (deprecated)"""
         try:
             return Path("{}/lib/apps/{}/{}/provider.dart".format(self.path_flutter, self.app_name_lower,
                                                                  self.model_name_lower))
@@ -156,10 +138,8 @@ class AppModel:
             Utils.show_message(f"Error in get_path_provider_file {error}", error=True)
 
     def get_path_cubit_file(self):
-        """Method to retrieve the path to the cubit.dart file
-
-        Returns:
-            String -- Path to file cubit.dart
+        """Método para retornar o o caminho aonde será criado o arquivo Cubit no projeto Flutter.
+        Utilizado apenas nos projetos que utilizam a gerência de estado do Cubit (Package Padrão)
         """
         try:
             return Path("{}/lib/apps/{}/{}/cubit.dart".format(self.path_flutter, self.app_name_lower,
@@ -168,10 +148,8 @@ class AppModel:
             Utils.show_message(f"Error in get_path_provider_file {error}", error=True)
 
     def get_path_cubit_state_file(self):
-        """Method to retrieve the path to the state of cubit file
-
-        Returns:
-            String -- Path to file controller.dart
+        """Método para retornar o o caminho aonde será criado o arquivo state no projeto Flutter.
+        Utilizado apenas nos projetos que utilizam a gerência de estado do Cubit (Package Padrão)
         """
         try:
             return Path("{}/lib/apps/{}/{}/state.dart".format(self.path_flutter, self.app_name_lower,
@@ -180,10 +158,8 @@ class AppModel:
             Utils.show_message(f"Error in get_path_provider_file {error}", error=True)
 
     def get_path_service_file(self):
-        """Method to retrieve the path to the service.dart file
-
-        Returns:
-            String -- Path to file service.dart
+        """Método para retornar o o caminho aonde será criado o arquivo service no projeto Flutter, responsável
+        por acessar a APIRest utilizando o pacote dio.
         """
         try:
             return Path("{}/lib/apps/{}/{}/service.dart".format(self.path_flutter, self.app_name_lower,
@@ -192,8 +168,7 @@ class AppModel:
             Utils.show_message(f"Error in get_path_service_file {error}", error=True)
 
     def print_string(self):
-        """Method for printing class attributes to assist in debugging the script
-        """
+        """Método auxiliar para imprimir no console/terminal do python dados sobre o parser do modelo"""
 
         print("App: {} Name: {} - {}".format(self.app, self.app_name, self.app_name_lower))
         print("Model: {} Name: {} - {}".format(self.model, self.model_name, self.model_name_lower))
@@ -218,11 +193,8 @@ class AppModel:
             print("None")
 
     def check_inherited_base(self, model):
-        """ Method to check if the model that was passed to be parsed inherits from the Base Model class of Core
-
-        Returns:
-            Bool -- True when method inherits from class false when not inheriting
-        """
+        """ Método para verificar se o model passado como parâmetro herda da classe Base do projeto Core. 
+        Apenas as classes que herdam de Base serão analisadas e consequentemente gerados os arquivos Django e Flutter."""
         try:
             __instance = apps.get_app_config(self.app_name_lower)
             __model = __instance.get_model(model)
@@ -232,14 +204,7 @@ class AppModel:
             return False
 
     def get_app_model_name(self, title_case=False):
-        """ Method to return a String with the name of the App and Model in NomeAppNomeModel format.
-
-        Arguments:
-            title_case {bool} -- Determines whether the return should be AppNameModelName or AppNameModelName
-
-        Returns:
-            String -- String in the format NomeAppModel or nomeAppModel
-        """
+        """ Método responsável por retornar o nome do Models das app do projeto Django"""
         try:
             if title_case is True:
                 return f"{self.app_name.title()}{self.model_name}"
@@ -250,9 +215,9 @@ class AppModel:
 
 
 class Command(BaseCommand):
-    help = """Manager responsible for generating the flutter project as well as performing other operations such as 
-              configuring the pubspec.yaml file, changing the code of the main.dart class and also generating the 
-              codes for each app based on the models of the Django project"""
+    help = """Manager responsável por analisar as classes de modelos do projeto Django para gerar os demais arquivos 
+    do projeto Django (templates, forms, views, urls, serializers) seguindo os arquivos de modelos, snippets, e também 
+    gerar o projeto Flutter correspondente às apps do Django"""
 
     def __init__(self):
         super().__init__()
@@ -323,13 +288,6 @@ class Command(BaseCommand):
                      "DATETIME", "TEXT", "TEXT", "TEXT", "INT", ]
 
     def add_arguments(self, parser):
-        """Method for adding positional arguments (required) and optional arguments
-
-        Parameters
-        ----------
-        parser
-        """
-
         parser.add_argument("App", type=str, nargs="?")
         parser.add_argument("Model", type=str, nargs="?")
         parser.add_argument("--app", action="store_true", dest="app", help="Criar a App e seus models")
@@ -348,14 +306,13 @@ class Command(BaseCommand):
         parser.add_argument("--routers", action="store_true", dest="routers", help="Criar o arquivo de rotas nomeadas.")
 
     def __ignore_base_fields(self, field):
-        """Method to check if the model attribute should be ignored in the parser process according to
-           tuple __ignore_fields
+        """Método responsável por remover da análise do models os atributos herdados da classe pai Base
 
         Arguments:
-            field {String} -- Field name
+            field {String} -- Nome do atributo
 
         Returns:
-            bool -- True if it is to be ignored.
+            bool -- True se o atributo for um dos atributos da classe pai, caso contrário False.
         """
         try:
             __ignore_fields = ["id", "enabled", "deleted", "createdOn", "created_on", "updatedOn", "updatedOn", ]
@@ -364,12 +321,12 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __ignore_base_fields: {error}", error=True)
 
     def __to_camel_case(self, text, flutter=False):
-        """Method to convert the text passed in the text parameter from the snake_case format to the camelCase format
+        """Método responsável por converter uma String no padrão camelCase, caso o parâmetro Flutter for True, 
+        o retorno será no formato camelCase do padrão Dart/Flutter
 
         Arguments:
-            str {str} -- Text to be converted
-            flutter {bool} -- Determines whether the CamelCase return should be camelCase or CamelCase
-                              (default: {False})
+            str {str} -- Texto a ser convertido
+            flutter {bool} -- Determina se o retorno deve seguir o padrão camelCase do Dart/Flutter (default: {False})
         """
         try:
             components = text.split("_")
@@ -384,19 +341,17 @@ class Command(BaseCommand):
             return None
 
     def __get_snippet(self, path=None, file_name=None, state_manager=False):
-        """Method to retrieve the value of the snippet file to be converted by merging with the values based on models
-           from the Django project
+        """Método para recuperar o valor do arquivo de snippet a ser convertido pela substituição com os valores 
+        baseados em modelos do projeto Django
 
         Arguments:
-            path {str} - Absolute path to the optional file,
-                         must be passed when the snippet path is in the same flutter directory
-            file_name {str} - Name of the snippet file in xpto.txt format, must be passed together
-                              with state_manager = True to retrieve the correct state manage snippet
-            state_manager {bool} - Value to determine whether the snippet will be retrieved taking into account
-                                   the chosen state_manager
+            path {str} - Caminho do arquivo snippet a ser utilizado como padrão para gerar o arquivo resultante.
+            file_name {str} - Nome do arquivo snippet a ser lido
+            state_manager {bool} - Booleano para determinar se o snippet a ser lido é de algum dos pacotes
+                                   de gerência de estado do projeto Flutter (deprecated)
 
         Returns:
-            str -- Text to be used to interpolate model data
+            str -- Texto base a ser utilizado para geração dos arquivos resultantes da conversão
         """
 
         try:
@@ -417,7 +372,7 @@ class Command(BaseCommand):
             sys.exit()
 
     def __init_flutter(self):
-        """Method responsible for creating the basic structure of the flutter project
+        """Método para iniciar o projeto Flutter 
         """
         try:
             if not Utils.check_dir(self.flutter_dir):
@@ -429,9 +384,8 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __init_flutter: {error}", error=True)
 
     def __build_flutter(self):
-        """
-        Method to update the project dependency package, run the pub get command to download the dependency packages
-        and also update the main.dart file based on the corresponding state manager snippet
+        """ Método para após criado o projeto Flutter realizar os comandos de instalação das dependências do projeto
+        e atualização do arquivo principal do projeto main.dart
         """
         try:
             if Utils.check_dir(self.flutter_dir):
@@ -456,8 +410,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __build_flutter: {error}", error=True)
 
     def __build_menu_home_page_items(self):
-        """Method responsible for generating the flutter code that creates the navigation component using cards
-           from the APP's home screen."""
+        """Método responsável por gerar os componentes visual de acesso aos módulos no projeto Flutter"""
         try:
             __items_menu = ""
             for app in FLUTTER_APPS:
@@ -473,8 +426,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __build_menu_home_page_itens: {error}", error=True)
 
     def __register_provider(self):
-        """Method responsible for registering the Provider's of the classes in the main.dart file when choosing the
-           Provider state manager"""
+        """Método responsável por registrar no arquivo main.dart os Providers das apps do projeto Flutter (deprecated)"""
         __register_provider = ""
         __import_provider = ""
         try:
@@ -494,7 +446,7 @@ class Command(BaseCommand):
         return __import_provider, __register_provider
 
     def __register_cubit(self) -> tuple:
-        """Method for registering Cubit components in the main.dart file when the Cubit state manager has been chosen"""
+        """Método responsável por registrar no arquivo main.dart os módulos cubit de gerência de estado do projeto Flutter"""
         _register = ""
         __import = ""
         try:
@@ -514,8 +466,8 @@ class Command(BaseCommand):
         return __import, _register
 
     def __mapping_all_application(self):
-        """Method responsible for browsing all Django apps configured in the FLUTTER_APPS tuple in the Django
-           project's settings.py file, which should be used as the basis for generating the Flutter project"""
+        """Método para ler da variável FLUTTER_APPS do arquivo settings.py do projeto Django quais apps deve ser 
+        geredas no projeto Flutter."""
         try:
             __imports_views = ""
             __imports_controllers = ""
@@ -547,11 +499,7 @@ class Command(BaseCommand):
                 f"Error in __mapping_all_application: {error}", error=True)
 
     def __indexpage_parser(self, app):
-        """Method for creating the Model index page
-
-        Arguments:
-            app {AppModel} -- AppModel class instance
-        """
+        """Método para criar a página de index da app no projeto Flutter"""
         try:
             __indexpage_file = Path(f"{app.get_path_views_dir()}/index.dart")
             if Utils.check_file_is_locked(__indexpage_file):
@@ -570,11 +518,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __indexpage_parser {error}", error=True)
 
     def __listpage_parser(self, app):
-        """Method for creating the Model listing page
-
-         Arguments:
-             app {AppModel} - AppModel class instance
-        """
+        """Método para criar a página de listagem da app no projeto Flutter"""
         try:
             __listpage_file = Path(f"{app.get_path_views_dir()}/list.dart")
             if Utils.check_file_is_locked(__listpage_file):
@@ -593,14 +537,8 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __listpage_parser: {error}", error=True)
 
     def __get_attributes_data(self, attribute, model_name, name, name_title) -> str:
-        """Method for recovering the structure of field attributes to the create and update pages
-
-         Arguments:
-             attribute {String} - String with the type of attribute to be render
-
-         Returns:
-             String - Data attribute structure
-        """
+        """Método para analisar os atributos do models do Django para gerar o valor correspondente 
+        para o arquivo que será gerado após a análise."""
 
         __attribute = ""
         try:
@@ -634,15 +572,8 @@ class Command(BaseCommand):
             return __attribute
 
     def __get_controllers_data(self, attribute, model_name, name, name_title) -> str:
-        """Method to build the command line responsible for retrieving values
-         controller
-
-         Arguments:
-             attribute {String} - String containing the type of the attribute being parsed
-
-         Returns:
-             String - Line containing the dart command to retrieve the controller value
-        """
+        """Método para analisar os atributos do models Django para gerar os campos correspondentes no 
+        projeto Flutter para quando for utilizado a gerência de estado Provider (deprecated)"""
         __controllers_data = ""
         try:
             if attribute == "int":
@@ -672,13 +603,7 @@ class Command(BaseCommand):
             return __controllers_data
 
     def __create_update_page_parser(self, app, create_page=True):
-        """Method responsible for creating the app's data persistence page
-
-        Arguments:
-            app {String} -- Django app to be used as a basis for creating registration creation and editing page
-            create_page {bool} -- Boolean used to determine if the insert or update page is to be created
-                                  (default{True})
-        """
+        """MMétodo para criar a página de criação/atualização da app no projeto Flutter"""
         try:
             if create_page is True:
                 __create_page_file = Path(f"{app.get_path_views_dir()}/create.dart")
@@ -745,11 +670,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __create_update_page_parser: {error}", error=True)
 
     def __detailpage_parser(self, app):
-        """Method for creating the Model detail page
-
-         Arguments:
-             app {AppModel} - AppModel class instance
-        """
+        """Método para criar a página de detalhe da app no projeto Flutter"""
         try:
             __detail_page_file = Path(f"{app.get_path_views_dir()}/detail.dart")
 
@@ -771,30 +692,27 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __detailpage_parser {error}", error=True)
 
     def __widget_parser(self, app):
-        """Method responsible for creating the widget.dart file of the app where all the widgets needed to compose
-           the pages of the flutter app must be saved
-
-         Arguments:
-             app {AppModel} - AppModel class instance
-        """
+        """Método responsável por criar o arquivo widget.dart de cada app do projeto Flutter mapeada do projeto Django."""
         try:
             __widget_file = Path(f"{app.get_path_views_dir()}/widget.dart")
-
             if Utils.check_file_is_locked(__widget_file):
                 return
-
             content = ParserContent(["$ModelClass$"], [app.model_name],
                                     self.__get_snippet(f"{self.snippet_dir}widget.txt"), ).replace()
-
             with open(__widget_file, "w", encoding="utf-8") as page:
                 page.write(content)
-
         except Exception as error:
             Utils.show_message(f"Error in __widget_parser {error}", error=True)
 
     def __build_auth_app(self):
-        """Method responsible for creating the authentication app on the flutter, bringing by default authentication
-           using Firebase.
+        """Método responsável por criar a app de autenticação no projeto Flutter utilizando o Firebase como back end de
+        autenticação. Já traz por padrão os métodos de autentica por:
+            1 - Email
+            2 - Google Account
+            3 - Facebook
+            4 - Apple Account
+        É necessário trabalhar na geração dos tokens de acesso, bem como criar um projeto no Firebase e habilitar os tipos
+        de autenticação que desejam implementar.
         """
         try:
             __file = ""
@@ -861,11 +779,8 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __build_auth_app {error}", error=True)
 
     def __data_parser(self, app):
-        """Method responsible for creating the local data persistence file on the smartphone.
-
-        Arguments:
-            app {AppModel} -- AppModel class instance
-        """
+        """Método responsável por criar o arquivo contendo o código para persistência de dados da app Flutter, utiliza
+        o pacote Sembast como padrão."""
         try:
             __data_file = app.get_path_data_file()
             if Utils.check_file_is_locked(__data_file):
@@ -882,56 +797,41 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __data_parser {error}", error=True)
 
     def __build_custom_dio(self):
-        """Method responsible for creating the class that manages all access to the API's rest using the
-           Dio flutter package as a base.
-        """
+        """Método para criar a classe customizada de comunicação HTTP no projeto Flutter"""
         try:
             __dio_file = Path(f"{self.flutter_dir}/lib/utils/custom_dio.dart")
-
             if Utils.check_file_is_locked(__dio_file):
                 return
-
             content = ParserContent(["$project$", ], [self.flutter_project, ],
                                     self.__get_snippet(f"{self.snippet_dir}/custom_dio.txt")).replace()
-
             with open(__dio_file, "w", encoding="utf-8") as http_request:
                 http_request.write(content)
         except Exception as error:
             Utils.show_message(f"Error in __build_custom_dio {error}", error=True)
 
     def __controller_parser(self, app):
-        """Method responsible for creating the Model controller file
-
-         Arguments:
-             app {AppModel} - AppModel class instance
+        """Método responsável por criar a classe de controller da app Flutter, quando é utilizado o pacote
+        de gerência de estado Provider (deprecated)
         """
         try:
             if app.model is None:
                 return
-
             __controller_file = app.get_path_controller_file()
             if Utils.check_file_is_locked(__controller_file):
                 return
-
             content = ParserContent(["$ModelClass$", "$ModelClassCamelCase$", ],
                                     [app.model_name, self.__to_camel_case(app.model_name, True)],
                                     self.__get_snippet(file_name="controller.txt", state_manager=True)).replace()
-
             if not Utils.check_file(__controller_file):
                 os.makedirs(__controller_file)
-
             with open(__controller_file, "w", encoding="utf-8") as controller_file:
                 controller_file.write(content)
-
         except Exception as error:
             Utils.show_message(f"Error in __controller_parser: {error}", error=True)
-
+    
     def __provider_parser(self, app):
-        """Method responsible for creating the Model provider file
-
-         Args:
-             app {AppModel} - AppModel class instance
-        """
+        """Método responsável por gerar a conversão da app Django para o projeto Flutter, quando for utilizada a 
+        gerência de estado Provider (deprecated)"""
         try:
             if app.model is None:
                 print("Informe o App")
@@ -940,86 +840,62 @@ class Command(BaseCommand):
 
             if Utils.check_file_is_locked(__file):
                 return
-
             content = ParserContent(["$ModelClass$", "$ModelClassCamelCase$", ],
                                     [app.model_name, self.__to_camel_case(app.model_name, True)],
                                     self.__get_snippet(file_name="provider.txt", state_manager=True)).replace()
-
             with open(__file, "w", encoding="utf-8") as fileProvider:
                 fileProvider.write(content)
-
         except Exception as error:
             Utils.show_message(f"Error in __provider_parser: {error}", error=True)
 
     def __cubit_parser(self, app):
-        """Method responsible for creating the Cubit file based on the Django App passed as a parameter
-
-         Args:
-             app {AppModel} - AppModel class instance
-        """
+        """Método responsável por gerar a conversão da app Django para o projeto Flutter, quando for utilizada a 
+        gerência de estado Cubit/Bloc, essa gerência de estado é o padrão adotado por esse projeto."""
         try:
             if app.model is None:
                 print("Informe o App")
                 return
-
             __file_cubit = app.get_path_cubit_file()
             __file_cubit_state = app.get_path_cubit_state_file()
-
             if Utils.check_file_is_locked(__file_cubit):
                 return
-
             content = ParserContent(["$ModelClass$", "$ModelClassCamelCase$", ],
                                     [app.model_name, self.__to_camel_case(app.model_name, True)],
                                     self.__get_snippet(file_name="cubit.txt", state_manager=True)).replace()
-
             with open(__file_cubit, "w", encoding="utf-8") as file_cubit:
                 file_cubit.write(content)
-
             if Utils.check_file_is_locked(__file_cubit_state):
                 print("Arquivo travado")
                 return
-
             content = ParserContent(["$ModelClass$", "$ModelClassCamelCase$", ],
                                     [app.model_name, self.__to_camel_case(app.model_name, True)],
                                     self.__get_snippet(file_name="state.txt", state_manager=True)).replace()
-
             with open(__file_cubit_state, "w", encoding="utf-8") as file_sate_cubit:
                 file_sate_cubit.write(content)
-
         except Exception as error:
             Utils.show_message(f"Error in __cubit_parser: {error}", error=True)
-
+    
     def __service_parser(self, app):
-        """Method responsible for creating the Django App class of service passed by parameter
-
-        Arguments:
-            app {AppModel} -- AppModel class instance
-        """
+        """Método responsável por criar a classe de acesso à APIRest"""
         try:
             if app.model is None:
                 return
-
             __service_file = app.get_path_service_file()
             if Utils.check_file_is_locked(__service_file):
                 return
-
             content = ParserContent(["$ModelClass$", "$App$", "$Model$", "$ModelClassCamelCase$", "$project$", ],
                                     [app.model_name, app.app_name_lower, app.model_name_lower,
                                      self.__to_camel_case(app.model_name, True), self.flutter_project],
                                     self.__get_snippet(file_name="service.txt", state_manager=True)).replace()
-
             if not Utils.check_file(__service_file):
                 os.makedirs(__service_file)
-
             with open(__service_file, "w", encoding="utf-8") as service_file:
                 service_file.write(content)
-
         except Exception as error:
             Utils.show_message(f"Error in __service_parser: {error}", error=True)
 
     def __model_parser(self, app):
-        """Method responsible for creating the model class based on the Django App passed by parameter.
-        """
+        """Método responável por criar a classe de modelo no projeto Flutter baseado na app do Django"""
         try:
             if app.model is None:
                 return
@@ -1127,8 +1003,8 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __parser_model: {error}", error=True)
 
     def __build_mobx(self):
-        """Method to be executed when the project was created using MobX as state management,
-           which executes the build_runner command to generate the xpto.g.dart files
+        """Método utilizado para gerar os arquivos do projeto Flutter baseados no models do Django, quando a gerência de 
+        estado do projeto Flutter for o MobX (deprecated)
         """
         try:
             if self.state_manager_provider:
@@ -1143,9 +1019,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __build_mobx: {error}", error=True)
 
     def __build_settings_controller(self):
-        """Method responsible for creating the flutter application configuration app, bringing standard
-           methods to control the theme of the App.
-        """
+        """Método responsável por criar a app no projeto Flutter responsável pelas configurações da App."""
         try:
             if not Utils.check_dir(self.app_configuration):
                 os.makedirs(self.app_configuration)
@@ -1172,43 +1046,33 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __build_settings_controller: {error}", error=True)
 
     def __get_yaml_file(self):
-        """Method responsible for retrieving the snippet from the pubspec.yaml file"""
+        """Método responsável por gerar o arquivo de dependências do projeto Flutter"""
         try:
             return Path(f"{self.flutter_dir}/pubspec.yaml")
         except Exception as error:
             Utils.show_message(f"Error in __get_yaml_file:{error}", error=True)
 
     def __add_packages(self):
-        """Method responsible for adding the packages (dependencies) of the flutter project according to the chosen
-           state management.
-        """
+        """Método responsável por atualizar o arquivo de gerenciamento de dependências com os pacotes padrões
+        utilizado no projeto Flutter."""
         try:
             __path = self.__get_yaml_file()
-
             snippet = ParserContent(["$AppPackage$", "$AppDescription$"],
                                     [self.project.lower(), f"Projeto Flutter do sistema Django {self.project}"],
                                     self.__get_snippet(file_name="yaml.txt", state_manager=True)).replace()
-
             with open(__path, "w", encoding="utf-8") as yaml_file:
                 yaml_file.write(snippet)
-
         except Exception as error:
             Utils.show_message(f"Error in __add_packages: {error}", error=True)
 
     def __build_utils(self):
-        """Method responsible for creating the utils package containing constants, and general methods used by
-           the project's apps
-        """
+        """Método responsável por criar os arquivos com configurações, variáveis e widgets no projeto Flutter."""
         try:
             if not Utils.check_dir(self.utils_dir):
                 os.makedirs(self.utils_dir)
-
             __config_snippet = self.__get_snippet(f"{self.snippet_dir}config.txt")
-
             __util_snippet = self.__get_snippet(f"{self.snippet_dir}util.txt")
-
             __controller_snippet = self.__get_snippet(file_name="process.txt", state_manager=True)
-
             if Utils.check_file(self.config_file) is False:
                 __config_snippet = ParserContent(["$AppName$", "$DjangoAPIPath$"],
                                                  [SYSTEM_NAME, API_PATH], __config_snippet).replace()
@@ -1253,9 +1117,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __build_utils {error}", error=True)
 
     def __build_user_interface(self):
-        """Method responsible for creating the package containing the project's font settings and also the
-           general app widgets
-        """
+        """Método responsável por criar os elementos gráficos/visuais do projeto Flutter com os valores padrões"""
         try:
             if not Utils.check_dir(self.ui_dir):
                 os.makedirs(self.ui_dir)
@@ -1278,8 +1140,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __build_user_interface: {error}", error=True)
 
     def __create_source_from_model(self):
-        """Method for creating apps when App and Model are informed
-        """
+        """Método responsável por criar os arquivos do projeto Django baseados no models"""
         Utils.show_message("Criando as apps baseado na App e no Model")
         try:
             self.__create_source(self.current_app_model.app_name, self.current_app_model.model_name)
@@ -1287,8 +1148,8 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __create_source_from_model: {error}", error=True)
 
     def __create_source_from_generators(self):
-        """Method for creating apps when only the App is informed
-        """
+        """Método responsável por criar os arquivos do projeto Django, quando não for informado o nome da App, 
+        nesse caso o método percorre todas as apps do projeto Django (deprecated)"""
         Utils.show_message("Criando as apps baseado na App e nos Generators")
         try:
             for model in self.current_app_model.models:
@@ -1298,8 +1159,8 @@ class Command(BaseCommand):
                 f"Error in __create_source_from_generators: {error}", error=True)
 
     def __create_source(self, app_name, model_name):
-        """Method responsible for creating the directory structure based on Django's App / Models
-        """
+        """Método principal que chama os demais métodos para geração dos arquivos do projeto Django e do projeto 
+        Flutter"""
         try:
             if app_name is None:
                 Utils.show_message("É necessário passar a App")
@@ -1398,11 +1259,9 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __create_source: {error}", error=True)
 
     def __build_internationalization(self):
-        """Method responsible for configuring the internationalization package in the project
-        """
+        """Método responsável por criar os arquivos de internacionalização dos textos no projeto Flutter"""
         try:
             snippet = self.__get_snippet(f"{self.snippet_dir}localization.txt")
-
             path_localization = os.path.join(self.utils_dir, "localization.dart")
 
             if Utils.check_file_is_locked(path_localization):
@@ -1432,7 +1291,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in _build_internationalization: {error}", error=True)
 
     def __create_exception_class(self):
-        """Method responsible to create exception class"""
+        """Método responsável por criar a classe de gerenciamento das Exceptions no projeto Flutter"""
         try:
             path_exceptions = Path(f"{self.flutter_dir}/lib/utils/exception.dart")
             if Utils.check_file_is_locked(path_exceptions):
@@ -1445,9 +1304,7 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __create_exception_class: {error}")
 
     def __create_named_route(self):
-        """
-        Method responsible to create named route file
-        """
+        """Método responsável por criar as rotas de navegação nomeadas no projeto Flutter"""
         __pages_name_list = ['IndexPage', 'DetailPage', 'ListPage', 'UpdatePage', 'AddPage']
         __imports_name_list = ['index', 'list', 'detail', 'update', 'create']
         __snippet_route = "case $ClassName$$PageName$.routeName:\n"
@@ -1499,8 +1356,8 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __create_name_route: {error}")
 
     def __replace_main(self):
-        """Method responsible for updating the main.dart file according to the chosen state management
-        """
+        """Método responsável por atualizar o conteúdo do arquivo main.dart no projeto Flutter contendo as estruturas
+        de navegação para as apps geradas via nuvols core."""
         __imports = ""
         __list_itens = []
         try:
@@ -1559,9 +1416,14 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __replace_main: {error}", error=True)
 
     def call_methods(self, options):
-        """Method that identifies which command was requested by the user to be executed, before calling the method,
-           the inputs informed by the user are validated, thus avoiding program execution errors due to the absence of
-           mandatory parameters
+        """
+        Método que identifica qual comando foi solicitado pelo usuário para ser executado, antes de chamar o método,
+        as entradas informadas pelo usuário são validadas, evitando erros de execução do programa devido à ausência de
+        parâmetros obrigatórios. 
+            
+        Por uma questão de padrão de projeto as possibilidades de escolha do pacote de gerência
+        de estados para o projeto Flutter foram alteradas, agora todo projeto gerado utiliza como pacote de gerência 
+        de estado o pacote o Cubit/Bloc
         """
         if options["init_provider"] is False and options["init_mobx"] is False and options["init_cubit"] is False:
             options["init_cubit"] = True
@@ -1636,9 +1498,6 @@ class Command(BaseCommand):
 
             self.current_app_model = AppModel(self.flutter_project, app)
             self.call_methods(options)
-            """TODO Criar método para gerar o projeto baseado apenas na App
-            sendo necessário percorrer todos os models da App e chamar o 
-            método self.__create_source_from_model()"""
             return
 
         if not FLUTTER_APPS:

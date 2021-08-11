@@ -1,6 +1,7 @@
 class ParserContent:
-    """Class responsible for parsing the content of the snippets for the final files
-    with the interpolation of the variables with the attributes of the model"""
+    """ Classe responsável para realizar o parser dos dados de modelo da classe Django para os 
+    arquivos tando do projeto Django como do projeto Flutter
+    """
 
     def __init__(self, keys: list, contents: list, snippet: str):
         super().__init__()
@@ -9,14 +10,11 @@ class ParserContent:
         self.contents = contents
 
     def replace(self) -> str:
-        """Method to replace the snippet keys by the content..
+        """Método responsável por substituir as chaves contidas nos arquivos de snippet pelos
+        dados contidos no models
 
         Returns:
-            str: Content to be saved in the definitive class / model file.
-
-        Raises:
-            When the values of keys and contents have different sizes.
-            When any value of keys contents or snippet is not informed.
+            str: String para ser salva nos arquivos gerados no projeto Django e Flutter.
         """
         try:
             if len(self.keys) == 0 or len(self.contents) == 0 or len(self.snippet.strip()) == 0:
