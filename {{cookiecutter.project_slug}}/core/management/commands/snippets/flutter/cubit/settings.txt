@@ -12,7 +12,7 @@ import 'package:equatable/equatable.dart';
 part 'state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
-  bool lightTheme;
+  bool lightTheme = true;
 
 SettingsCubit() : super(SettingsInitial());
 
@@ -20,7 +20,7 @@ Future<void> setLightTheme() async {
     try {
       emit(SettingsProcessState());
       lightTheme = true;
-      emit(SettingsSuccessState());
+      emit(SettingsSuccessState(successMessage: ""));
     } catch (e) {
       emit(SettingsErrorState(e.toString()));
     }
@@ -31,7 +31,7 @@ Future<void> setDarkTheme() async {
     try {
       emit(SettingsProcessState());
       lightTheme = false;
-      emit(SettingsSuccessState());
+      emit(SettingsSuccessState(successMessage: ""));
     } catch (e) {
       emit(SettingsErrorState(e.toString()));
     }

@@ -29,7 +29,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateMixin {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formSignup = GlobalKey<FormState>();
-  AnimationController _animationController;
+  AnimationController? _animationController;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   FacebookLogin facebookLogin = FacebookLogin();
   final _formKey = GlobalKey<FormState>();
@@ -38,7 +38,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
   bool _registerWithEmail = false;
   bool _registerWithOTP = false;
   bool _inputCodeConfirmationOTP = false;
-  String _verificationID;
+  String? _verificationID;
   TextEditingController _nameController = TextEditingController();
   TextEditingController _loginController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -50,7 +50,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this);
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
       _loadData();
     });
   }
@@ -179,11 +179,11 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
       if (user != null) {
         // Cadastrando o usuário no Backend
         AuthModel authModel = AuthModel(
-            name: user.user.displayName,
-            email: user.user.email ?? user.user.providerData[0].email,
-            phoneNumber: user.user.phoneNumber,
-            photoUrl: user.user.photoURL,
-            firebaseId: user.user.uid);
+            name: user.user?.displayName ?? "",
+            email: user.user?.email ?? user.user?.providerData[0].email ?? "",
+            phoneNumber: user.user?.phoneNumber ?? "",
+            photoUrl: user.user?.photoURL ?? "",
+            firebaseId: user.user?.uid ?? "");
         final authCubit = context.read<AuthCubit>();
         await authCubit.signUp(authModel);
         if (authCubit.state is AuthSuccessState) {
@@ -234,25 +234,29 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     String accessToken, idToken;
-    GoogleAuthCredential credential;
+    GoogleAuthCredential? credential;
     try {
       setState(() {
         _isProcessing = true;
       });
-      if (localUser != null && localUser.validateLocalUserSignInWithGoogle() == true) {
+      if (localUser.validateLocalUserSignInWithGoogle() == true) {
         accessToken = localUser.accessToken;
         idToken = localUser.idToken;
-        credential = GoogleAuthProvider.credential(
-          accessToken: localUser.accessToken,
-          idToken: localUser.idToken,
-        );
+        if (accessToken.isNotEmpty && idToken.isNotEmpty) {
+          credential = GoogleAuthProvider.credential(
+            accessToken: accessToken,
+            idToken: idToken,
+          ) as GoogleAuthCredential;
+        }
       } else {
         accessToken = googleAuth.accessToken;
         idToken = googleAuth.idToken;
-        credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
+        if (accessToken.isNotEmpty && idToken.isNotEmpty) {
+          credential = GoogleAuthProvider.credential(
+            accessToken: accessToken,
+            idToken: idToken,
+          ) as GoogleAuthCredential;
+        }
       }
       if (credential != null) {
         _showMessage("Usuário autorizado para registro, aguarde...");
@@ -284,13 +288,11 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
         _showMessage("Registrando usuário, aguarde...");
         // Cadastrando o usuário no Backend
         AuthModel authModel = AuthModel(
-            name: user.user.displayName,
-            email: user.user.email ?? user.user.providerData[0].email,
-            phoneNumber: user.user.phoneNumber,
-            photoUrl: user.user.photoURL,
-            firebaseId: user.user.uid,
-            accessToken: accessToken,
-            idToken: idToken);
+            name: user.user?.displayName ?? "",
+            email: user.user?.email ?? user.user?.providerData[0].email ?? "",
+            phoneNumber: user.user?.phoneNumber ?? "",
+            photoUrl: user.user?.photoURL ?? "",
+            firebaseId: user.user?.uid ?? "");
         final authCubit = context.read<AuthCubit>();
         await authCubit.signUp(authModel);
         if (authCubit.state is AuthSuccessState) {
@@ -361,11 +363,14 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                 labelText: 'Informe seu nome',
                 controller: _nameController,
                 context: context,
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return "Esse campo é obrigatório";
+                customValidator: (String? value) {
+                  if (value == null) {
+                    return 'Esse campo é obrigatório';
+                  } else {
+                    if (value.isEmpty) {
+                      return 'Esse campo é obrigatório';
+                    }
                   }
-                  return null;
                 },
               ),
               SizedBox(height: 22),
@@ -374,11 +379,14 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                 labelText: 'Informe seu email',
                 controller: _loginController,
                 context: context,
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return "Esse campo é obrigatório";
+                customValidator: (String? value) {
+                  if (value == null) {
+                    return 'Esse campo é obrigatório';
+                  } else {
+                    if (value.isEmpty) {
+                      return 'Esse campo é obrigatório';
+                    }
                   }
-                  return null;
                 },
               ),
               SizedBox(height: 22),
@@ -387,14 +395,18 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                 labelText: 'Informe sua senha',
                 controller: _passwordController,
                 context: context,
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return "Esse campo é obrigatório";
+                customValidator: (String? value) {
+                  if (value == null) {
+                    return 'Esse campo é obrigatório';
+                  } else {
+                    if (value.isEmpty) {
+                      return 'Esse campo é obrigatório';
+                    } else {
+                      if (value.length < 6) {
+                        return "A senha deve conter no mínimo 6 caracteres";
+                      }
+                    }
                   }
-                  if (value.length < 6) {
-                    return "A senha deve conter no mínimo 6 caracteres";
-                  }
-                  return null;
                 },
               ),
               SizedBox(height: 12),
@@ -403,7 +415,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState?.validate() ?? false) {
                         signInEmail(_loginController.text.trim(), _passwordController.text.trim());
                       }
                     },
@@ -456,10 +468,10 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
         // Cadastrando o usuário no Backend
         AuthModel authModel = AuthModel(
           name: _nameController.text.trim(),
-          email: user.user.email ?? user.user.providerData[0].email,
-          phoneNumber: user.user.phoneNumber,
-          photoUrl: user.user.photoURL,
-          firebaseId: user.user.uid,
+          email: user.user?.email ?? user.user?.providerData[0].email ?? "",
+          phoneNumber: user.user?.phoneNumber ?? "",
+          photoUrl: user.user?.photoURL ?? "",
+          firebaseId: user.user?.uid ?? "",
           password: _passwordController.text.trim(),
         );
         final authCubit = context.read<AuthCubit>();
@@ -548,8 +560,14 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                 labelText: 'Informe seu telefone',
                 controller: _phoneOTPController,
                 context: context,
-                validator: (String value) {
-                  return value.isEmpty ? 'Esse campo é obrigatório' : null;
+                customValidator: (String? value) {
+                  if (value == null) {
+                    return 'Esse campo é obrigatório';
+                  } else {
+                    if (value.isEmpty) {
+                      return 'Esse campo é obrigatório';
+                    }
+                  }
                 },
               ),
               SizedBox(height: 22),
@@ -558,8 +576,14 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                 labelText: 'Informe seu email',
                 controller: _emailOTPController,
                 context: context,
-                validator: (String value) {
-                  return value.isEmpty ? 'Esse campo é obrigatório' : null;
+                customValidator: (String? value) {
+                  if (value == null) {
+                    return 'Esse campo é obrigatório';
+                  } else {
+                    if (value.isEmpty) {
+                      return 'Esse campo é obrigatório';
+                    }
+                  }
                 },
               ),
               SizedBox(height: 12),
@@ -568,7 +592,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                 children: [
                   ElevatedButton(
                       onPressed: () {
-                        if (_formKey.currentState.validate()) {
+                        if (_formKey.currentState?.validate() ?? false) {
                           signUpWithOTP();
                         }
                       },
@@ -614,20 +638,19 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
           verificationFailed: (FirebaseAuthException e) {
             DebugPrint.error("Ocorreu o erro: ${e.message} ao tentar autenticar com o número do telefone");
           },
-          // Callback chamado quando o Firebase retorna o código baseado no número informado pelo usuário
-          // deve ser utilizado para atualizar a tela seguindo as regras de negócio do projeto
-          codeSent: (String verificationID, int resendToken) {
-            setState(() {
-              _inputCodeConfirmationOTP = true;
-              _verificationID = verificationID;
-            });
-            DebugPrint.print("Verification ID: $verificationID");
-          },
           // Callback chamado quando o timeout informado abaixo expirar
           codeAutoRetrievalTimeout: (String verificationID) {
             DebugPrint.print("Verification ID: $verificationID");
           },
-          timeout: Duration(seconds: 120));
+          timeout: Duration(seconds: 120),
+          // Callback chamado quando o Firebase retorna o código baseado no número informado pelo usuário
+          // deve ser utilizado para atualizar a tela seguindo as regras de negócio do projeto
+          codeSent: (String verificationId, int? forceResendingToken) {
+            setState(() {
+              _inputCodeConfirmationOTP = true;
+              _verificationID = verificationId;
+            });
+          });
     } catch (e) {
       DebugPrint.error("DebugError: Erro $e ao executar o signUpWithOTP do _SignupPageState");
     }
@@ -654,8 +677,14 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                     borderSide: BorderSide(color: Colors.black45),
                   ),
                 ),
-                validator: (String value) {
-                  return value.isEmpty ? 'Esse campo é obrigatório' : null;
+                validator: (String? value) {
+                  if (value == null) {
+                    return 'Esse campo é obrigatório';
+                  } else {
+                    if (value.isEmpty) {
+                      return 'Esse campo é obrigatório';
+                    }
+                  }
                 },
               ),
             ),
@@ -663,12 +692,11 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
               onPressed: () async {
                 try {
                   // Autenticando com o ID de verificação e o código SMS recebido anteriormente
-                  PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
-                      verificationId: _verificationID, smsCode: _codeOTPController.text.trim());
-
-                  final userAuth = await firebaseAuth.signInWithCredential(phoneAuthCredential);
-                  if (userAuth != null) {
-                    DebugPrint.print("Usuário Logado: ${userAuth.user.toString()}");
+                  var verificationCode = _verificationID;
+                  if (verificationCode != null) {
+                    PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
+                        verificationId: verificationCode, smsCode: _codeOTPController.text.trim());
+                    await firebaseAuth.signInWithCredential(phoneAuthCredential);
                   }
                 } catch (e) {
                   DebugPrint.error("DebugError: Erro $e ao executar o _buildOTPInputCodeArea do _SignupPageState");
@@ -730,12 +758,16 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
     }
   }
 
+  /// Método responsável por mostrar um SnackBar com uma mensagem
+  /// com o texto passada como parâmetro
   _showMessage(String message, {bool error = false}) {
-    setState(() {
-      _scaffoldKey.currentState.showSnackBar(
-        error == false ? customSuccessSnackbar(message) : customErrorSnackbar(message),
-      );
-    });
+    if (message.isNotEmpty) {
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          error == false ? customSuccessSnackbar(message) : customErrorSnackbar(message),
+        );
+      });
+    }
   }
 
   // Método para verificar se tem um usuário local.
@@ -746,11 +778,10 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
       if (users != null && users.length > 0) {
         return users.last;
       }
-      return null;
     } catch (e) {
       DebugPrint.error("DebugError: Erro $e ao executar o checkLocalUser do _SignUpPageState");
-      return null;
     }
+    return AuthModel();
   }
 
   /// Método para logar o usuário no Django após ter se registrado utilizando uma
@@ -777,11 +808,11 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
           title: Text(''),
           content: Text(texto),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('Cancelar'),
               onPressed: () => Navigator.pop(context),
             ),
-            FlatButton(
+            TextButton(
               child: Text('Excluir'),
               onPressed: () {},
             )

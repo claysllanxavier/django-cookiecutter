@@ -19,7 +19,7 @@ class SettingsProcessState extends SettingsState {
 class SettingsSuccessState extends SettingsState {
   final String successMessage;
   SettingsSuccessState({
-    this.successMessage,
+    required this.successMessage,
   });
 
   @override

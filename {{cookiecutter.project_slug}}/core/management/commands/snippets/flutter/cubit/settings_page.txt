@@ -25,7 +25,7 @@ class _SettingsIndexPageState extends State<SettingsIndexPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate("page_label_configuration")),
+        title: Text(AppLocalizations.of(context)?.translate("page_label_configuration") ?? ""),
         centerTitle: true,
       ),
       body: _buildBody()
@@ -78,14 +78,15 @@ class _SettingsIndexPageState extends State<SettingsIndexPage> {
   ///    Params:
   ///      message -> String contendo a mensagem a ser mostrada.
   ///      error -> bool para determinar se a mensagem é de erro ou não.
-  _showMessage(String message, {bool error}) {
-    setState(() {
-      _scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: error == true ? Colors.red : Colors.blue,
-        ),
-      );
-    });
+  _showMessage(String message, {bool error = false}) {
+    if (message.isNotEmpty) {
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          error == false
+              ? customSuccessSnackbar(message)
+              : customErrorSnackbar(message),
+        );
+      });
+    }
   }
 }

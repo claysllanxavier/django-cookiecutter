@@ -6,12 +6,12 @@ import 'config.dart';
 enum CustomTypeException { dio, service, data, state, general }
 
 class ExceptionCustom implements Exception {
-  int code;
-  String friendlyMessage;
-  String errorMessage;
-  String url;
-  CustomTypeException typeException;
-  DioError dioError;
+  int code = 0;
+  String friendlyMessage = "";
+  String errorMessage = "";
+  String url ="";
+  CustomTypeException typeException = CustomTypeException.general;
+  DioError? dioError;
 
   ExceptionCustom(codigo, mensagemAmigavel, mensagemErro, tipo) {
     this.code = codigo;

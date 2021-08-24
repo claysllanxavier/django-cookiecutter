@@ -94,13 +94,13 @@ class CustomTheme{
   static Color mainButtonBgLightColor = Colors.black38;
   static Color mainButtonFontLightColor = Colors.white;
 
-  static Color mainCardDarkBorderColor = Colors.grey[700];
-  static Color mainCardDarkIconColor = Colors.grey[300];
-  static Color mainCardDarkTextColor = Colors.grey[300];
-  static Color mainCardDarkBackgroundColor = Colors.grey[850];
-  static Color mainCardDarkShadowColor = Colors.grey[900];
-  static Color mainTextFieldDarkColor = Colors.grey[600];
-  static Color mainButtonBgDarkColor = Colors.grey[600];
+  static Color mainCardDarkBorderColor = Colors.grey[700] as Color;
+  static Color mainCardDarkIconColor = Colors.grey[300] as Color;
+  static Color mainCardDarkTextColor = Colors.grey[300] as Color;
+  static Color mainCardDarkBackgroundColor = Colors.grey[850] as Color;
+  static Color mainCardDarkShadowColor = Colors.grey[900] as Color;
+  static Color mainTextFieldDarkColor = Colors.grey[600] as Color;
+  static Color mainButtonBgDarkColor = Colors.grey[600] as Color;
   static Color mainButtonFontDarkColor = Colors.black;
 
   static ThemeData lightTheme = ThemeData(

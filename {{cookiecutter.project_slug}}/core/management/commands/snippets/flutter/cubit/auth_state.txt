@@ -18,7 +18,7 @@ class AuthSuccessState extends AuthState {
   final String successMessage;
   final AuthModel user;
 
-  AuthSuccessState({this.successMessage, this.user});
+  AuthSuccessState({required this.successMessage, required this.user});
 
   @override
   List<Object> get props => [];
