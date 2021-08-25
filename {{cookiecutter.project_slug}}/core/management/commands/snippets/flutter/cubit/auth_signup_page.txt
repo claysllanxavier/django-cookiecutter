@@ -8,7 +8,7 @@ import 'package:flutter/scheduler.dart';
 /// pelo manage do Django adicione um # antes da palavra abaixo
 /// #FileLocked
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+// import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../cubit.dart';
@@ -31,7 +31,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
   final _formSignup = GlobalKey<FormState>();
   AnimationController? _animationController;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  FacebookLogin facebookLogin = FacebookLogin();
+  // FacebookLogin facebookLogin = FacebookLogin();
   final _formKey = GlobalKey<FormState>();
   bool _isProcessing = false;
   bool iAgree = false;
@@ -86,10 +86,11 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
         children: [
           customTitleSection(context, "Registrar usando: "),
           SizedBox(height: 8),
-          Visibility(
-            visible: enabledFacebookAccount && !_registerWithEmail && !_registerWithOTP,
-            child: _buildFacebookAccount(context),
-          ),
+          // Não suportado pelo NullSafety
+          // Visibility(
+          //   visible: enabledFacebookAccount && !_registerWithEmail && !_registerWithOTP,
+          //   child: _buildFacebookAccount(context),
+          // ),
           Visibility(
             visible: enabledGoogleAccount && !_registerWithEmail && !_registerWithOTP,
             child: _buildGoogleAccount(context),
@@ -125,8 +126,8 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
   ///
   /// Áre para registro com Facebook
   ///
-  ///
-
+  /// Não é suportado pelo Nullsafety
+  /* 
   _buildFacebookAccount(BuildContext context) {
     try {
       return Container(
@@ -201,6 +202,8 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
       });
     }
   }
+ 
+ */
 
   ///
   ///
@@ -231,50 +234,54 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
 
   Future<void> signUpGoogle() async {
     final localUser = await checkLocalUser();
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    String accessToken, idToken;
-    GoogleAuthCredential? credential;
-    try {
-      setState(() {
-        _isProcessing = true;
-      });
-      if (localUser.validateLocalUserSignInWithGoogle() == true) {
-        accessToken = localUser.accessToken;
-        idToken = localUser.idToken;
-        if (accessToken.isNotEmpty && idToken.isNotEmpty) {
-          credential = GoogleAuthProvider.credential(
-            accessToken: accessToken,
-            idToken: idToken,
-          ) as GoogleAuthCredential;
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser != null) {
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      String? accessToken, idToken;
+      GoogleAuthCredential? credential;
+      try {
+        setState(() {
+          _isProcessing = true;
+        });
+        if (localUser.validateLocalUserSignInWithGoogle() == true) {
+          accessToken = localUser.accessToken;
+          idToken = localUser.idToken;
+          if (accessToken.isNotEmpty && idToken.isNotEmpty) {
+            credential = GoogleAuthProvider.credential(
+              accessToken: accessToken,
+              idToken: idToken,
+            ) as GoogleAuthCredential;
+          }
+        } else {
+          accessToken = googleAuth.accessToken;
+          idToken = googleAuth.idToken;
+          if (accessToken != null && idToken != null) {
+            if (accessToken.isNotEmpty && idToken.isNotEmpty) {
+              credential = GoogleAuthProvider.credential(
+                accessToken: accessToken,
+                idToken: idToken,
+              ) as GoogleAuthCredential;
+            }
+          }
         }
-      } else {
-        accessToken = googleAuth.accessToken;
-        idToken = googleAuth.idToken;
-        if (accessToken.isNotEmpty && idToken.isNotEmpty) {
-          credential = GoogleAuthProvider.credential(
-            accessToken: accessToken,
-            idToken: idToken,
-          ) as GoogleAuthCredential;
+        if (credential != null && accessToken != null && idToken != null) {
+          _showMessage("Usuário autorizado para registro, aguarde...");
+          signInGoogle(credential, accessToken, idToken);
+        } else {
+          _showMessage("Erro ao recuperar credenciais do usuário, tente novamente", error: true);
+          setState(() {
+            _isProcessing = false;
+          });
         }
-      }
-      if (credential != null) {
-        _showMessage("Usuário autorizado para registro, aguarde...");
-        signInGoogle(credential, accessToken, idToken);
-      } else {
-        _showMessage("Erro ao recuperar credenciais do usuário, tente novamente", error: true);
+        return null;
+      } catch (e) {
+        _showMessage(
+            "Ocorreu o erro ${e.toString()} ao tentar autenticar com o GoogleAuthProvider utilizando os parâmetros: ${googleAuth.accessToken}, ${googleAuth.idToken}");
+        DebugPrint.error("DebugError: Erro $e ao executar o sigInGoogle do IntroScreen");
         setState(() {
           _isProcessing = false;
         });
       }
-      return null;
-    } catch (e) {
-      _showMessage(
-          "Ocorreu o erro ${e.toString()} ao tentar autenticar com o GoogleAuthProvider utilizando os parâmetros: ${googleAuth.accessToken}, ${googleAuth.idToken}");
-      DebugPrint.error("DebugError: Erro $e ao executar o sigInGoogle do IntroScreen");
-      setState(() {
-        _isProcessing = false;
-      });
     }
   }
 
@@ -310,7 +317,6 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
     } catch (e) {
       _showMessage("Ocorreu o erro ${e.toString()} ao tentar efetuar o signInGoogle com ${authCredential.toString()}",
           error: true);
-      debugPrint("DebugError: Erro $e ao executar signInGoogle");
     } finally {
       setState(() {
         _isProcessing = false;
@@ -628,11 +634,6 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
             if (userAuth != null) {
               DebugPrint.print("Usuário Logado: ${userAuth.user.toString()}");
             }
-            // await firebaseAuth.signInWithCredential(credential).then((value) async {
-            //   if (value.user != null) {
-            //     DebugPrint.print("Usuário logado: ${value.user.toString()}");
-            //   }
-            // });
           },
           // Callback disparado quando ocorre algum erro no Firebase
           verificationFailed: (FirebaseAuthException e) {

@@ -9,6 +9,7 @@
 ///     deleteAll() -> Deleta todos os registros.
 
 /// [Travar o arquivo]
+/// [Arquivo não utilizado]
 /// Caso deseje "travar" o arquivo para não ser parseado novamente
 /// pelo manage do Django adicione um # antes da palavra abaixo
 /// FileLocked
@@ -29,7 +30,7 @@ class $ModelClass$Data {
   $ModelClass$Data.internal();
   final String _storeName = "$ModelClass$StoreDB";
 
-  smbt.Database _db;
+  late smbt.Database _db;
 
   /// Método para inicialiar o banco de dados criando a tabela.  
   Future<smbt.Database> initDb() async {

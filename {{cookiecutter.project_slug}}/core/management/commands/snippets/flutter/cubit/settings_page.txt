@@ -1,4 +1,3 @@
-
 /// Page/View para controle das configurações da App.
 
 /// [Travar o arquivo]
@@ -28,7 +27,7 @@ class _SettingsIndexPageState extends State<SettingsIndexPage> {
         title: Text(AppLocalizations.of(context)?.translate("page_label_configuration") ?? ""),
         centerTitle: true,
       ),
-      body: _buildBody()
+      body: _buildBody(),
     );
   }
 
@@ -50,7 +49,7 @@ class _SettingsIndexPageState extends State<SettingsIndexPage> {
                     rounded: true,
                     label: "Dark",
                     onPress: () {
-                      context.bloc<SettingsCubit>().setDarkTheme();
+                      context.read<SettingsCubit>().setDarkTheme();
                     },
                     context: context),
               );
@@ -65,7 +64,7 @@ class _SettingsIndexPageState extends State<SettingsIndexPage> {
                 rounded: true,
                 label: "Light",
                 onPress: () {
-                  context.bloc<SettingsCubit>().setLightTheme();
+                  context.read<SettingsCubit>().setLightTheme();
                 },
                 context: context),
           ),
@@ -82,9 +81,7 @@ class _SettingsIndexPageState extends State<SettingsIndexPage> {
     if (message.isNotEmpty) {
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(
-          error == false
-              ? customSuccessSnackbar(message)
-              : customErrorSnackbar(message),
+          error == false ? customSuccessSnackbar(message) : customErrorSnackbar(message),
         );
       });
     }
