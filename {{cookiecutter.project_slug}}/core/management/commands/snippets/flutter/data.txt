@@ -33,7 +33,7 @@ class $ModelClass$Data {
 
   final String _storeName = "$ModelClass$StoreDB";
 
-  /// Método para inicialiar o banco de dados criando a tabela.
+  /// Método para inicializar o banco de dados criando a tabela.
   Future<smbt.Database> initDb() async {
     try {
       var dir = await getApplicationDocumentsDirectory();
