@@ -23,7 +23,7 @@ $ImportViews$
 
 class MyHomePage extends StatefulWidget {
   final String title;
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, String? title}): this.title = title ?? "", super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -31,10 +31,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool bottomNavigationEnable = true;
-  int _currentIndexPage;
+  int _currentIndexPage = 0;
 
   // Declarando o inteiro para controlar qual página deve ser exibida
-  int _indexCurrentPage;
+  int _indexCurrentPage = 0;
 
   // Declarando uma instancia da Classe dos items do Menu
   final Itens _itensMenuGridView = Itens();
@@ -200,9 +200,13 @@ class Itens {
   final String title;
   final IconData icon;
   final Widget uri;
-  final Image imageIcon;
+  final Image? imageIcon;
 
-  Itens({this.title, this.icon, this.uri, this.imageIcon});
+  Itens({String? title, IconData? icon, Widget? uri, Image? image})
+      : title = title ?? '',
+        icon = icon ?? FontAwesomeIcons.folderOpen,
+        uri = uri ?? Container(),
+        imageIcon = image;
 
   List<Itens> list = [];
 

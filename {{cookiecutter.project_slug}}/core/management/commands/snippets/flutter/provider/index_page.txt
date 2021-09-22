@@ -75,11 +75,11 @@ class _$ModelClass$IndexPageState extends State<$ModelClass$IndexPage>
           title: Text(''),
           content: Text(texto),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('Cancelar'),
               onPressed: () => Navigator.pop(context),
             ),
-            FlatButton(
+            TextButton(
               child: Text('Excluir'),
               onPressed: () {},
             )

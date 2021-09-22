@@ -19,7 +19,7 @@ class $ModelClass$UpdatePage extends StatefulWidget {
 
   final $ModelClass$Model $ModelClassCamelCase$Model;
 
-  const $ModelClass$UpdatePage({Key key,  this.$ModelClassCamelCase$Model}) : super(key: key);
+  const $ModelClass$UpdatePage({Key? key, required this.$ModelClassCamelCase$Model}) : super(key: key);
 
   @override
   _$ModelClass$AddPageState createState() => _$ModelClass$AddPageState();
@@ -30,7 +30,7 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _form$ModelClass$ = GlobalKey<FormState>();
 
-  AnimationController _animationController;
+  late AnimationController _animationController;
   $ModelClass$Model _$Model$Model = $ModelClass$Model();
 
   $Attributes$
@@ -150,7 +150,7 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
               label: 'Salvar',
               context: context,
               onPress: () {
-                if (_form$ModelClass$.currentState.validate()) {
+                if (_form$ModelClass$.currentState?.validate() ?? false) {
                   setState(() {
                     $AttributesData$
                     _put();
@@ -187,14 +187,18 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
     }
   }
 
-  _showMessage(String message, {bool error = false}) {
-    setState(() {
-      _scaffoldKey.currentState.showSnackBar(
-        error == false
-            ? customSuccessSnackbar(message)
-            : customErrorSnackbar(message),
-      );
-    });
+  /// Método responsável por mostrar um SnackBar com uma mensagem
+  /// com o texto passada como parâmetro
+   _showMessage(String message, {bool error = false}) {
+    if (message.isNotEmpty) {
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          error == false
+              ? customSuccessSnackbar(message)
+              : customErrorSnackbar(message),
+        );
+      });
+    }
   }
   
   _hideKeyboard(BuildContext context){
@@ -209,11 +213,11 @@ class _$ModelClass$AddPageState extends State<$ModelClass$UpdatePage>
           title: Text(''),
           content: Text(texto),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('Cancelar'),
               onPressed: () => Navigator.pop(context),
             ),
-            FlatButton(
+            TextButton(
               child: Text('Excluir'),
               onPressed: () {},
             )

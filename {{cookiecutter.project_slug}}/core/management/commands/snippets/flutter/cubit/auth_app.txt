@@ -18,8 +18,8 @@ import 'service.dart';
 part 'state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthService _service;
-  AuthModel user;
+  late AuthService _service;
+  AuthModel user = AuthModel();
 
   AuthCubit() : super(AuthInitial()) {
     _service = AuthService();
@@ -29,7 +29,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthProcessState());
 
-      emit(AuthSuccessState());
+      emit(AuthSuccessState(user: user, successMessage: ""));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
@@ -39,7 +39,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthProcessState());
 
-      emit(AuthSuccessState());
+      emit(AuthSuccessState(user: user, successMessage: ""));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
@@ -67,7 +67,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthProcessState());
 
-      emit(AuthSuccessState());
+      emit(AuthSuccessState(user: user, successMessage: ""));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
@@ -77,7 +77,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthProcessState());
 
-      emit(AuthSuccessState());
+      emit(AuthSuccessState(user: user, successMessage: ""));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
@@ -87,7 +87,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthProcessState());
 
-      emit(AuthSuccessState());
+      emit(AuthSuccessState(user: user, successMessage: ""));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
@@ -97,7 +97,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthProcessState());
 
-      emit(AuthSuccessState());
+      emit(AuthSuccessState(user: user, successMessage: ""));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
@@ -107,7 +107,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthProcessState());
 
-      emit(AuthSuccessState());
+      emit(AuthSuccessState(user: user, successMessage: ""));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
@@ -117,7 +117,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthProcessState());
 
-      emit(AuthSuccessState());
+      emit(AuthSuccessState(user: user, successMessage: ""));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
@@ -127,7 +127,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthProcessState());
 
-      emit(AuthSuccessState());
+      emit(AuthSuccessState(user: user, successMessage: ""));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
@@ -137,7 +137,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthProcessState());
 
-      emit(AuthSuccessState());
+      emit(AuthSuccessState(user: user, successMessage: ""));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
