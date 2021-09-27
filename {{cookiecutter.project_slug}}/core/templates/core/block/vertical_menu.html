@@ -1,17 +1,123 @@
-<nav id="sidebar_left" class="h-100 mh-100">
-    <ul class="list-unstyled components py-3">
-        {% for app in apps %}
-        <li class="nav-item mb-3">
-            <a href="{% url app.index_url_app %}" class="nav-link">
-                <i class="fe fe-box" title="{{ app.name_app }}"> </i>
-                <span class="ml-3 legend-link">
-                    {{ app.name_app }}
-                </span>
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
-    <div class="text-center m-3 pb-3 align-bottom">
-        <i id="sidebarCollapse" class="ic fa fa-exchange"></i>
+{% load base %}
+<aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbar-menu"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <h1 class="navbar-brand navbar-brand-autodark">
+      <a href="">
+        {{ system_name }}
+      </a>
+    </h1>
+    <div class="navbar-nav flex-row d-lg-none">
+      <div class="nav-item dropdown d-none d-md-flex me-3">
+        <a
+          href="#"
+          class="nav-link px-0"
+          data-bs-toggle="dropdown"
+          tabindex="-1"
+          aria-label="Show notifications"
+        >
+          <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="icon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
+            />
+            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+          </svg>
+          <span class="badge bg-red"></span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-card">
+          <div class="card">
+            <div class="card-body">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              Accusamus ad amet consectetur exercitationem fugiat in ipsa ipsum,
+              natus odio quidem quod repudiandae sapiente. Amet debitis et magni
+              maxime necessitatibus ullam.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item dropdown">
+        <a
+          href="#"
+          class="nav-link d-flex lh-1 text-reset p-0"
+          data-bs-toggle="dropdown"
+          aria-label="Open user menu"
+        >
+          <span
+            class="avatar avatar-sm"
+            style="background-image: url(./static/avatars/000m.jpg)"
+          ></span>
+          <div class="d-none d-xl-block ps-2">
+            <div>{{ user.username|title }}</div>
+            <div class="mt-1 small text-muted">{{ user.email }}</div>
+          </div>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+          <a href="{% url 'core:profile' %}" class="dropdown-item">Perfil</a>
+          <div class="dropdown-divider"></div>
+          <a href="{% url 'core:settings' %" class="dropdown-item"
+            >Configurações</a
+          >
+          <a href="{% url 'core:logout' %}" class="dropdown-item">Sair</a>
+        </div>
+      </div>
     </div>
-</nav>
+    <div class="collapse navbar-collapse" id="navbar-menu">
+      <ul class="navbar-nav pt-lg-3">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'index' %}">
+            <span class="nav-link-icon d-md-none d-lg-inline-block"
+              >
+              <i class="fe fe-home" style="font-size: 1.25rem;"></i>
+            </span>
+            <span class="nav-link-title"> Início </span>
+          </a>
+        </li>
+        {% for app in apps %} {% if app.real_name_app.lower in perms %}
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#navbar-{{ app.name_app }}"
+            data-bs-toggle="dropdown"
+            role="button"
+            aria-expanded="false"
+          >
+            <span class="nav-link-icon d-md-none d-lg-inline-block">
+              <i class="fe fe-box" style="font-size: 1.25rem;"></i>
+            </span>
+            <span class="nav-link-title"> {{ app.name_app }} </span>
+          </a>
+          <div class="dropdown-menu">
+            <div class="dropdown-menu-columns">
+              {% for model in app.models_app %}
+              {% if model|has_view_permission:request %}
+              <a class="dropdown-item" href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
+              {% endif %}
+          {% endfor %}
+            </div>
+          </div>
+        </li>
+        {% endif %} {% endfor %}
+      </ul>
+    </div>
+  </div>
+</aside>

@@ -86,6 +86,9 @@ def get_apps(self):
                     app.name.lower().__contains__('rest_framework') or
                     app.name.lower().__contains__('core') or
                     app.name.lower().__contains__('ckeditor') or
+                    app.name.lower().__contains__('drf') or
+                    app.name.lower().__contains__('dj_rest_auth') or
+                    app.name.lower().__contains__('debug') or
                     app.name.lower().__contains__('corsheaders')):
                 continue
             _models = []
