@@ -1,66 +1,92 @@
 {% load static %} {% load base %}
 <!DOCTYPE html>
-<!--
-* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
-* @version 1.0.0-beta3
-* @link https://tabler.io
-* Copyright 2018-2021 The Tabler Authors
-* Copyright 2018-2021 codecalm.net Paweł Kuna
-* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
--->
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta http-equiv="Content-Language" content="en" />
-    <meta name="msapplication-TileColor" content="#2d89ef" />
-    <meta name="theme-color" content="#4188c9" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="HandheldFriendly" content="True" />
-    <meta name="MobileOptimized" content="320" />
-    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
-    <title>{% block title %}{% endblock title %}</title>
 
-    <!-- CSS files -->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link href="{% static 'core/css/tabler.css' %}" rel="stylesheet" />
+<html lang="en" class="default-style">
 
-    {% block extra_css %}{% endblock extra_css %} 
-    {% block extra_head %}{%endblock extra_head %}
-  </head>
-  <body class="antialiased">
-  
-    <div class="wrapper">
-        {% include './block/vertical_menu.html' %}
-        {% include './block/header_menu.html' %}
-        <div class="page-wrapper">
-          <div class="container-xl">
-            <div class="page-body">
-            <div class="container-xl">
-                {% block content %} {% endblock content %}
-            </div>
+<head>
+  <title>{% block title %}{% endblock title %}</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  {% block extra_head %}{% endblock extra_head %}
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900" rel="stylesheet">
+
+  <!-- Icon fonts -->
+  <link rel="stylesheet" href="{% static 'core/vendor/fonts/fontawesome.css' %}">
+  <link rel="stylesheet" href="{% static 'core/vendor/fonts/ionicons.css' %}">
+  <link rel="stylesheet" href="{% static 'core/vendor/fonts/linearicons.css' %}">
+  <link rel="stylesheet" href="{% static 'core/vendor/fonts/open-iconic.css' %}">
+  <link rel="stylesheet" href="{% static 'core/vendor/fonts/pe-icon-7-stroke.css' %}">
+
+  <link rel="stylesheet" href="{% static 'core/vendor/css/rtl/bootstrap.css' %}" class="theme-settings-bootstrap-css">
+  <link rel="stylesheet" href="{% static 'core/vendor/css/rtl/appwork.css' %}" class="theme-settings-appwork-css">
+  <link rel="stylesheet" href="{% static 'core/vendor/css/rtl/theme-corporate.css' %}" class="theme-settings-theme-css">
+  <link rel="stylesheet" href="{% static 'core/vendor/css/rtl/colors.css' %}" class="theme-settings-colors-css">
+  <link rel="stylesheet" href="{% static 'core/vendor/css/rtl/uikit.css' %}">
+
+  {% block extra_css %}{% endblock extra_css %}
+</head>
+
+<body>
+  <div class="layout-wrapper layout-2">
+    <div class="layout-inner">
+
+      {% include './block/vertical_menu.html' %}
+
+      <div class="layout-container">
+      {% include './block/header_menu.html' %}
+
+        <div class="layout-content">
+
+          <div class="container-fluid flex-grow-1 container-p-y">
+            {% block content %} {% endblock content %}
           </div>
+
+          <nav class="layout-footer footer bg-footer-theme">
+            <div class="container-fluid d-flex flex-wrap justify-content-between text-center container-p-x pb-3">
+              <div class="pt-3">
+                <span class="footer-text font-weight-bolder">{{ system_name }}</span> ©
+              </div>
+              <div>
+              </div>
+            </div>
+          </nav>
+
         </div>
+
       </div>
-    <!-- Tabler Core -->
-    <script src="{% static 'core/js/vendors/jquery-3.2.1.min.js' %}"></script>
-    <script src="{% static 'core/js/core.js' %}"></script>
-    <script src="{% static 'core/js/jquery.formset.js' %}"></script>
-    <script src="{% static 'core/js/inline.js' %}"></script>
-    <script src="{% static 'core/js/tabler.js' %}"></script>
-    {% block extra_js %}{% endblock extra_js %}
-  </body>
+
+    </div>
+
+    <div class="layout-overlay layout-sidenav-toggle"></div>
+  </div>
+
+  <script src="{% static 'core/vendor/js/material-ripple.js' %}"></script>
+  <script src="{% static 'core/vendor/js/layout-helpers.js' %}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Core scripts -->
+  <script src="{% static 'core/vendor/js/pace.js' %}"></script>
+  <!-- Core scripts -->
+  <script src="{% static 'core/vendor/libs/popper/popper.js' %}"></script>
+  <script src="{% static 'core/vendor/js/bootstrap.js' %}"></script>
+  <script src="{% static 'core/vendor/js/sidenav.js' %}"></script>
+
+  <!-- Input Mask Plugin -->
+  <script src="{% static 'core/plugins/input-mask/js/jquery.mask.min.js' %}"></script>
+  <script src="{% static 'core/plugins/input-mask/plugin.js' %}"></script>
+
+  <!-- Demo -->
+  <script src="{% static 'core/js/demo.js' %}"></script>
+  <script src="{% static 'core/js/core.js' %}"></script>
+  <script src="{% static 'core/js/jquery.formset.js' %}"></script>
+  <script src="{% static 'core/js/inline.js' %}"></script>
+
+  {% block extra_js %}{% endblock extra_js %}
+</body>
+
 </html>

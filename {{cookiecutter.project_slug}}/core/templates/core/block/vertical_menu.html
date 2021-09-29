@@ -1,123 +1,50 @@
 {% load base %}
-<aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
-  <div class="container-fluid">
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbar-menu"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <h1 class="navbar-brand navbar-brand-autodark">
-      <a href="">
-        {{ system_name }}
-      </a>
-    </h1>
-    <div class="navbar-nav flex-row d-lg-none">
-      <div class="nav-item dropdown d-none d-md-flex me-3">
-        <a
-          href="#"
-          class="nav-link px-0"
-          data-bs-toggle="dropdown"
-          tabindex="-1"
-          aria-label="Show notifications"
-        >
-          <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="icon"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
-            />
-            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
-          </svg>
-          <span class="badge bg-red"></span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-end dropdown-menu-card">
-          <div class="card">
-            <div class="card-body">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Accusamus ad amet consectetur exercitationem fugiat in ipsa ipsum,
-              natus odio quidem quod repudiandae sapiente. Amet debitis et magni
-              maxime necessitatibus ullam.
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="nav-item dropdown">
-        <a
-          href="#"
-          class="nav-link d-flex lh-1 text-reset p-0"
-          data-bs-toggle="dropdown"
-          aria-label="Open user menu"
-        >
-          <span
-            class="avatar avatar-sm"
-            style="background-image: url(./static/avatars/000m.jpg)"
-          ></span>
-          <div class="d-none d-xl-block ps-2">
-            <div>{{ user.username|title }}</div>
-            <div class="mt-1 small text-muted">{{ user.email }}</div>
-          </div>
-        </a>
-        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-          <a href="{% url 'core:profile' %}" class="dropdown-item">Perfil</a>
-          <div class="dropdown-divider"></div>
-          <a href="{% url 'core:settings' %" class="dropdown-item"
-            >Configurações</a
-          >
-          <a href="{% url 'core:logout' %}" class="dropdown-item">Sair</a>
-        </div>
-      </div>
-    </div>
-    <div class="collapse navbar-collapse" id="navbar-menu">
-      <ul class="navbar-nav pt-lg-3">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'index' %}">
-            <span class="nav-link-icon d-md-none d-lg-inline-block"
-              >
-              <i class="fe fe-home" style="font-size: 1.25rem;"></i>
-            </span>
-            <span class="nav-link-title"> Início </span>
-          </a>
-        </li>
-        {% for app in apps %} {% if app.real_name_app.lower in perms %}
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#navbar-{{ app.name_app }}"
-            data-bs-toggle="dropdown"
-            role="button"
-            aria-expanded="false"
-          >
-            <span class="nav-link-icon d-md-none d-lg-inline-block">
-              <i class="fe fe-box" style="font-size: 1.25rem;"></i>
-            </span>
-            <span class="nav-link-title"> {{ app.name_app }} </span>
-          </a>
-          <div class="dropdown-menu">
-            <div class="dropdown-menu-columns">
-              {% for model in app.models_app %}
-              {% if model|has_view_permission:request %}
-              <a class="dropdown-item" href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
-              {% endif %}
-          {% endfor %}
-            </div>
-          </div>
-        </li>
-        {% endif %} {% endfor %}
-      </ul>
-    </div>
+{% load static %}
+<div id="layout-sidenav" class="layout-sidenav sidenav sidenav-vertical bg-dark">
+
+  <!-- Brand demo (see {% static 'core/css/demo/demo.css' %}) -->
+  <div class="app-brand demo">
+    <span class="app-brand-logo demo bg-primary">
+      <svg viewBox="0 0 148 80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><linearGradient id="a" x1="46.49" x2="62.46" y1="53.39" y2="48.2" gradientUnits="userSpaceOnUse"><stop stop-opacity=".25" offset="0"></stop><stop stop-opacity=".1" offset=".3"></stop><stop stop-opacity="0" offset=".9"></stop></linearGradient><linearGradient id="e" x1="76.9" x2="92.64" y1="26.38" y2="31.49" xlink:href="#a"></linearGradient><linearGradient id="d" x1="107.12" x2="122.74" y1="53.41" y2="48.33" xlink:href="#a"></linearGradient></defs><path style="fill: #fff;" transform="translate(-.1)" d="M121.36,0,104.42,45.08,88.71,3.28A5.09,5.09,0,0,0,83.93,0H64.27A5.09,5.09,0,0,0,59.5,3.28L43.79,45.08,26.85,0H.1L29.43,76.74A5.09,5.09,0,0,0,34.19,80H53.39a5.09,5.09,0,0,0,4.77-3.26L74.1,35l16,41.74A5.09,5.09,0,0,0,94.82,80h18.95a5.09,5.09,0,0,0,4.76-3.24L148.1,0Z"></path><path transform="translate(-.1)" d="M52.19,22.73l-8.4,22.35L56.51,78.94a5,5,0,0,0,1.64-2.19l7.34-19.2Z" fill="url(#a)"></path><path transform="translate(-.1)" d="M95.73,22l-7-18.69a5,5,0,0,0-1.64-2.21L74.1,35l8.33,21.79Z" fill="url(#e)"></path><path transform="translate(-.1)" d="M112.73,23l-8.31,22.12,12.66,33.7a5,5,0,0,0,1.45-2l7.3-18.93Z" fill="url(#d)"></path></svg>
+    </span>
+    <a href="{% url 'index' %}" class="app-brand-text demo sidenav-text font-weight-normal ml-2">{{ system_name }}</a>
+    <a href="javascript:void(0)" class="layout-sidenav-toggle sidenav-link text-large ml-auto">
+      <i class="ion ion-md-menu align-middle"></i>
+    </a>
   </div>
-</aside>
+
+  <div class="sidenav-divider mt-0"></div>
+
+  <!-- Links -->
+  <ul class="sidenav-inner py-1">
+
+    <li class="sidenav-item">
+      <a href="{% url 'index' %}" class="sidenav-link"><i class="sidenav-icon fas fa-home"></i>
+        <div>Início</div>
+      </a>
+    </li>
+
+    {% for app in apps %}
+    {% if app.real_name_app.lower in perms %}
+    <li class="sidenav-item">
+      <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+        <i class="sidenav-icon fas fa-th-large"></i>
+        <div>{{ app.name_app }}</div>
+      </a>
+
+      <ul class="sidenav-menu">
+        {% for model in app.models_app %}
+        {% if model|has_view_permission:request %}
+        <li class="sidenav-item">
+          <a href="{% url model.path_url %}" class="sidenav-link">
+            <div>{{ model.name_model|title }}</div>
+          </a>
+        </li>
+        {% endif %}
+    {% endfor %}
+      </ul>
+    </li>
+    {% endif %}
+{% endfor %}
+  </ul>
+</div>

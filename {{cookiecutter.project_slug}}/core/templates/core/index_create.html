@@ -1,7 +1,8 @@
 {% extends 'core/base.html' %}
+
 {% block content %}
 <div id="content_create_page_app" class="row">
-    <div id="form_create_card" class="col-12">
+    <div id="form_create_card" class="col-md-12">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Criação de {% block title_modulo %}{% endblock title_modulo %}</h3>
@@ -17,13 +18,3 @@
     </div>
 </div>
 {% endblock content %}
-{% block extra_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js">
-{% endblock extra_css %}
-{% block extra_js %}
-<script>
-    $(document).ready(function () {
-        $('.datetimefield').mask('00/00/0000 00:00');
-    });
-</script>
-{% endblock extra_js %}
