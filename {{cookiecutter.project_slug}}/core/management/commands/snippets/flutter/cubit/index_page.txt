@@ -24,7 +24,7 @@ class $ModelClass$IndexPage extends StatefulWidget {
 class _$ModelClass$IndexPageState extends State<$ModelClass$IndexPage>
   with SingleTickerProviderStateMixin {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  AnimationController _animationController;
+  late AnimationController _animationController;
   $ModelClass$Model _$ModelClassCamelCase$ = $ModelClass$Model();
 
   @override
@@ -57,9 +57,9 @@ class _$ModelClass$IndexPageState extends State<$ModelClass$IndexPage>
   /// Método responsável por mostrar um SnackBar com uma mensagem
   /// com o texto passada como parâmetro
    _showMessage(String message, {bool error = false}) {
-    if (message != null && message.isNotEmpty) {
+    if (message.isNotEmpty) {
       setState(() {
-        _scaffoldKey.currentState.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           error == false
               ? customSuccessSnackbar(message)
               : customErrorSnackbar(message),
@@ -77,11 +77,11 @@ class _$ModelClass$IndexPageState extends State<$ModelClass$IndexPage>
           title: Text(''),
           content: Text(texto),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('Cancelar'),
               onPressed: () => Navigator.pop(context),
             ),
-            FlatButton(
+            TextButton(
               child: Text('Excluir'),
               onPressed: () {},
             )

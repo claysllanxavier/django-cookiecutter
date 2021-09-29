@@ -105,6 +105,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 PROJECT_NAME = "{{ cookiecutter.project_name }}"
 
+try:
+    from base.settings_local import *
+except:
+    pass
+
 # Desativando as migrações quando estiver executando os testes.
 if 'test' in sys.argv:
     class DisableMigrations(object):
@@ -115,7 +120,6 @@ if 'test' in sys.argv:
         def __getitem__(self, item):
             return None
 
-
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'TEST': {
@@ -125,10 +129,6 @@ if 'test' in sys.argv:
 
     MIGRATION_MODULES = DisableMigrations()
 
-try:
-    from base.settings_local import *
-except:
-    pass
 
 if DEBUG:
     INSTALLED_APPS.append('django_extensions')
@@ -170,11 +170,11 @@ LOGIN_URL = '/core/login'
 LOGIN_REDIRECT_URL = '/core'
 LOGOUT_REDIRECT_URL = '/core/login'
 
-#Variável responsável por configurar qual Manager utilizar
-#Se for True usa o manager padrão que retorna todos os elementos
-#mesmo os que foram marcados com deleted = True e enabled = False
-#Se for False usa o manager configurado para não mostrar
-#os elementos marcados com deleted = True e enabled
+"""
+Variável responsável por configurar qual Manager utilizar. 
+Se for True usa o manager padrão que retorna todos os  elementos mesmo os marcados com deleted = True e enabled = True 
+Se for False usa o manager configurado para não mostrar os elementos marcados com deleted = True e enabled = False
+"""
 USE_DEFAULT_MANAGER = False
 
 # O Valor dessa variável não deve ser alterado
@@ -187,12 +187,13 @@ API_PATH = ""
 
 # TODO Configurar o dsn do Sentry
 #  Exemplo: https://path_dsn
-sentry_sdk.init(
-    dsn="", # Exemplo: https://path_dsn
-    integrations=[DjangoIntegration()],
-    traces_sample_rate=1.0,
-    send_default_pii=True
-)
+if DEBUG is False:
+    sentry_sdk.init(
+        dsn="", # Exemplo: https://path_dsn
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+        send_default_pii=True
+    )
 
 # HERE STARTS DYNACONF EXTENSION LOAD (Keep at the very bottom of settings.py)
 # Read more at https://dynaconf.readthedocs.io/en/latest/guides/django.html

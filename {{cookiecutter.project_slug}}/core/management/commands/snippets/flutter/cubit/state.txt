@@ -19,9 +19,9 @@ class $ModelClass$SuccessState extends $ModelClass$State {
   final $ModelClass$Model $ModelClassCamelCase$Model;
   final List<$ModelClass$Model> $ModelClassCamelCase$List;
   $ModelClass$SuccessState({
-    this.successMessage,
-    this.$ModelClassCamelCase$Model,
-    this.$ModelClassCamelCase$List,
+    required this.successMessage,
+    required this.$ModelClassCamelCase$Model,
+    required this.$ModelClassCamelCase$List,
   });
 
   @override

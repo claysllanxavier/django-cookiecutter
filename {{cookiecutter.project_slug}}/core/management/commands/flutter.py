@@ -544,19 +544,21 @@ class Command(BaseCommand):
         try:
             if attribute == "int":
                 if f"id{model_name.lower()}" == name.lower():
-                    __attribute = "{0}_{1}Model.id = int.tryParse(_{1}Form{2}.text ?? 0);\n".format(
+                    __attribute = "{0}_{1}Model.id = int.tryParse(_{1}Form{2}.text) ?? 0;\n".format(
                         " " * 16, self.__to_camel_case(model_name, True), name_title)
                 else:
-                    __attribute = "{0}_{1}Model.{2} = int.tryParse(_{1}Form{3}.text ?? 0);\n".format(
+                    __attribute = "{0}_{1}Model.{2} = int.tryParse(_{1}Form{3}.text) ?? 0;\n".format(
                         " " * 16, self.__to_camel_case(model_name, True), name, name_title)
 
             elif attribute == "double":
-                __attribute = "{0}_{1}Model.{2} = double.tryParse(_{1}Form{3}.text ?? 0.0);\n".format(
+                __attribute = "{0}_{1}Model.{2} = double.tryParse(_{1}Form{3}.text) ?? 0.0;\n".format(
                     " " * 16, self.__to_camel_case(model_name, True), name, name_title)
 
             elif attribute == "bool":
-                __attribute = "{0}_{1}Model.{2} = _{1}Form{3}.text ?? true;\n".format(
+                __atribute = "{0}_{1}Model.{2} = _{1}Form{3}.text.isNotEmpty ? _{1}Form{3}.text.contains(\'0\') ? true: false : false;\n".format(
                     " " * 16, self.__to_camel_case(model_name, True), name, name_title)
+                # __attribute = "{0}_{1}Model.{2} = _{1}Form{3}.text;\n".format(
+                #     " " * 16, self.__to_camel_case(model_name, True), name, name_title)
 
             elif attribute == "DateTime":
                 __attribute = '{0}_{1}Model.{2} = '.format(" " * 16, self.__to_camel_case(model_name, True), name)
@@ -564,7 +566,7 @@ class Command(BaseCommand):
                     self.__to_camel_case(model_name, True), name_title)
 
             else:
-                __attribute = '{0}_{1}Model.{2} = _{1}Form{3}.text ?? "";\n'.format(
+                __attribute = '{0}_{1}Model.{2} = _{1}Form{3}.text;\n'.format(
                     " " * 16, self.__to_camel_case(model_name, True), name, name_title)
         except Exception as error:
             Utils.show_message(f"Error in __get_attributes: {error}", error=True)
@@ -578,16 +580,16 @@ class Command(BaseCommand):
         try:
             if attribute == "int":
                 if f"id{model_name.lower()}" == name.lower():
-                    __controllers_data = "{0}_{1}Model.id = int.tryParse(_{1}Form{2}.text ?? 0);\n".format(
+                    __controllers_data = "{0}_{1}Model.id = int.tryParse(_{1}Form{2}.text) ?? 0;\n".format(
                         " " * 6, self.__to_camel_case(model_name, True), name_title)
                 else:
-                    __controllers_data = "{0}_{1}Model.{2} = int.tryParse(_{1}Form{3}.text ?? 0);\n".format(
+                    __controllers_data = "{0}_{1}Model.{2} = int.tryParse(_{1}Form{3}.text) ?? 0;\n".format(
                         " " * 6, self.__to_camel_case(model_name, True), name, name_title)
             elif attribute == "double":
-                __controllers_data = "{0}_{1}Model.{2} = double.tryParse(_{1}Form{3}.text ?? 0.0);\n".format(
+                __controllers_data = "{0}_{1}Model.{2} = double.tryParse(_{1}Form{3}.text) ?? 0.0;\n".format(
                     " " * 6, self.__to_camel_case(model_name, True), name, name_title)
             elif attribute == "bool":
-                __controllers_data = "{0}_{1}Model.{2} = _{1}Form{3}.text ?? true;\n".format(
+                __controllers_data = "{0}_{1}Model.{2} = _{1}Form{3}.text.isNotEmpty ? _{1}Form{3}.text.contains(\'0\') ? true: false : false;\n".format(
                     " " * 6, self.__to_camel_case(model_name, True), name, name_title)
             elif attribute == "DateTime":
                 __controllers_data = '{0}_{1}Model.{2} = _{1}Form{3}.text != ""?'.format(
@@ -729,6 +731,8 @@ class Command(BaseCommand):
             __model_file = Path("{}/lib/apps/auth/model.dart".format(self.flutter_dir))
             __service_file = Path("{}/lib/apps/auth/service.dart".format(self.flutter_dir))
 
+            __data_snippet = __data_snippet.replace('$project$', self.flutter_project)
+            
             with open(__data_file, "w", encoding="utf-8") as data_file:
                 data_file.write(__data_snippet)
 
@@ -920,71 +924,69 @@ class Command(BaseCommand):
                     continue
 
                 field_type = (str(str(type(field)).split(".")[-1:]).replace('["', "").replace("'>\"]", ""))
+
                 attribute = self._flutter_types[self._django_types.index(field_type)]
 
-                content_attributes += "{} {};\n  ".format(attribute, __name_dart)
+                # Verificando se o campo é: enabled, deleted, createdOn, updatedOn
+                # Para não renderizar, já que estes campos são defaults de todas as classes das Apps Django
+                if __name_dart not in ["enabled", "deleted", "createdOn", "updatedOn"]:
+                    content_attributes += "{} {};\n  ".format(attribute, __name_dart)
 
                 if __name_dart not in ["djangoUser", "token", "firebase", "id_token", "id", "enabled", "deleted",
                                        "createdOn", "created_on", "updatedOn", "updatedOn"]:
                     content_string_return += "{}: ${}\\n".format(__name_dart.upper(), __name_dart)
 
-                content_constructor += "this.{},\n".format(__name_dart)
+                if __name_dart not in ["enabled", "deleted", "createdOn", "updatedOn"]:
+                    default_value = None
+                    if str(attribute) == "int":
+                        default_value = 0
+                    if str(attribute) == "double":
+                        default_value = 0.0
+                    if str(attribute) == "bool":
+                        default_value = 'true'
+                    if str(attribute) == "String":
+                        default_value = "\'\'"
+                    
+                    if default_value is not None:
+                        content_constructor += "this.{} = {},\n".format(__name_dart, default_value)
 
-                if str(attribute) == "DateTime":
-                    content_from_json += "{} = Util.convertDate(json['{}']) == null".format(__name_dart, __name)
-                    content_from_json += "? null:  Util.convertDate(json['{}']);\n".format(__name, " " * 8)
-                elif str(attribute) == "double":
-                    content_from_json += "{} = json['{}'] == null".format(__name_dart, __name)
-                    content_from_json += "? null : double.parse(json['{}']) ;\n{}".format(__name, " " * 8)
-                elif str(attribute) == "bool":
-                    if __name_dart.lower() == "enabled":
-                        content_from_json += "{1} = json['{2}'] == null ? true : json['{2}'] ;\n{0}".format(
-                            " " * 8, __name_dart, __name)
-                    elif __name_dart.lower() == "deleted":
-                        content_from_json += "{1} = json['{2}'] == null ? false : json['{2}'];\n{0}".format(
-                            " " * 8, __name_dart, __name)
+                if __name_dart not in ["enabled", "deleted", "createdOn", "updatedOn"]:
+                    if str(attribute) == "DateTime":
+                        content_from_json += "{}: Util.convertDate(map['{}']) == null".format(__name_dart, __name)
+                        content_from_json += "? null:  Util.convertDate(map['{}']),\n".format(__name, " " * 8)
+                    elif str(attribute) == "double":
+                        content_from_json += "{1}: map.containsKey('{2}') ? map['{2}'] ?? 0.0 : 0.0,\n{0}".format(
+                                " " * 8, __name_dart, __name)
+                    elif str(attribute) == "bool":
+                        content_from_json += "{1}: map.containsKey('{2}') ? map['{2}'] ?? false : false,\n{0}".format(
+                                " " * 8, __name_dart, __name)
                     else:
-                        content_from_json += "{1} = json['{2}'] == null ? true : json['{2}'];\n{0}".format(
-                            " " * 8, __name_dart, __name)
-                else:
-                    if __name_dart.startswith("fk"):
-                        content_from_json += "{1} = json['{2}'] == null ? \"\" : json['{2}'];\n{0}".format(
-                            " " * 8, __name_dart, __name)
-                    else:
-                        content_from_json += "{1} = json['{2}'] == null ? \"\" : json['{2}'];\n{0}".format(
-                            " " * 8, __name_dart, __name)
+                        if __name_dart.startswith("fk"):
+                            content_from_json += "{1}: map.containsKey('{2}') ? map['{2}'] ?? \"\" : \"\",\n{0}".format(
+                                " " * 8, __name_dart, __name)
+                        else:
+                            content_from_json += "{1}: map.containsKey('{2}') ? map['{2}'] ?? \"\" : \"\",\n{0}".format(
+                                " " * 8, __name_dart, __name)
 
                 if str(field_type) == "DateTimeField":
-                    if __name_dart in ("createdOn", "updatedOn"):
-                        content_to_map += "'{0}': this.{1}.toString(),\n{2}".format(__name, __name_dart, " " * 8)
-                    else:
-                        content_to_map += "'{}': this.{} != null? Util.stringDateTimeSplit".format(__name, __name_dart)
-                        content_to_map += "(this.{}, returnType: \"dt\"): null, \n".format(__name_dart)
+                    content_to_map += "'{}': Util.stringDateTimeSplit".format(__name)
+                    content_to_map += "(this.{}, returnType: \"dt\"),\n{}".format(__name_dart, " " * 8)
                     continue
                 if str(field_type) == "DateField":
-                    content_to_map += "'{}': this.{} != null ?Util.stringDateTimeSplit".format(__name, __name_dart)
-                    content_to_map += "(this.{}, returnType: \"d\"): null, \n".format(__name_dart)
+                    content_to_map += "'{}': Util.stringDateTimeSplit".format(__name)
+                    content_to_map += "(this.{}, returnType: \"d\"),\n{}".format(__name_dart, " " * 8)
                     continue
                 if str(field_type) == "TimeField":
-                    content_to_map += "'{}': this.{} != null ?Util.stringDateTimeSplit".format(__name, __name_dart)
-                    content_to_map += "(this.{}, returnType: \"t\"): null, \n".format(__name_dart)
+                    content_to_map += "'{}': Util.stringDateTimeSplit".format(__name)
+                    content_to_map += "(this.{}, returnType: \"t\"),\n{}".format(__name_dart, " " * 8)
                     continue
                 if str(field_type) in ["FloatField", "DecimalField"]:
-                    content_to_map += "'{0}': this.{1} != null? this.{1}: 0.0,\n{2}".format(
-                        __name, __name_dart, " " * 8)
+                    content_to_map += "'{0}': this.{1},\n{2}".format(__name, __name_dart, " " * 8)
                     continue
                 if str(attribute) == "bool":
-                    if __name_dart.lower() == "enabled":
-                        content_to_map += "'{0}': this.{1} != null? this.{1}: true,\n{2}".format(__name, __name_dart,
-                                                                                                 " " * 8)
-                    elif __name_dart.lower() == "deleted":
-                        content_to_map += "'{0}': this.{1} != null? this.{1}: false,\n{2}".format(__name, __name_dart,
-                                                                                                  " " * 8)
-                    else:
-                        content_to_map += "'{0}': this.{1} != null? this.{1}: true,\n{2}".format(__name, __name_dart,
-                                                                                                 " " * 8)
+                    content_to_map += "'{0}': this.{1},\n{2}".format(__name, __name_dart, " " * 8)
                     continue
-                content_to_map += "'{0}': this.{1} != null? this.{1}: \"\",\n{2}".format(__name, __name_dart, " " * 8)
+                content_to_map += "'{0}': this.{1},\n{2}".format(__name, __name_dart, " " * 8)
 
             content = ParserContent(
                 ["$ModelClass$", "$AttributeClass$", "$StringReturn$", "$Model$", "$ParserfromMap$", "$ParserToMap$",
@@ -1314,7 +1316,7 @@ class Command(BaseCommand):
         __snippet_route_created_updated += "  if(args is $ClassName$Model)\n"
         __snippet_route_created_updated += "    return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$(" \
                                            "$ModelClassCamelCase$Model: args));\n"
-        __snippet_route_created_updated += "  return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$());\n"
+        __snippet_route_created_updated += "  return CupertinoPageRoute(builder: (_) => $ClassName$$PageName$($ModelClassCamelCase$Model: $ClassName$Model()));\n"
         __snippet_imports = "import 'apps/$APP$/$model$/pages/$page$.dart';"
         routers_apps = ""
         imports_apps = ""

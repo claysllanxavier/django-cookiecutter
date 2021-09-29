@@ -28,14 +28,14 @@ class $ModelClass$ListPage extends StatefulWidget {
 class $ModelClass$ListPageState extends State<$ModelClass$ListPage>
   with SingleTickerProviderStateMixin {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  AnimationController _animationController;
-  List<$ModelClass$Model> _$Model$List = List<$ModelClass$Model>();
+  late AnimationController? _animationController;
+  List<$ModelClass$Model> _$Model$List = <$ModelClass$Model>[];
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this);
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
       _loadData();
     });
   }
@@ -162,12 +162,12 @@ class $ModelClass$ListPageState extends State<$ModelClass$ListPage>
     }
   }
 
-  /// Método responsável por mostrar um SnackBar com uma mensagem 
+  /// Método responsável por mostrar um SnackBar com uma mensagem
   /// com o texto passada como parâmetro
    _showMessage(String message, {bool error = false}) {
-    if (message != null && message.isNotEmpty) {
+    if (message.isNotEmpty) {
       setState(() {
-        _scaffoldKey.currentState.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           error == false
               ? customSuccessSnackbar(message)
               : customErrorSnackbar(message),
@@ -185,11 +185,11 @@ class $ModelClass$ListPageState extends State<$ModelClass$ListPage>
           title: Text(''),
           content: Text(texto),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('Cancelar'),
               onPressed: () => Navigator.pop(context),
             ),
-            FlatButton(
+            TextButton(
               child: Text('Excluir'),
               onPressed: () {},
             )

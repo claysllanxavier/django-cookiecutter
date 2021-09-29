@@ -32,7 +32,7 @@ schema_view = get_schema_view(
         contact=openapi.Contact(email="{{ cookiecutter.email }}"),
         license=openapi.License(name="BSD License"),
     ),
-    url="https://www.{{ cookiecutter.domain_name }}",
+    url="http://localhost:8000" if settings.DEBUG else "https://www.{{ cookiecutter.domain_name }}",
     public=True,
 )
 
