@@ -103,7 +103,16 @@ def get_apps(self):
                                 ),
                                 'real_name_model': model._meta.model_name
                                 })
+
+            # só adiciona a app caso o models tenha conteudo
+            if len(_models) > 0:
+                #Caso tenha o icone da app
+                if hasattr(app, 'icon'):
+                    icon = app.icon
+                else:
+                    icon = None
             _apps.append({'name_app': '%s' % app.verbose_name,
+                          'icon_app': icon,
                           'models_app': _models,
                           'index_url_app': '{}:{}-index'.format(model._meta.app_label,
                                                                 model._meta.app_label),
