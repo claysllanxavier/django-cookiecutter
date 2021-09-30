@@ -8,19 +8,34 @@ FileLocked
 {% load base %}
 {% block title %}$titlepage${% endblock title %} 
 {% block title_modulo %}$title${% endblock title_modulo %} 
-{% block menu_app %}
-    {% for app in apps %}
-        {% if app.real_name_app.lower == '$app_name$' %}
-            {% for model in app.models_app %}
-                {% if model|has_view_permission:request %}
-                    <tr>
-                        <td>
-                            <i class="fe fe-chevrons-right text-muted"></i> &nbsp;
-                            <a href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
-                        </td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
-{% endblock menu_app %}
+{% block content %}
+    <div class="row clearfix">
+        {% for app in apps %}
+        {% if not app_name or app_name and app.real_name_app.lower == '$app_name$'  %}
+            {% if not forloop.first and forloop.counter0|divisibleby:2 %}
+                <div class="w-100"></div>
+            {% endif %}
+            <div class="col">
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <h4 class="mb-15 text-blue">{{ app.name_app }}</h4>
+                    <div class="card-body">
+                            <div class="row">
+                                {% for model in app.models_app %}
+                                    {% if not forloop.first and forloop.counter0|divisibleby:2 %}
+                                        <div class="w-100"></div>
+                                    {% endif %}
+                                <div class="col mb-3 d-flex align-items-stretch">
+                                    <a class="btn btn-outline-primary btn-block d-flex flex-sm-column align-items-center justify-content-left justify-content-sm-center"
+                                       href="{% url model.path_url %}">
+                                        {{ model.name_model }}
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+     </div> 
+{% endblock content %}
