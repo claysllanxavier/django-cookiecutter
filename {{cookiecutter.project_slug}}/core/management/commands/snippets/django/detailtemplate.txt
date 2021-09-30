@@ -32,7 +32,7 @@ FileLocked
         <div class="row">
             <div id="div-table" class="col-md-12">
                 {% for field in object_list %}
-                    <div class="row">
+                        <div class="row mb-2">
                         <div class="col-md-2">
                         <strong>{{ field.0|capfirst }}</strong>
                         </div>
@@ -41,7 +41,6 @@ FileLocked
                         </div>
                     </div>
                 {%  endfor  %}
-                <br>
             </div>
         </div>
 
