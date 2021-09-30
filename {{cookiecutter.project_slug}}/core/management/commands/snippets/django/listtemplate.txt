@@ -8,22 +8,6 @@ FileLocked
 {% load base %}
 {% block title %}Listagem $title${% endblock title %} 
 {% block title_modulo %}$title${% endblock title_modulo %} 
-{% block menu_app %}
-    {% for app in apps %}
-        {% if app.real_name_app.lower == '$app_name$' %}
-            {% for model in app.models_app %}
-                {% if model|has_view_permission:request %}
-                    <tr>
-                        <td>
-                            <i class="fe fe-chevrons-right text-muted"></i> &nbsp;
-                            <a href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
-                        </td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
-{% endblock menu_app %} 
 
 <!-- Bloco para passagem da URL do formulário de cadastro -->
 {% block uriadd %}{% url "$app_name$:$model_name$-create" %}{% endblock uriadd %}
@@ -40,13 +24,13 @@ FileLocked
         <tr>
             <td>
                 <a href="{% url '$app_name$:$model_name$-update' item.pk %}" data-toggle="tooltip" data-placement="bottom" title="Editar Registro.">
-                    <i class="fe fe-edit"></i>
+                    <i class="fas fa-edit"></i>
                 </a>
                 <a href="{% url '$app_name$:$model_name$-detail' item.pk %}" class="mx-3" data-toggle="tooltip" data-placement="bottom" title="Visualizar Registro.">
-                    <i class="fe fe-eye"></i>
+                    <i class="fas fa-eye"></i>
                 </a>
                 <a href="{% url '$app_name$:$model_name$-delete' item.pk %}" data-toggle="tooltip" data-placement="bottom" title="Excluir Registro.">
-                    <i class="fe fe-trash text-muted"></i>
+                    <i class="fas fa-trash text-muted"></i>
                 </a>
             </td>
             <!--REPLACE_TLINE-->
