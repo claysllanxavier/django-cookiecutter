@@ -120,10 +120,12 @@ if 'test' in sys.argv:
         def __getitem__(self, item):
             return None
 
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'TEST': {
-            'NAME': 'test.sqlite3'
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'TEST': {
+                'NAME': 'test.sqlite3'
+            }
         }
     }
 
