@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import sys
+from datetime import timedelta
+
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from django.conf import settings
@@ -164,6 +166,14 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 200
 }
 
+# DRF JWT
+SIMPLE_JWT = {
+    # Configurando para o Token expirar de hora em hora
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    # Configurando para o Refresh Token expirar a cada dia.
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
 # ÁREA PARA CONFIGURAÇÃO DAS VARIÁVEIS DO PROJETO
 
 SYSTEM_NAME = '{{ cookiecutter.project_name.title() }} '
@@ -191,7 +201,7 @@ API_PATH = ""
 #  Exemplo: https://path_dsn
 if DEBUG is False:
     sentry_sdk.init(
-        dsn="", # Exemplo: https://path_dsn
+        dsn="",  # Exemplo: https://path_dsn
         integrations=[DjangoIntegration()],
         traces_sample_rate=1.0,
         send_default_pii=True
