@@ -2,10 +2,11 @@ from drf_jsonmask.views import OptimizedQuerySetMixin
 from rest_framework import filters
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from rest_framework.decorators import permission_classes
+from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-
+@authentication_classes([JWTAuthentication, ])
 @permission_classes([IsAuthenticated, ])
 class $ModelName$ViewAPI(ModelViewSet):
     """ Classe para gerenciar as requisições da API para os métodos POST, PUT, PATCH e DELETE """
@@ -13,8 +14,9 @@ class $ModelName$ViewAPI(ModelViewSet):
     serializer_class = $ModelName$Serializer
 
 
+@authentication_classes([JWTAuthentication, ])
 @permission_classes([IsAuthenticated, ])
-class $ModelName$GETAPI(OptimizedQuerySetMixin, ReadOnlyModelViewSet):
+class $ModelName$CustomViewAPI(OptimizedQuerySetMixin, ReadOnlyModelViewSet):
     """ Classe para gerenciar as requisições da API para o métodos GET
 
         A lista filterset_fields deve ser configurada com os campos do models que poderão ser utilizados para realizar
