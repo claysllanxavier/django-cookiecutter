@@ -14,7 +14,7 @@ embarcadas para expander o conceito Dont Repeat Yourself (DRY), além das tecnol
 * [Flake8](https://pypi.org/project/flake8/)
 * [ScanAPI](https://pypi.org/project/scanapi/)
 * [Prospector](https://pypi.org/project/prospector/)
-* [DynaConf](https://pypi.org/project/dynaconf/)
+* [Python Decouple](https://pypi.org/project/python-decouple/)
 
 
 ## Licença

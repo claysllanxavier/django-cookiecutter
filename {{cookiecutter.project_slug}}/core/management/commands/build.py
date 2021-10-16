@@ -678,7 +678,8 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in __manage_url : {error}")
 
     def __render_modal_foreign_key(self, model, app, model_lower, field_name) -> str:
-        """Método responsável por criar o código que gerencia os dados de um campo Fk utilizando um modal do Bootstrap"""
+        """Método responsável por criar o código que gerencia os dados de um campo Fk utilizando um modal do
+        Bootstrap """
         try:
             content = self._snippet_modal_foreign_key
             content = content.replace("$ModelName$", model)
