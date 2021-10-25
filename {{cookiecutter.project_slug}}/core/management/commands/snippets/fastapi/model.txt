@@ -1,0 +1,10 @@
+from sqlalchemy import Boolean, Column, Integer, String, Table, ForeignKey, ForeignKey
+from sqlalchemy.orm import relationship
+
+from core.database import Base
+
+
+class $ModelClass$(Base):
+    __tablename__ = "$table$"
+
+$columns$
