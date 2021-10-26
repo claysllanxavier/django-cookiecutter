@@ -2,77 +2,11 @@ import os
 import platform
 import subprocess
 import sys
-import time
 from pathlib import Path
 
-from core.management.commands.parser_content import ParserContent
 from core.management.commands.utils import Utils
-from core.models import Base
 from django.apps import apps
 from django.core.management.base import BaseCommand
-
-
-
-class AppModel:
-    """Classe responsável por todo o processo de análise do models do Django para 
-    gerar os arquivos tantos do projeto Django como do Fastapi
-
-    Arquivos Django Gerados:
-        1 - templates (create, list, update, detail, delete)
-        2 - forms
-        3 - views
-        4 - urls
-        5 - api_views
-        6 - api_urls
-        7 - serializers
-
-    Arguments:
-        path_fastapi {String} -- Caminho do projeto Fastapi
-        app_name {String} -- Nome do app do projeto que será mapeada para gerar os arquivos do projeto
-
-    Keyword Arguments:
-        model_name {String} -- Nome do models a ser mapeado, caso não seja passado o script fará a 
-                               análise de todos os models da app (default: {None})
-    """
-
-    def __init__(self, path_fastapi, app_name, model_name=None):
-        try:
-            self.path_core = os.path.join(self.BASE_DIR, "core")
-            self.path_fastapi = path_fastapi
-            self.models = None
-            self.model = None
-            self.app_name = str(app_name).strip()
-            self.app_name_lower = self.app_name.lower()
-            self.app = apps.get_app_config(self.app_name_lower)
-            self.model_name = str(model_name).strip()
-            self.model_name_lower = self.model_name.lower()
-
-            if model_name is not None:
-                self.model = self.app.get_model(self.model_name)
-            else:
-                self.models = ((x, x.__name__.strip(), x.__name__.strip().lower())
-                               for x in self.app.get_models())
-            self.operation_system = platform.system().lower()
-
-        except Exception as error:
-            raise error
-
-    def get_path_app_dir(self):
-        """Método para retornar o caminho aonde será criado o projeto Fastapi"""
-        try:
-            return Path("{}/{}".format(self.path_fastapi, self.app_name_lower))
-        except Exception as error:
-            Utils.show_message(f"Error in get_path_app_dir: {error}", error=True)
-
-    def get_app_model_name(self, title_case=False):
-        """ Método responsável por retornar o nome do Models das app do projeto Django"""
-        try:
-            if title_case is True:
-                return f"{self.app_name.title()}{self.model_name}"
-            return f"{self.app_name}{self.model_name}"
-        except Exception as error:
-            Utils.show_message(f"Error in get_app_model_name: {error}")
-            return None
 
 
 class Command(BaseCommand):
@@ -125,8 +59,26 @@ class Command(BaseCommand):
         parser.add_argument(
             '--schemas',
             action='store_true',
-            dest='schema',
+            dest='schemas',
             help='Criar apenas os Schemas'
+        )
+        parser.add_argument(
+            '--api',
+            action='store_true',
+            dest='api',
+            help='Criar apenas as rotas da api'
+        )
+        parser.add_argument(
+            '--cruds',
+            action='store_true',
+            dest='cruds',
+            help='Criar apenas os cruds'
+        )
+        parser.add_argument(
+            '--models',
+            action='store_true',
+            dest='models',
+            help='Criar apenas os models'
         )
 
     def _check_dir(self, path) -> bool:
@@ -392,10 +344,33 @@ class Command(BaseCommand):
         de estados para o projeto Fastapi foram alteradas, agora todo projeto gerado utiliza como pacote de gerência 
         de estado o pacote o Cubit/Bloc
         """
-        # self.__manage_schema()
-        # self.__manage_model()
-        # self.__manage_cruds()
-        self.__manage_api()
+        # Verificando se foram passados parâmetros opcionais
+        if options['cruds']:
+            Utils.show_message("Trabalhando apenas os cruds.")
+            self.__manage_cruds()
+            return
+        elif options['api']:
+            Utils.show_message("Trabalhando apenas a api.")
+            self.__manage_api()
+            return
+        elif options['schemas']:
+            Utils.show_message("Trabalhando apenas os schemas.")
+            self.__manage_schema()
+            return
+        elif options['models']:
+            Utils.show_message("Trabalhando apenas os models.")
+            self.__manage_model()
+            return
+        else:
+            # Chamando o método para tratar os api
+            self.__manage_api()
+            # Chamando o método para tratar as schemas
+            self.__manage_schema()
+            # Chamando o método para tratar o models
+            self.__manage_model()
+            # Chamando o método para tratar as cruds
+            self.__manage_cruds()
+            return
 
     def handle(self, *args, **options):
 
