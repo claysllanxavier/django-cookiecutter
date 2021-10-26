@@ -63,8 +63,9 @@ class Usuario(Base):
         verbose_name = 'Usuário'
         verbose_name_plural = 'Usuários'
         fields_display = ['nome', 'email', 'telefone', 'endereco']
-        """Sugestão de estrutura para facilitar a geração do relacionamento no FastAPI
-        """
+
+        # Sugestão de estrutura para facilitar a geração do relacionamento no FastAPI
+        
         # fastapi_tabela_ligacao = [
         #     {
         #         'nome_relacionamento': 'group_permission', 
