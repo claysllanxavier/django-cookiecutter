@@ -342,6 +342,42 @@ class Command(BaseCommand):
             self.__apply_pep(self.path_crud)
         except Exception as error:
             Utils.show_message(f"Error in __manage_crud: {error}", error=True)
+   
+    def __manage_api(self):
+        """Método responsável por criar/configurar o arquivo de cruds para a FastAPI """
+        try:
+            Utils.show_message("Trabalhando na configuração das Rotas do model {}".format(self.model))
+            
+            content = self.__get_snippet(Path(
+            f"{self.path_core}/management/commands/snippets/fastapi/api.txt"))
+            # Interpolando os dados
+            content = content.replace("$ModelClass$", self.model)
+            content = content.replace("$app$", self.app)
+            content = content.replace("$model$", self.model_lower) 
+            # Verificando se o arquivo forms.py existe
+            if self._check_file(self.path_api) is False:
+                # Criando o arquivo com o conteúdo da interpolação
+                with open(self.path_api, 'w') as arquivo:
+                    arquivo.write(content)
+                self.__apply_pep(self.path_api)
+                return
+            # Verificando se já existe configuração no forms para o
+            # Models informado
+            if self.__check_content(
+                    self.path_api, "class {}".format(self.model)):
+                Utils.show_message("O model informado já possui schema configurado.")
+                return
+
+            if self.__check_content(self.path_api,
+                                    "router = APIRouter()"):
+                content = content.replace("router = APIRouter()", "")
+
+            with open(self.path_api, 'a') as crud:
+                crud.write("\n")
+                crud.write(content)
+            self.__apply_pep(self.path_api)
+        except Exception as error:
+            Utils.show_message(f"Error in __manage_crud: {error}", error=True)
 
   
 
@@ -358,7 +394,8 @@ class Command(BaseCommand):
         """
         # self.__manage_schema()
         # self.__manage_model()
-        self.__manage_cruds()
+        # self.__manage_cruds()
+        self.__manage_api()
 
     def handle(self, *args, **options):
 
@@ -395,6 +432,7 @@ class Command(BaseCommand):
         self.path_schema= os.path.join(self.path_app, "schemas.py")
         self.path_model_fastapi = os.path.join(self.path_app, "models.py")
         self.path_crud = os.path.join(self.path_app, "cruds.py")
+        self.path_api = os.path.join(self.path_app, "api.py")
        
         # Verifica se app esta instalada, pois precisa dela
         # para recuperar as instancias dos models
