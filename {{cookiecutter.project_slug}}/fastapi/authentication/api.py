@@ -126,7 +126,7 @@ def login_access_token(
     OAuth2 compatible token login, get an access token for future requests
     """
     user = cruds.user.authenticate(
-        db, email=form_data.username, password=form_data.password
+        db, username=form_data.username, password=form_data.password
     )
     if not user:
         raise HTTPException(status_code=403, detail="Incorrect email or password")

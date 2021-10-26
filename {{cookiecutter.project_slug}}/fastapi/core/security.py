@@ -6,7 +6,11 @@ from passlib.context import CryptContext
 
 from .config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(
+        default="django_pbkdf2_sha256",
+        schemes=["django_argon2", "django_bcrypt", "django_bcrypt_sha256", 
+                 "django_pbkdf2_sha256", "django_pbkdf2_sha1",
+                 "django_disabled"])
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 8 # 8 days

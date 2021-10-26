@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from .config import settings
 from authentication.api import router as router_users
+from financeiro.api import router as router_financeiro
 
 '''
 Arquivos com os endpoints principais do projeto
@@ -11,3 +12,4 @@ Arquivos com os endpoints principais do projeto
 
 api_router = APIRouter(prefix=settings.api_str)
 api_router.include_router(router_users, prefix="/authentication")
+api_router.include_router(router_financeiro, prefix="/financeiro")
