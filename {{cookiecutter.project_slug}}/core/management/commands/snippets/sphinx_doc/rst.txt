@@ -30,3 +30,15 @@ Serializers
 
 .. automodule:: $app$.serializers
     :members:
+
+APIUrls
+-----------------------------
+
+.. automodule:: $app$.api_urls
+    :members:
+
+APIViews
+-----------------------------
+
+.. automodule:: $app$.api_views
+    :members:
