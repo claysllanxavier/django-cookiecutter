@@ -311,6 +311,38 @@ class Command(BaseCommand):
         except Exception as error:
             Utils.show_message(f"Error in __manage_model: {error}", error=True)
 
+    def __manage_cruds(self):
+        """Método responsável por criar/configurar o arquivo de cruds para a FastAPI """
+        try:
+            Utils.show_message("Trabalhando na configuração do Crud do model {}".format(self.model))
+            
+            content = self.__get_snippet(Path(
+            f"{self.path_core}/management/commands/snippets/fastapi/cruds.txt"))
+            # Interpolando os dados
+            content = content.replace("$ModelClass$", self.model)
+            content = content.replace("$app$", self.app)
+            content = content.replace("$model$", self.model_lower) 
+            # Verificando se o arquivo forms.py existe
+            if self._check_file(self.path_crud) is False:
+                # Criando o arquivo com o conteúdo da interpolação
+                with open(self.path_crud, 'w') as arquivo:
+                    arquivo.write(content)
+                self.__apply_pep(self.path_crud)
+                return
+            # Verificando se já existe configuração no forms para o
+            # Models informado
+            if self.__check_content(
+                    self.path_crud, "class {}".format(self.model)):
+                Utils.show_message("O model informado já possui schema configurado.")
+                return
+
+            with open(self.path_crud, 'a') as crud:
+                crud.write("\n")
+                crud.write(content)
+            self.__apply_pep(self.path_crud)
+        except Exception as error:
+            Utils.show_message(f"Error in __manage_crud: {error}", error=True)
+
   
 
     
@@ -325,7 +357,8 @@ class Command(BaseCommand):
         de estado o pacote o Cubit/Bloc
         """
         # self.__manage_schema()
-        self.__manage_model()
+        # self.__manage_model()
+        self.__manage_cruds()
 
     def handle(self, *args, **options):
 
@@ -361,6 +394,7 @@ class Command(BaseCommand):
         # Criando o path para os forms baseado na App informada.
         self.path_schema= os.path.join(self.path_app, "schemas.py")
         self.path_model_fastapi = os.path.join(self.path_app, "models.py")
+        self.path_crud = os.path.join(self.path_app, "cruds.py")
        
         # Verifica se app esta instalada, pois precisa dela
         # para recuperar as instancias dos models
