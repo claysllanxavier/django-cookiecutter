@@ -87,7 +87,7 @@ class Command(BaseCommand):
 
 
         self.project = 'fastapi'
-        self.fastapi_dir = os.path.join(self.BASE_DIR, '..', "fastapi")
+        self.fastapi_dir = os.path.join(self.BASE_DIR, "fastapi")
         self.fastapi_project = "{}".format(self.project)
         self.snippet_dir = "{}/{}".format(self.path_core, "management/commands/snippets/fastapi/")
 
@@ -108,10 +108,10 @@ class Command(BaseCommand):
                       "str", "str", "int", "str", "str", "bool", "str", "int", "int", "str", "int",
                       "str", "DateTime", "str", "str", "int", "int", ]
     
-    _models_types = ["int", "int", "BLANK_CHOICE_DASH", "int", "int", "str", "bool", "str", "str", "datetime.date",
-                      "datetime.datetime", "float", "int", "EmailStr", "str", "str", "str", "str", "str", "float",
-                      "str", "str", "int", "str", "str", "bool", "str", "int", "int", "str", "int",
-                      "str", "DateTime", "str", "str", "int", "int", ]
+    _models_types = ["Integer", "Integer", "BLANK_CHOICE_DASH", "Integer", "Integer", "String", "Boolean", "String", "String", "Date",
+                      "Datetime", "Float", "Integer", "String", "String", "String", "String", "String", "String", "Float",
+                      "String", "String", "Integer", "String", "String", "Boolean", "String", "Integer", "Integer", "String", "Integer",
+                      "String", "DateTime", "String", "String", "Integer", "Integer", ]
 
 
     def add_arguments(self, parser):
@@ -178,20 +178,6 @@ class Command(BaseCommand):
             Utils.show_message(f"Error in get_snippet {e}", error=True)
             sys.exit()
 
-    def __init_fastapi(self):
-        """Método para iniciar o projeto Fastapi 
-        """
-        try:
-            if not Utils.check_dir(self.fastapi_dir):
-                Utils.show_message("Criando o projeto Fastapi.")
-                __cmd_fastapi_create = "git clone https://github.com/claysllanxavier/fastapi-to-do.git {}".format(self.fastapi_dir)
-                __cmd_remove_git = "cd {} && rm -rf .git".format(self.fastapi_dir)
-                subprocess.call(__cmd_fastapi_create, shell=True)
-                subprocess.call(__cmd_remove_git, shell=True)
-                Utils.show_message("Projeto criado com sucesso.")
-        except Exception as error:
-            Utils.show_message(f"Error in __init_Fastapi: {error}", error=True)
-    
     def __init_app(self, app_path):
         """Método para iniciar o projeto Fastapi 
         """
@@ -278,27 +264,31 @@ class Command(BaseCommand):
             model = self.app_instance.get_model(self.model)
             content = content.replace("$table$", model._meta.db_table)
             fields = model._meta.fields
-            # result = ''
-            # for field in iter(fields):
-            #     item = {}
-            #     item["app"], item["model"], item["name"] = str(field).split('.')
-            #     item["type"] = (str(
-            #         str(type(field)).split('.')[-1:])
-            #                     .replace("[\"", "").replace("\'>\"]", ""))
-            #     if item["type"] not in self._django_types:
-            #         print('Campo {} desconhecido'.format(field))
-            #         continue
-            #     if not self.__ignore_base_fields(item['name']):
-            #         attribute = self._schemas_types[self._django_types.index(item['type'])]
-            #         field_name = item.get('name')
-            #         if (getattr(field, 'null', None)):
-            #             attribute = f"Optional[{attribute}]"
-            #         if (field.get_default() is not None and field.get_default() != ""):
-            #             attribute += f" = {field.get_default()}"
-            #         if (item.get("type") in ('ForeignKey', 'OneToOneField')):
-            #             field_name = field.get_attname_column()[1]
-            #         result += f"\t {field_name}: {attribute}\n"
-            # content = content.replace("$fields$", result)
+            result = ''
+            for field in iter(fields):
+                item = {}
+                item["app"], item["model"], item["name"] = str(field).split('.')
+                item["type"] = (str(
+                    str(type(field)).split('.')[-1:])
+                                .replace("[\"", "").replace("\'>\"]", ""))
+                if item["type"] not in self._django_types:
+                    print('Campo {} desconhecido'.format(field))
+                    continue
+                if not self.__ignore_base_fields(item['name']):
+                    attribute = self._models_types[self._django_types.index(item['type'])]
+                    field_name = item.get('name')
+                    if (field.max_length):
+                        attribute += f"({field.max_length})"
+                    if (item.get("type") in ('ForeignKey', 'OneToOneField')):
+                        field_name = field.get_attname_column()[1]
+                        attribute = f"ForeignKey('{field.related_model._meta.db_table}.id')"
+                    attribute = f"{attribute}, nullable={(getattr(field, 'null', None))}"
+                    if (field.has_default()):
+                        attribute += f" ,default={field.get_default()}"
+                    if (field.unique):
+                        attribute += f" ,unique={field.unique}"
+                    result += f"\t {field_name} = Column({attribute})\n"
+            content = content.replace("$columns$", result)
 
             # Verificando se o arquivo forms.py existe
             if self._check_file(self.path_model_fastapi) is False:
@@ -372,10 +362,6 @@ class Command(BaseCommand):
         self.path_schema= os.path.join(self.path_app, "schemas.py")
         self.path_model_fastapi = os.path.join(self.path_app, "models.py")
        
-        # Verificando se o diretório da App informada existe
-        if self._check_dir(self.fastapi_dir) is False:
-            self.__init_fastapi()
-
         # Verifica se app esta instalada, pois precisa dela
         # para recuperar as instancias dos models
         if apps.is_installed(self.app_lower) is False:
