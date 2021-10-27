@@ -3,7 +3,9 @@ from sqlalchemy.orm import relationship
 
 from core.database import Base
 
+$imports$
 
+$manyToMany$
 class $ModelClass$(Base):
     __tablename__ = "$table$"
 

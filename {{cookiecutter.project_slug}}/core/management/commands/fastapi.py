@@ -35,12 +35,12 @@ class Command(BaseCommand):
                      "FieldDoesNotExist", "FilePathField", "FloatField", "GenericIPAddressField", "IPAddressField",
                      "IntegerField", "FieldFile", "NOT_PROVIDED", "NullBooleanField", "ImageField",
                      "PositiveIntegerField", "PositiveSmallIntegerField", "SlugField", "SmallIntegerField", "TextField",
-                     "TimeField", "URLField", "UUIDField", "ForeignKey", "OneToOneField", ]
+                     "TimeField", "URLField", "UUIDField", "ForeignKey", "OneToOneField"]
 
     _schemas_types = ["int", "int", "BLANK_CHOICE_DASH", "int", "int", "str", "bool", "str", "str", "datetime.date",
                       "datetime.datetime", "float", "int", "EmailStr", "str", "str", "str", "str", "str", "float",
                       "str", "str", "int", "str", "str", "bool", "str", "int", "int", "str", "int",
-                      "str", "DateTime", "str", "str", "int", "int", ]
+                      "str", "DateTime", "str", "str", "int", "int",]
     
     _models_types = ["Integer", "Integer", "BLANK_CHOICE_DASH", "Integer", "Integer", "String", "Boolean", "String", "String", "Date",
                       "Datetime", "Float", "Integer", "String", "String", "String", "String", "String", "String", "Float",
@@ -216,7 +216,10 @@ class Command(BaseCommand):
             model = self.app_instance.get_model(self.model)
             content = content.replace("$table$", model._meta.db_table)
             fields = model._meta.fields
+            related_fields = model._meta.many_to_many
             result = ''
+            imports = ""
+            many_to_many = ""
             for field in iter(fields):
                 item = {}
                 item["app"], item["model"], item["name"] = str(field).split('.')
@@ -229,18 +232,44 @@ class Command(BaseCommand):
                 if not self.__ignore_base_fields(item['name']):
                     attribute = self._models_types[self._django_types.index(item['type'])]
                     field_name = item.get('name')
+                    relationship = None
                     if (field.max_length):
                         attribute += f"({field.max_length})"
                     if (item.get("type") in ('ForeignKey', 'OneToOneField')):
                         field_name = field.get_attname_column()[1]
-                        attribute = f"ForeignKey('{field.related_model._meta.db_table}.id')"
+                        __model = field.related_model._meta
+                        attribute = f"ForeignKey('{__model.db_table}.id')"
+                        if __model.app_label != item.get('app'):
+                            imports += f"from {__model.app_label}.models import {__model.object_name}\n"
+                        relationship = f"\t {item.get('name')} = relationship('{__model.object_name}')\n"
+                 
                     attribute = f"{attribute}, nullable={(getattr(field, 'null', None))}"
                     if (field.has_default()):
                         attribute += f" ,default={field.get_default()}"
                     if (field.unique):
                         attribute += f" ,unique={field.unique}"
                     result += f"\t {field_name} = Column({attribute})\n"
+                    if relationship is not None:
+                        result += relationship
+            for field in iter(related_fields):
+                item = {}
+                item["app"], item["model"], item["name"] = str(field).split('.')
+                item["type"] = (str(
+                    str(type(field)).split('.')[-1:])
+                                .replace("[\"", "").replace("\'>\"]", ""))
+                if (item.get("type") == "ManyToManyField"):
+                        _model_name = field.model._meta.model_name
+                        _related_model_name = field.related_model._meta.model_name
+                        __model = field.related_model._meta
+                        table = f"{item.get('app')}_{_model_name}_{field.related_model._meta.model_name}"
+                        many_to_many += f"{table} = Table('{table}', Base.metadata,"
+                        many_to_many += f"Column(Integer, primary_key=True, index=True),"
+                        many_to_many += f"Column('{_model_name}_id', ForeignKey('{_model_name}.id')),"
+                        many_to_many += f"Column('{_related_model_name}_id', ForeignKey('{_related_model_name}.id')))\n"
+                        result += f"\t {item.get('name')} = relationship('{__model.object_name}', secondary={table})\n"
             content = content.replace("$columns$", result)
+            content = content.replace("$imports$", imports)
+            content = content.replace("$manyToMany$", many_to_many)
 
             # Verificando se o arquivo forms.py existe
             if self._check_file(self.path_model_fastapi) is False:
