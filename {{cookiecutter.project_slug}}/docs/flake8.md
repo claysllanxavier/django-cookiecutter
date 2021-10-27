@@ -22,6 +22,3 @@ exclude=.venv
 |Pip |Docs  |
 | --- | --- |
 |[Pip](https://pypi.org/project/flake8/)|[Doc](https://flake8.pycqa.org/en/latest/)|
-
-
-

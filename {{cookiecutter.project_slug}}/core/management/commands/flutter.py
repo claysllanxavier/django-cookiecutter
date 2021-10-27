@@ -1359,7 +1359,7 @@ class Command(BaseCommand):
 
     def __replace_main(self):
         """Método responsável por atualizar o conteúdo do arquivo main.dart no projeto Flutter contendo as estruturas
-        de navegação para as apps geradas via nuvols core."""
+        de navegação para as apps geradas via projeto core."""
         __imports = ""
         __list_itens = []
         try:
