@@ -21,8 +21,9 @@ class Command(BaseCommand):
 
 
         self.project = 'fastapi'
-        self.fastapi_dir = os.path.join(self.BASE_DIR, "fastapi")
-        self.fastapi_project = "{}".format(self.project)
+
+        self.fastapi_dir = os.path.join(self.BASE_DIR, '..', "fastapi")
+        self.fastapi_project = os.path.join(self.path_core, "management/commands/snippets/fastapi_project")
         self.snippet_dir = "{}/{}".format(self.path_core, "management/commands/snippets/fastapi/")
 
         self.current_app_model = None
@@ -129,6 +130,19 @@ class Command(BaseCommand):
         except Exception as e:
             Utils.show_message(f"Error in get_snippet {e}", error=True)
             sys.exit()
+
+    def __init_fastapi(self):
+        """Método para iniciar o projeto Fastapi 
+        """
+        try:
+            if not Utils.check_dir(self.fastapi_dir):
+                Utils.show_message("Criando o projeto Fastapi.")
+                print(self.fastapi_project)
+                __cmd_fastapi_create = "cp -R {} {}".format(self.fastapi_project, self.fastapi_dir)
+                subprocess.call(__cmd_fastapi_create, shell=True)
+                Utils.show_message("Projeto criado com sucesso.")
+        except Exception as error:
+            Utils.show_message(f"Error in __init_Fastapi: {error}", error=True)
 
     def __init_app(self, app_path):
         """Método para iniciar o projeto Fastapi 
@@ -259,13 +273,15 @@ class Command(BaseCommand):
                                 .replace("[\"", "").replace("\'>\"]", ""))
                 if (item.get("type") == "ManyToManyField"):
                         _model_name = field.model._meta.model_name
+                        _app_name = field.model._meta.app_label
                         _related_model_name = field.related_model._meta.model_name
+                        _related_model_app = field.related_model._meta.app_label
                         __model = field.related_model._meta
                         table = f"{item.get('app')}_{_model_name}_{field.related_model._meta.model_name}"
                         many_to_many += f"{table} = Table('{table}', Base.metadata,"
-                        many_to_many += f"Column(Integer, primary_key=True, index=True),"
-                        many_to_many += f"Column('{_model_name}_id', ForeignKey('{_model_name}.id')),"
-                        many_to_many += f"Column('{_related_model_name}_id', ForeignKey('{_related_model_name}.id')))\n"
+                        many_to_many += f"Column('id', Integer, primary_key=True, index=True),"
+                        many_to_many += f"Column('{_model_name}_id', ForeignKey('{_app_name}_{_model_name}.id')),"
+                        many_to_many += f"Column('{_related_model_name}_id', ForeignKey('{_related_model_app}_{_related_model_name}.id')))\n"
                         result += f"\t {item.get('name')} = relationship('{__model.object_name}', secondary={table})\n"
             content = content.replace("$columns$", result)
             content = content.replace("$imports$", imports)
@@ -437,6 +453,10 @@ class Command(BaseCommand):
         self.path_model_fastapi = os.path.join(self.path_app, "models.py")
         self.path_crud = os.path.join(self.path_app, "cruds.py")
         self.path_api = os.path.join(self.path_app, "api.py")
+
+        # Verificando se o diretório do fast informada existe
+        if self._check_dir(self.fastapi_dir) is False:
+            self.__init_fastapi()
        
         # Verifica se app esta instalada, pois precisa dela
         # para recuperar as instancias dos models
