@@ -1,12 +1,6 @@
 $App$
 ==================
 
-App
-----------------------
-
-.. automodule:: $app$.apps
-    :members:
-
 Forms
 -----------------------
 
@@ -29,4 +23,10 @@ Serializers
 -----------------------------
 
 .. automodule:: $app$.serializers
+    :members:
+
+APIViews
+-----------------------------
+
+.. automodule:: $app$.api_views
     :members:

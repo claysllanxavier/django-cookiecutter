@@ -121,6 +121,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 PROJECT_NAME = "{{ cookiecutter.project_name }}"
 
+# Lista de apps que devem ser mapeadas para gerar a documentação via Sphinxs
+# TODO Adicionar na documentação de uso do Framework a parte de geração da documentação com o Sphinxs
+DOC_APPS = ['usuario', ]
+
 try:
     from base.settings_local import *
 except:

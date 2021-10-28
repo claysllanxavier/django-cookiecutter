@@ -64,5 +64,26 @@ class Usuario(Base):
         verbose_name_plural = 'Usuários'
         fields_display = ['nome', 'email', 'telefone', 'endereco']
 
+        # Sugestão de estrutura para facilitar a geração do relacionamento no FastAPI
+        
+        # fastapi_tabela_ligacao = [
+        #     {
+        #         'nome_relacionamento': 'group_permission', 
+        #         'nome_tabela_ligacao': 'auth_group_permissions', 
+        #         'relacionamento': [
+        #             {'coluna': 'group_id', 'campo_foreignkey': 'auth_group.id'}, 
+        #             {'coluna': 'permission_id', 'campo_foreignkey': 'auth_permission.id'}
+        #         ]
+        #     }, 
+        #     {
+        #         'nome_relacionamento': 'user_group', 
+        #         'nome_tabela_ligacao': 'auth_user_groups', 
+        #         'relacionamento': [
+        #             {'coluna': 'group_id', 'campo_foreignkey': 'auth_group.id'}, 
+        #             {'coluna': 'user_id', 'campo_foreignkey': 'auth_user.id'}
+        #         ]
+        #     }, 
+        # ]
+
     def __str__(self):
         return f"Usuario: {self.cpf} | {self.email}"
