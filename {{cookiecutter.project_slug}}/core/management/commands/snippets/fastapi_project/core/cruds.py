@@ -1,3 +1,4 @@
+import datetime
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 from fastapi.encoders import jsonable_encoder
@@ -31,12 +32,18 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
 
     def get(self, db: Session, id: Any) -> Optional[ModelType]:
-        return db.query(self.model).filter(self.model.id == id).first()
+        query = db.query(self.model).filter(self.model.id == id)
+        if(hasattr(self.model, 'deleted')):
+            query = query.filter(self.model.deleted == False)
+        return query.first()
 
     def get_multi(
         self, db: Session, *, skip: int = 0, limit: int = 25
     ) -> List[ModelType]:
-        return db.query(self.model).offset(skip).limit(limit).all()
+        query = db.query(self.model)
+        if(hasattr(self.model, 'deleted')):
+            query = query.filter(self.model.deleted == False)
+        return query.offset(skip).limit(limit).all()
 
     def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
         obj_in_data = jsonable_encoder(obj_in)
@@ -58,6 +65,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             update_data = obj_in
         else:
             update_data = obj_in.dict(exclude_unset=True)
+        update_data['updated_on'] = datetime.datetime.now()
         for field in obj_data:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
@@ -67,6 +75,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     def remove(self, db: Session, *, id: int) -> ModelType:
+        db_obj = db.query(self.model).get(id)
+        db_obj.deleted = True
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+    def hard_remove(self, db: Session, *, id: int) -> ModelType:
         obj = db.query(self.model).get(id)
         db.delete(obj)
         db.commit()

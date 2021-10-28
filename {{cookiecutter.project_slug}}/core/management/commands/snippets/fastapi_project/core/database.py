@@ -20,8 +20,8 @@ Arquivo responsável pelo banco de dados
 class Base:
     id = Column(String, primary_key=True, default=uuid.uuid4, nullable=False)
     deleted = Column(Boolean, default=False, nullable=False)
-    created_on = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
-    updated_on = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
+    created_on = Column(DateTime, default=datetime.datetime.now(), nullable=False)
+    updated_on = Column(DateTime, default=datetime.datetime.now(), nullable=False)
     
     __name__: str
     # Generate __tablename__ automatically
