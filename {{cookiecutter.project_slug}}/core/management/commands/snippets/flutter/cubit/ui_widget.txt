@@ -23,7 +23,7 @@ Widget customMainCardButton(icon, label,
     boxShadowColor,
     cardBorderColor,
     image,
-    double textSize,
+    double textSize = 14,
     textWeight = FontWeight.w600}) {
   return Container(
     margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -54,17 +54,13 @@ Widget customMainCardButton(icon, label,
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 6),
           child: Center(
-            child:
-                icon != null ? Icon(icon, color: iconColor, size: 42) : image,
+            child: icon != null ? Icon(icon, color: iconColor, size: 42) : image,
           ),
         ),
         Center(
           child: Text(
             '$label',
-            style: TextStyle(
-                color: textColor,
-                fontWeight: textWeight,
-                fontSize: textSize ?? 14),
+            style: TextStyle(color: textColor, fontWeight: textWeight, fontSize: textSize),
             textAlign: TextAlign.center,
           ),
         )
@@ -100,10 +96,7 @@ Widget customAvatarAppBar() {
 ///     networkImage (default = false) -> Bool para determinar se a imagem é da web ou dos assets
 ///
 Widget customImageCircular(BuildContext context, String path,
-    {double size = 22,
-    bool example = false,
-    bool networkImage = false,
-    BoxFit boxFit = BoxFit.cover}) {
+    {double size = 22, bool example = false, bool networkImage = false, BoxFit boxFit = BoxFit.cover}) {
   try {
     if (example == true) {
       return ClipRRect(
@@ -136,8 +129,7 @@ Widget customImageCircular(BuildContext context, String path,
         return Container();
       }
     }
-  } catch (error, exception) {
-    print("Error: $error, Exception: $exception");
+  } catch (error) {
     return Container();
   }
 }
@@ -154,19 +146,18 @@ Widget customImageCircular(BuildContext context, String path,
 ///
 ///
 Widget customCard(
-    {@required BuildContext context,
-    @required Widget child,
-    Color backgroundColor,
+    {required BuildContext context,
+    required Widget child,
+    Color? backgroundColor,
     double elevation = 2.0,
     double radius = 4.0,
-    double width}) {
+    double? width}) {
   try {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
       child: Container(),
     );
-  } catch (error, exception) {
-    print("Error: $error, Exception: $exception");
+  } catch (error) {
     return Container();
   }
 }
@@ -185,49 +176,46 @@ Widget customCard(
 ///     width (opcional) -> Double para determinar a largura do card.
 ///
 Widget customCardWithImage(
-    {@required BuildContext context,
-    @required Widget child,
-    @required String path,
-    @required bool networkImage,
+    {required BuildContext context,
+    required Widget child,
+    required String path,
+    required bool networkImage,
     String positionImage = "t",
-    Color backgroundColor,
     double elevation = 6.0,
     double radius = 4.0,
-    double width,
-    double height,
-    double widthImage,
-    double heightImage}) {
+    double height = 200,
+    Color? backgroundColor,
+    double? width,
+    double? widthImage,
+    double? heightImage}) {
   try {
-    Widget _childCard;
+    Widget _childCard = Container();
     List<String> _positionImageValues = ["t", "r", "b", "l", "bg"];
     // Caso o valor passado não seja nenhuma das opções possíveis
     // retorno null
-    if (!_positionImageValues.contains(positionImage)) return null;
+    if (!_positionImageValues.contains(positionImage)) return Container();
     // Verificando o posicionamento da imagem
     switch (positionImage) {
       case "t":
         // Posicionar a imagem no top utilizando Column
-        _childCard = Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: heightImage ?? height * 0.5,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(radius),
-                    topRight: Radius.circular(radius),
-                  ),
-                  image: DecorationImage(
-                    image:
-                        CachedNetworkImageProvider("https://picsum.photos/600"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+        _childCard =
+            Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            height: heightImage ?? height * 0.5,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(radius),
+                topRight: Radius.circular(radius),
               ),
-              SizedBox(height: 8),
-              child
-            ]);
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(path.isNotEmpty ? path: "https://picsum.photos/600"),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(height: 8),
+          child
+        ]);
         break;
       case "r":
         // Posicionar a imagem na direita utilizando Row
@@ -239,15 +227,14 @@ Widget customCardWithImage(
               SizedBox(height: 8),
               Container(
                 width: width ?? MediaQuery.of(context).size.width * 0.5,
-                height: height ?? 200,
+                height: height,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(radius),
                     bottomRight: Radius.circular(radius),
                   ),
                   image: DecorationImage(
-                    image:
-                        CachedNetworkImageProvider("https://picsum.photos/600"),
+                    image: CachedNetworkImageProvider(path.isNotEmpty ? path : "https://picsum.photos/600"),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -256,52 +243,46 @@ Widget customCardWithImage(
         break;
       case "b":
         // Posicionar a imagem no bottom utilizando Column
-        _childCard = Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              child,
-              SizedBox(height: 8),
-              Container(
-                height: heightImage ?? height * 0.5,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(radius),
-                    bottomRight: Radius.circular(radius),
-                  ),
-                  image: DecorationImage(
-                    image:
-                        CachedNetworkImageProvider("https://picsum.photos/600"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+        _childCard =
+            Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child,
+          SizedBox(height: 8),
+          Container(
+            height: heightImage ?? height * 0.5,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(radius),
+                bottomRight: Radius.circular(radius),
               ),
-            ]);
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(path.isNotEmpty ? path : "https://picsum.photos/600"),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ]);
         break;
       case "l":
         // Posicionar a imagem na esquerda utilizando Row
-        _childCard = Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: width ?? MediaQuery.of(context).size.width * 0.5,
-                height: height ?? 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(radius),
-                    bottomLeft: Radius.circular(radius),
-                  ),
-                  image: DecorationImage(
-                    image:
-                        CachedNetworkImageProvider("https://picsum.photos/600"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+        _childCard =
+            Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            width: width ?? MediaQuery.of(context).size.width * 0.5,
+            height: height,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(radius),
+                bottomLeft: Radius.circular(radius),
               ),
-              SizedBox(height: 8),
-              child
-            ]);
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(path.isNotEmpty ? path : "https://picsum.photos/600"),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(height: 8),
+          child
+        ]);
         break;
       case "bg":
         // Posicionar a imagem no background
@@ -312,7 +293,7 @@ Widget customCardWithImage(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(radius),
               image: DecorationImage(
-                image: CachedNetworkImageProvider("https://picsum.photos/600"),
+                image: CachedNetworkImageProvider(path.isNotEmpty ? path : "https://picsum.photos/600"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -338,13 +319,12 @@ Widget customCardWithImage(
       elevation: elevation,
       child: _childCard,
     );
-  } catch (error, exception) {
-    print("Error: $error, Exception: $exception");
+  } catch (error) {
     return Container();
   }
 }
 
-/// Componente FlatButton
+/// Componente TextButton
 ///
 ///    Parameters:
 ///     label -> String com o texto a ser mostrado no botão
@@ -360,11 +340,11 @@ Widget customCardWithImage(
 /// ```
 ///
 Widget customFlatButton(
-    {@required String label,
-    @required Function onPress,
-    @required BuildContext context,
-    Color textColor,
-    Icon iconButton}) {
+    {required String label,
+    required VoidCallback onPress,
+    required BuildContext context,
+    Color? textColor,
+    Icon? iconButton}) {
   try {
     return FlatButton(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -381,8 +361,7 @@ Widget customFlatButton(
         ],
       ),
     );
-  } catch (error, exception) {
-    print("Error: $error, Exception: $exception");
+  } catch (error) {
     return Container();
   }
 }
@@ -406,12 +385,12 @@ Widget customFlatButton(
 /// ```
 ///
 Widget customRaisedButton(
-    {@required String label,
-    @required Function onPress,
-    @required BuildContext context,
-    Color color,
-    Color textColor,
-    Icon iconButton,
+    {required String label,
+    required VoidCallback onPress,
+    required BuildContext context,
+    Color? color,
+    Color? textColor,
+    Icon? iconButton,
     bool rounded = false,
     double elevation: 2.0}) {
   try {
@@ -430,14 +409,12 @@ Widget customRaisedButton(
           SizedBox(width: 4.0),
           Text(
             label,
-            style:
-                TextStyle(color: textColor ?? Theme.of(context).primaryColor),
+            style: TextStyle(color: textColor ?? Theme.of(context).primaryColor),
           ),
         ],
       ),
     );
-  } catch (error, exception) {
-    print("Error: $error, Exception: $exception");
+  } catch (error) {
     return Container();
   }
 }
@@ -461,13 +438,13 @@ Widget customRaisedButton(
 /// ```
 ///
 Widget customButtonOutline(
-    {@required String label,
-    @required Function onPress,
-    @required BuildContext context,
+    {required String label,
+    required VoidCallback onPress,
+    required BuildContext context,
     double borderSize = 1.12,
-    Color textColor,
-    Color borderColor,
-    Icon iconButton,
+    Color? textColor,
+    Color? borderColor,
+    Icon? iconButton,
     bool rounded = false,
     bool processing = false,
     double circularProgressIndicatorSize = 28,
@@ -498,21 +475,18 @@ Widget customButtonOutline(
                     width: circularProgressIndicatorSize,
                     child: CircularProgressIndicator(
                       strokeWidth: circularProgressIndicatorStrokeWidth,
-                      valueColor: new AlwaysStoppedAnimation<Color>(
-                          circularProgressIndicatorBgColor),
+                      valueColor: new AlwaysStoppedAnimation<Color>(circularProgressIndicatorBgColor),
                     ))
                 : Text(
                     label,
-                    style: TextStyle(
-                        color: textColor ?? Theme.of(context).primaryColor),
+                    style: TextStyle(color: textColor ?? Theme.of(context).primaryColor),
                   ),
           ],
         ),
         onPressed: onPress,
       ),
     );
-  } catch (error, exception) {
-    print("Error: $error, Exception: $exception");
+  } catch (error) {
     return Container();
   }
 }
@@ -537,23 +511,44 @@ Widget customButtonOutline(
 /// ```
 ///
 Widget customTextFormField({
-  @required String labelText,
-  @required String hintText,
-  @required TextEditingController controller,
-  @required BuildContext context,
-  Function validator,
+  required String labelText,
+  required String hintText,
+  required TextEditingController controller,
+  required BuildContext context,
+  final String? Function(String?)? customValidator,
   bool outline = false,
+  bool obscure = false,
   TextInputType keyBoardType = TextInputType.text,
+  Color textColor = Colors.black54,
+  bool lowerCase = false,
 }) {
   try {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
-          controller: controller,
-          keyboardType: keyBoardType,
-          decoration: InputDecoration(
-              labelText: labelText, hintText: hintText, border: outline == true ? OutlineInputBorder() : null),
-          validator: validator != null ? validator : null),
+        controller: controller,
+        keyboardType: keyBoardType,
+        obscureText: obscure,
+        decoration: InputDecoration(
+          labelText: labelText,
+          hintText: hintText,
+          labelStyle: TextStyle(color: CustomTheme.lightPrimary),
+          hintStyle: TextStyle(color: CustomTheme.defaultColor),
+          border: outline == true
+              ? OutlineInputBorder(
+                  borderSide: BorderSide(
+                  color: CustomTheme.defaultColor,
+                ))
+              : null,
+          enabledBorder: outline == true
+              ? OutlineInputBorder(
+                  borderSide: BorderSide(
+                  color: CustomTheme.defaultColor,
+                ))
+              : null,
+        ),
+        validator: customValidator ?? null,
+      ),
     );
   } catch (error, exception) {
     print("Error: $error, Exception: $exception");
@@ -579,8 +574,7 @@ Widget customProcessingCardModal(BuildContext context) {
               CircularProgressIndicator(),
               SizedBox(height: 16,),
               Text(
-                AppLocalizations.of(context)
-                    .translate("custom_processing_card_label"),
+                AppLocalizations.of(context)?.translate("custom_processing_card_label") ?? "",
               ),
             ],
           ),
@@ -610,8 +604,7 @@ Widget customProcessingCardModalCenter(BuildContext context) {
               const CircularProgressIndicator(),
               SizedBox(height: 16,),
               Text(
-                AppLocalizations.of(context)
-                    .translate("custom_processing_card_label"),
+                AppLocalizations.of(context)?.translate("custom_processing_card_label") ?? "",
               ),
             ],
           ),
@@ -624,7 +617,7 @@ Widget customProcessingCardModalCenter(BuildContext context) {
 
 /// Componente para mostrar a mensagem de erro para o usuário na UI
 Widget customErrorMessage(BuildContext context,
-    {String title, String message}) {
+    {String? title, required String message}) {
   return Center(child: Text(message));
 }
 
@@ -649,9 +642,8 @@ customSuccessSnackbar(String message, {int secondsDuration = 4}) {
 Widget customProcessingWidget(
   BuildContext context, {
   bool isCircularIndicator = true,
-  double lineHeigth,
-  Color lineColor,
-  Color backgroundColor,
+  double lineHeigth = 0.0,
+  Color backgroundColor = Colors.white,
 }) {
   if (isCircularIndicator == true) {
     return Container(
@@ -662,7 +654,7 @@ Widget customProcessingWidget(
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 12.0),
     child: LinearProgressIndicator(
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
     ),
   );
 }
@@ -707,10 +699,13 @@ class _HeadWidgetState extends State<HeadWidget> {
   /// iniciado com zero para o caso de não ter sido informada nenhuma imagem
   /// no construtor do Widget. Valor 1 -> AssetsImage, 2 -> WebImage
   int imageType = 0;
-  double marginTitleTop, marginTitleLef, marginTitleBottom, marginTitleRight;
+  double marginTitleTop = 0.0;
+  double marginTitleLef = 0.0; 
+  double marginTitleBottom = 0.0;
+  double marginTitleRight = 0.0;
 
   /// String contendo o caminho a ser renderizado como background do cabeçalho
-  String _urlPath;
+  String _urlPath = "";
 
   @override
   void initState() {
@@ -766,7 +761,7 @@ class _HeadWidgetState extends State<HeadWidget> {
               children: <Widget>[
                 Text(
                   "",
-                  style: Theme.of(context).textTheme.headline5.copyWith(
+                  style: Theme.of(context).textTheme.headline5?.copyWith(
                       fontWeight: FontWeight.w600,
                       wordSpacing: 0.08,
                       color: Colors.white),
@@ -782,11 +777,11 @@ class _HeadWidgetState extends State<HeadWidget> {
 
 /// Barra de botões da tela inicial
 class ContentWidget extends StatefulWidget {
-  final Widget widgetChild;
-  const ContentWidget({
-    Key key,
-    this.widgetChild,
-  }) : super(key: key);
+  final widgetChild = Container();
+  ContentWidget({
+    Key? key,
+    Widget? widgetChild,
+  });
 
   @override
   _ContentWidgetState createState() => _ContentWidgetState();
@@ -796,10 +791,8 @@ class _ContentWidgetState extends State<ContentWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(
-            top: Util.getProportionScreenWidth(
-                    context, _proportionScreenDefault) -
-                125),
-        child: widget.widgetChild);
+      margin: EdgeInsets.only(top: Util.getProportionScreenWidth(context, _proportionScreenDefault) - 125),
+      child: widget.widgetChild,
+    );
   }
 }

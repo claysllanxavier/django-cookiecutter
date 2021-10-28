@@ -12,15 +12,21 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import sys
+from datetime import timedelta
+
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from django.conf import settings
+from decouple import config, Csv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+SECRET_KEY = config('SECRET_KEY')
+
+# TODO Mover esse conteúdo para o arquivo .env criado para utilizar o python-decouple
 ALLOWED_HOSTS = ['{{ cookiecutter.domain_name }}', ]
 
 INSTALLED_APPS = [
@@ -71,6 +77,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'base.wsgi.application'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': '5432',
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -105,6 +121,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 PROJECT_NAME = "{{ cookiecutter.project_name }}"
 
+try:
+    from base.settings_local import *
+except:
+    pass
+
 # Desativando as migrações quando estiver executando os testes.
 if 'test' in sys.argv:
     class DisableMigrations(object):
@@ -115,20 +136,16 @@ if 'test' in sys.argv:
         def __getitem__(self, item):
             return None
 
-
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'TEST': {
-            'NAME': 'test.sqlite3'
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'TEST': {
+                'NAME': 'test.sqlite3'
+            }
         }
     }
 
     MIGRATION_MODULES = DisableMigrations()
-
-try:
-    from base.settings_local import *
-except:
-    pass
 
 if DEBUG:
     INSTALLED_APPS.append('django_extensions')
@@ -162,6 +179,14 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 200
 }
 
+# DRF JWT
+SIMPLE_JWT = {
+    # Configurando para o Token expirar de hora em hora
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    # Configurando para o Refresh Token expirar a cada dia.
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
 # ÁREA PARA CONFIGURAÇÃO DAS VARIÁVEIS DO PROJETO
 
 SYSTEM_NAME = '{{ cookiecutter.project_name.title() }} '
@@ -170,11 +195,11 @@ LOGIN_URL = '/core/login'
 LOGIN_REDIRECT_URL = '/core'
 LOGOUT_REDIRECT_URL = '/core/login'
 
-#Variável responsável por configurar qual Manager utilizar
-#Se for True usa o manager padrão que retorna todos os elementos
-#mesmo os que foram marcados com deleted = True e enabled = False
-#Se for False usa o manager configurado para não mostrar
-#os elementos marcados com deleted = True e enabled
+"""
+Variável responsável por configurar qual Manager utilizar. 
+Se for True usa o manager padrão que retorna todos os  elementos mesmo os marcados com deleted = True e enabled = True 
+Se for False usa o manager configurado para não mostrar os elementos marcados com deleted = True e enabled = False
+"""
 USE_DEFAULT_MANAGER = False
 
 # O Valor dessa variável não deve ser alterado
@@ -182,20 +207,15 @@ FLUTTER_PROJECT_PATH = "../../Flutter/"
 
 # TODO Adicione na lista abaixo as apps que devem ser renderizadas no projeto Flutter
 FLUTTER_APPS = ['usuario', ]
-# TODO Configure o caminho da API do projeto
-API_PATH = ""
 
-# TODO Configurar o dsn do Sentry
-#  Exemplo: https://path_dsn
-sentry_sdk.init(
-    dsn="", # Exemplo: https://path_dsn
-    integrations=[DjangoIntegration()],
-    traces_sample_rate=1.0,
-    send_default_pii=True
-)
+# TODO Configure o caminho da API no arquivo .env criado para utilizar o Python Decouple
+API_PATH = config('API_PATH')
 
-# HERE STARTS DYNACONF EXTENSION LOAD (Keep at the very bottom of settings.py)
-# Read more at https://dynaconf.readthedocs.io/en/latest/guides/django.html
-import dynaconf  # noqa
-settings = dynaconf.DjangoDynaconf(__name__)  # noqa
-# HERE ENDS DYNACONF EXTENSION LOAD (No more code below this line)
+# TODO Configurar o dsn do Sentry no arquivo .env criado para utilizar o Python Decouple
+if DEBUG is False:
+    sentry_sdk.init(
+        dsn=config('SENTRY_DNS'),  # Exemplo: https://path_dsn
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+        send_default_pii=True
+    )

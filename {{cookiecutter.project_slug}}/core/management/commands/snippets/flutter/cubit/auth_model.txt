@@ -1,52 +1,54 @@
 import 'data.dart';
 
 class AuthModel {
-  String id;
-  String uuid;
-  String name;
-  String email;
-  String login;
-  String socialProfileLogin;
-  String account;
-  String password;
-  String cpf;
-  String phoneNumber;
-  String photoUrl;
-  String token;
-  String firebaseId;
-  String firebaseToken;
-  String accessToken;
-  String idToken;
+  String id = '';
+  String uuid = '';
+  String name = '';
+  String email = '';
+  String login = '';
+  String socialProfileLogin = '';
+  String account = '';
+  String password = '';
+  String cpf = '';
+  String phoneNumber = '';
+  String photoUrl = '';
+  String token = '';
+  String firebaseId = '';
+  String firebaseToken = '';
+  String accessToken = '';
+  String idToken = '';
 
   AuthModel({
-    this.id,
-    this.uuid,
-    this.name,
-    this.email,
-    this.login,
-    this.socialProfileLogin,
-    this.account,
-    this.password,
-    this.cpf,
-    this.phoneNumber,
-    this.token,
-    this.photoUrl,
-    this.firebaseId,
-    this.accessToken,
-    this.idToken,
-    this.firebaseToken,
+    this.id = '',
+    this.uuid = '',
+    this.name = '',
+    this.email = '',
+    this.login = '',
+    this.socialProfileLogin = '',
+    this.account = '',
+    this.password = '',
+    this.cpf = '',
+    this.phoneNumber = '',
+    this.token = '',
+    this.photoUrl = '',
+    this.firebaseId = '',
+    this.accessToken = '',
+    this.idToken = '',
+    this.firebaseToken = '',
   });
 
   Future<bool> logout() async {
     try {
       AuthData _authData = AuthData();
-      _authData.deleteAll();
-    } catch (e) {}
+      return _authData.deleteAll();
+    } catch (e) {
+      return false;
+    }
   }
 
   String get profileName {
     try {
-      if (this.account == null) return "";
+      if (this.account.isEmpty) return "";
       return this.account;
     } catch (e) {}
     return "";
@@ -54,10 +56,10 @@ class AuthModel {
 
   bool validateLocalUserSignInWithGoogle() {
     bool result = true;
-    if (accessToken == null || accessToken.isEmpty) {
+    if (accessToken.isEmpty) {
       result = false;
     }
-    if (idToken == null || idToken.isEmpty) {
+    if (idToken.isEmpty) {
       result = false;
     }
     return result;
@@ -65,10 +67,10 @@ class AuthModel {
 
   bool validateLocalUserSignInWithEmail() {
     bool result = true;
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       result = false;
     }
-    if (password == null || password.isEmpty) {
+    if (password.isEmpty) {
       result = false;
     }
     return result;

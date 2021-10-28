@@ -21,7 +21,7 @@ class $ModelClass$DetailPage extends StatefulWidget {
 
   final $ModelClass$Model $ModelClassCamelCase$Model;
 
-  const $ModelClass$DetailPage({Key key, this.$ModelClassCamelCase$Model})
+  const $ModelClass$DetailPage({Key? key, required this.$ModelClassCamelCase$Model})
       : super(key: key);
 
   @override
@@ -31,9 +31,9 @@ class $ModelClass$DetailPage extends StatefulWidget {
 class _$ModelClass$DetailPageState extends State<$ModelClass$DetailPage> 
   with SingleTickerProviderStateMixin{
 
-  $ModelClass$Model _$ModelClassCamelCase$Model;
+  late $ModelClass$Model _$ModelClassCamelCase$Model;
+  late AnimationController _animationController;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  AnimationController _animationController;
 
   @override
   void initState() {
@@ -105,9 +105,9 @@ class _$ModelClass$DetailPageState extends State<$ModelClass$DetailPage>
   /// Método responsável por mostrar um SnackBar com uma mensagem
   /// com o texto passada como parâmetro
    _showMessage(String message, {bool error = false}) {
-    if (message != null && message.isNotEmpty) {
+    if (message.isNotEmpty) {
       setState(() {
-        _scaffoldKey.currentState.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           error == false
               ? customSuccessSnackbar(message)
               : customErrorSnackbar(message),
@@ -125,11 +125,11 @@ class _$ModelClass$DetailPageState extends State<$ModelClass$DetailPage>
           title: Text(''),
           content: Text(texto),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('Cancelar'),
               onPressed: () => Navigator.pop(context),
             ),
-            FlatButton(
+            TextButton(
               child: Text('Excluir'),
               onPressed: () {},
             )

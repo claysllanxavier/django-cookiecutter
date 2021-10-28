@@ -64,8 +64,6 @@ drf-jsonmask==0.1.0
     # via -r .\requirements.in
 drf-yasg==1.20.0
     # via -r .\requirements.in
-dynaconf==3.1.2
-    # via -r .\requirements.in
 idna==2.10
     # via requests
 image-optimizer==0.3.6
@@ -100,6 +98,8 @@ python-dateutil==2.8.0
     # via
     #   -r .\requirements.in
     #   dateparser
+python-decouple==3.5
+    # via -r requirements.in
 python-rapidjson==1.0
     # via djangorestframework-rapidjson
 python3-openid==3.2.0

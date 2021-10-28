@@ -6,7 +6,7 @@ baseada nas DocString's, dessa forma esse arquivo não tem recebido nenhum tipo 
 import os
 from django.core.management.base import BaseCommand
 from core.management.commands.utils import Utils
-from core.settings import DOC_APPS
+from base.settings import DOC_APPS
 
 
 class Command(BaseCommand):
@@ -31,30 +31,44 @@ class Command(BaseCommand):
             return string
 
     def __parser_documentation(self):
+        self.path_core = os.path.join(self.path_root, "core")
         try:
-            self.path_core = os.path.join(self.path_root, "core")
             content = Utils.get_snippet(os.path.join(
                 self.path_core, "management/commands/snippets/sphinx_doc/config.txt"))
-
             content = content.replace("$project$", self.projeto.lower())
             content = content.replace("$Project$", self.__title(self.projeto))
             content = content.replace("$Desenvolvedor$", self.desenvolvedor)
 
             with open(f"{self.__docs_path}/source/conf.py", 'w') as arquivo:
                 arquivo.write(content)
+        except:
+            pass
 
+        try:
             __make_content = Utils.get_snippet(os.path.join(
                 self.path_core, "management/commands/snippets/sphinx_doc/make.txt"))
 
             with open(f"{self.__docs_path}/Makefile", 'w') as arquivo:
                 arquivo.write(__make_content)
+        except:
+            pass
+        try:
+            __make_content = Utils.get_snippet(os.path.join(
+                self.path_core, "management/commands/snippets/sphinx_doc/make.txt"))
 
+            with open(f"{self.__docs_path}/Makefile", 'w') as arquivo:
+                arquivo.write(__make_content)
+        except:
+            pass
+        try:
             __make_bat_content = Utils.get_snippet(os.path.join(
                 self.path_core, "management/commands/snippets/sphinx_doc/make_bat.txt"))
 
             with open(f"{self.__docs_path}/make.bat", 'w') as arquivo:
                 arquivo.write(__make_bat_content)
-
+        except:
+            pass
+        try:
             __modules_content = Utils.get_snippet(os.path.join(
                 self.path_core, "management/commands/snippets/sphinx_doc/modules.txt"))
 
@@ -75,7 +89,9 @@ class Command(BaseCommand):
 
             with open(f"{self.__docs_path}/source/index.rst", "w") as arquivo:
                 arquivo.write(__rst_content)
-
+        except:
+            pass
+        try:
             for app in DOC_APPS:
                 __content = Utils.get_snippet(
                     os.path.join(self.path_core, "management/commands/snippets/sphinx_doc/rst.txt")
@@ -87,11 +103,9 @@ class Command(BaseCommand):
                     arquivo.write(__content)
 
             os.system("make --directory=doc html")
+        except:
+            pass
 
-        except Exception as e:
-            Utils.show_message("OCORREU UM ERRO, VERIFIQUE SE O ARQUIVO "
-                               "docker-compose.yml sofreu alguma alteração: "
-                               "{}".format(e))
 
     def handle(self, *args, **options):
         if not DOC_APPS:

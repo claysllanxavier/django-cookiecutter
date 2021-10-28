@@ -71,7 +71,7 @@ class AuthService {
     return _authModel;
   }
 
-  Future<int> checkDjangoUserTypeClient(String login) async {
+  Future<int?> checkDjangoUserTypeClient(String login) async {
     String _uri = "${Config.uri}usuario/cliente/?email=$login";
     try {
       CustomDio _dio = CustomDio(_uri);
@@ -88,7 +88,7 @@ class AuthService {
     return null;
   }
 
-  Future<String> signUp(AuthModel authModel) async {
+  Future<String?> signUp(AuthModel authModel) async {
     String _uri = "";
     final bool result = await this.verifyingEmailAlreadyExists(authModel.email);
     if (result == true) {
@@ -118,7 +118,7 @@ class AuthService {
     return null;
   }
 
-  Future<AuthModel> login(AuthModel auth) async {
+  Future<AuthModel?> login(AuthModel auth) async {
     String _uri = "${Config.uriAuth}";
     try {
       CustomDio _dio = CustomDio(_uri);
@@ -146,8 +146,8 @@ class AuthService {
       } else {
         return null;
       }
-    } catch (error) {
-      throw (error);
+    } catch (error, exception) {
+      _error(error.toString(), exception.toString());
     }
   }
 
@@ -161,13 +161,13 @@ class AuthService {
       if (dataResult != null) {
         result = dataResult['count'] != 0;
       }
-    } catch (e) {
-      DebugPrint.error("Erro $e ao executar o verifyingEmailAlreadyExists no AuthService");
+    } catch (error, exception) {
+      _error("Erro ${error.toString()} ao executar o verifyingEmailAlreadyExists no AuthService", exception.toString());
     }
     return result;
   }
 
-  Future<UsuarioModel> signInDjangoUser(String login, int userType) async {
+  Future<UsuarioModel?> signInDjangoUser(String login, int userType) async {
     String _uri = "${Config.uri}usuario/usuario/?email=$login";
     int typeException = 0;
     try {
@@ -242,7 +242,7 @@ class AuthService {
     return false;
   }
 
-  Future<AuthModel> createAccount() async {
+  Future<AuthModel?> createAccount() async {
     String _url = "";
     try {
       final CustomDio _dio = CustomDio(_url);
@@ -284,7 +284,7 @@ class AuthService {
     return false;
   }
 
-  void _success(String message, {int statusCode}) async {
+  void _success(String message, {int statusCode = 200}) async {
     try {
       DebugPrint.print("DebugSuccess: AuthService -> $message, Status: $statusCode");
     } catch (e) {
@@ -292,7 +292,7 @@ class AuthService {
     }
   }
 
-  void _error(String error, String exception, {int statusCode}) async {
+  void _error(String error, String exception) async {
     try {
       DebugPrint.error("DebugErro: AuthService -> $error | $exception");
     } catch (error) {

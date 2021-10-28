@@ -32,19 +32,20 @@ import 'data.dart';
 part 'state.dart';
 
 class $ModelClass$Cubit extends Cubit<$ModelClass$State> {
-  $ModelClass$Service _service;
-  $ModelClass$Data _data;
-  $ModelClass$Model $ModelClassCamelCase$Model;
-  List<$ModelClass$Model> $ModelClassCamelCase$List;
+  late $ModelClass$Service _service;
+  $ModelClass$Data _data = $ModelClass$Data();
+  $ModelClass$Model $ModelClassCamelCase$Model = $ModelClass$Model();
+  List<$ModelClass$Model> $ModelClassCamelCase$List = <$ModelClass$Model>[];
 
-  $ModelClass$Cubit() : super($ModelClass$Initial()) {
-    _service = $ModelClass$Service();
+  $ModelClass$Cubit({$ModelClass$Model? $ModelClassCamelCase$Model}):
+    super($ModelClass$Initial()) {
+    _service = $ModelClass$Service($ModelClassCamelCase$: $ModelClassCamelCase$Model ?? this.$ModelClassCamelCase$Model);
   }
 
   Future<void> fetch() async {
     try {
       emit($ModelClass$ProcessState());
-      $ModelClassCamelCase$List?.clear();
+      $ModelClassCamelCase$List.clear();
       $ModelClassCamelCase$List = await _service.fetch();
       emit(
         $ModelClass$SuccessState(
@@ -62,7 +63,7 @@ class $ModelClass$Cubit extends Cubit<$ModelClass$State> {
   Future<void> reload() async {
     try {
       emit($ModelClass$ProcessState());
-      $ModelClassCamelCase$List?.clear();
+      $ModelClassCamelCase$List.clear();
       emit($ModelClass$SuccessState(
           successMessage: "Dados carregados com sucesso.",
           $ModelClassCamelCase$List: $ModelClassCamelCase$List,

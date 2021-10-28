@@ -3,7 +3,7 @@ import pytest_django
 from faker import Faker
 from validate_docbr import CPF
 from model_bakery import baker
-from usuario.forms import ProfissionalForm
+from usuario.forms import UsuarioForm
 from usuario.models import Profissional
 from django.contrib.auth.models import Group
 
@@ -20,7 +20,5 @@ class TestUsuarioForm:
             "latitude": 0.0,
             "longitude": 0.0,
         }
-        form = ProfissionalForm(data=form_data)
-        if form.errors:
-            print(form.errors)
+        form = UsuarioForm(data=form_data)
         assert form.is_valid() is True

@@ -26,16 +26,16 @@ import '../../../utils/util.dart';
 class $ModelClass$Service {
   String _uri = "$App$/$Model$/";
   $ModelClass$Model _$ModelClassCamelCase$ = $ModelClass$Model();
-  List<$ModelClass$Model> _$ModelClassCamelCase$List = List<$ModelClass$Model>();
+  List<$ModelClass$Model> _$ModelClassCamelCase$List = <$ModelClass$Model>[];
 
-  $ModelClass$Service({$ModelClass$Model $ModelClassCamelCase$, List<$ModelClass$Model> $ModelClassCamelCase$List}) {
-    if ($ModelClassCamelCase$ != null) _$ModelClassCamelCase$ = $ModelClassCamelCase$;
+  $ModelClass$Service({required $ModelClass$Model $ModelClassCamelCase$, List<$ModelClass$Model>? $ModelClassCamelCase$List}) {
+    _$ModelClassCamelCase$ = $ModelClassCamelCase$;
   }
 
-  Future<List<$ModelClass$Model>> fetch({String url}) async {
+  Future<List<$ModelClass$Model>> fetch({String? url}) async {
     try {
       _uri = "${Config.uri}$App$/$Model$/";
-      _$ModelClassCamelCase$List?.clear();
+      _$ModelClassCamelCase$List.clear();
       final CustomDio _dio = CustomDio(_uri);
       final dataResponse = await _dio.getHttp(uri: _uri);
       if (dataResponse != null) {
@@ -51,7 +51,7 @@ class $ModelClass$Service {
         _success("ok");
       }
     } catch (error, exception) {
-      _error(error, exception.toString());
+      _error(error.toString(), exception.toString());
     }
     return _$ModelClassCamelCase$List;
   }
@@ -73,7 +73,7 @@ class $ModelClass$Service {
         _success("ok");
       }
     } catch (error, exception) {
-      _error(error, exception.toString());
+      _error(error.toString(), exception.toString());
     }
     return _$ModelClassCamelCase$List;
   }
@@ -156,7 +156,7 @@ class $ModelClass$Service {
     }
   }
 
-  void _success(String message, {int statusCode}) async {
+  void _success(String message, {int statusCode = 200}) async {
     try {
       DebugPrint.print("DebugSuccess: $message, Status: $statusCode");
     } catch (e) {
@@ -164,7 +164,7 @@ class $ModelClass$Service {
     }
   }
 
-  void _error(String error, String exception, {int statusCode}) async {
+  void _error(String error, String exception, {int statusCode = 500}) async {
     try {
       DebugPrint.error(
           "DebugErro: $ModelClass$Service -> $error | $exception");
