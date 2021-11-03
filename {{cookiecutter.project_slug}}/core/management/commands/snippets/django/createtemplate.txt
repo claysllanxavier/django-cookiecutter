@@ -8,42 +8,77 @@ FileLocked
 -->
 
 {% block title %}Criação de $title${% endblock title %}
-{% block title_modulo %}$title${% endblock title_modulo %}
-{% block menu_app %}
-    {% for app in apps %}
-        {% if app.real_name_app.lower == '$app_name$' %}
-            {% for model in app.models_app %}
-              {% if model|has_view_permission:request %}
-                <tr>
-                    <td>
-                        <i class="fe fe-chevrons-right text-muted"></i> &nbsp;
-                        <a href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
-                    </td>
-                </tr>
-              {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
-{% endblock menu_app %}
-{% block form_app %}
-<form id="form_principal" class="needs-validation was-validated" method="post" novalidate enctype="multipart/form-data">
-    {% csrf_token %}
-    {% for hidden_field in form.hidden_fields %}
-        {{ hidden_field }}
-    {% endfor %}
-    {% if form.non_field_errors %}
-        <div class="alert alert-danger" role="alert">
-        {% for error in form.non_field_errors %}
-            {{ error }}
+<span class="text-muted font-weight-light"></span>
+{% block title_modulo %}
+<h4 class="font-weight-bold py-3 mb-4">
+  <span class="text-muted font-weight-light">$title$ /</span> Adicionar $title$
+</h4>
+{% endblock title_modulo %}
+
+<div class="row">
+  {% block menu_app %}
+  {% for app in apps %}
+  {% if app.real_name_app.lower == '$app_name$' %}
+  {% for model in app.models_app %}
+  {% if model|has_view_permission:request %}
+  <div class="col-xl-12">
+    <i class="ion ion-md-arrow-dropight text-muted"></i> &nbsp;
+    <a href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
+  </div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+  {% endfor %}
+  {% endblock menu_app %}
+
+  {% block form_app %}
+  <div class="col-xl-12">
+    <form id="form_principal" class="needs-validation was-validated" method="post" novalidate
+        enctype="multipart/form-data">    
+      <div class="card-body">
+        {% csrf_token %}
+
+        {% for hidden_field in form.hidden_fields %}
+          {{ hidden_field }}
         {% endfor %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+          {% for error in form.non_field_errors %}
+          {{ error }}
+          {% endfor %}
         </div>
-    {% endif %}
-  <div class="form-row">
-    <!--REPLACE_PARSER_HTML-->
+        {% endif %}
+
+        <div class="form-row">
+          <!--REPLACE_PARSER_HTML-->
+        </div>
+      </div>
   </div>
 
-  <div class="col-12 m-0 p-0 text-right">
-    <div class="btn-list">
+  <div class="card-footer">
+      <div class="row">
+        <div class="col-xl-4">
+          <a class="btn btn-outline-secondary" href="{% url '$url_back$' %}">
+            <span class="ion ion-md-arrow-back"></span> Voltar
+          </a>
+        </div>
+        <div class="col-xl-8 text-right">
+          {% if list_inlines %}
+          <input type="submit" class="btn btn-primary btn-large" name="_continue" value="Salvar">
+          {% else %}
+          <input type="submit" class="btn btn-primary btn-large" value="Salvar">
+          {% endif %}
+          <input type="submit" class="btn btn-outline-info" name="_continue" value="Salvar e Continuar">
+          <input type="submit" class="btn btn-outline-info" name="_addanother" value="Salvar e Adicionar Novo">
+        </div>
+      </div>
+    </div>
+  </form>
+</div> 
+
+{% comment %} <div class="col-12 m-0 p-0 text-right">
+  <div class="btn-list">
         {% if list_inlines %}
           <input type="submit" class="btn btn-primary btn-large" name="_continue" value="Salvar">
         {% else %}
@@ -53,9 +88,7 @@ FileLocked
           <input type="submit" class="btn btn-outline-info" name="_addanother" value="Salvar e adicionar outro">
           <a class="btn btn-outline-danger" href="{% url '$url_back$' %}">Cancelar</a>
       </div>
-  </div>
-</form>
-
+  </div> {% endcomment %}
 <!--REPLACE_MODAL_HTML-->
 
 {% endblock form_app %}

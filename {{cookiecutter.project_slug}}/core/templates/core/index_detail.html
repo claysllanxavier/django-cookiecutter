@@ -1,22 +1,25 @@
 {% extends 'core/base.html' %} {% block content %}
 
-<div id="content_detail_page_app" class="row">
-    <div id="detail_card" class="col-md-12">
-            <!-- Div da listagem e edição -->
-            <div class="card">
-                <div class="card-header m-0 p-0">
-                    {% block titledelete_app %}{% endblock titledelete_app %}
-                </div>
-                <div class="card-body m-0 p-0">
-                    {% block detail %}{% endblock detail %}
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-md-12 text-right" >
-                            <a href="{% url url_list %}" class="btn btn-outline-primary"> <i class="fa fa-arrow-left"></i> Voltar</a>
-                        </div>
-                    </div>
-                </div>
+<div class="layout-content">
+   
+    <div class="row">
+        <div class="col-xl-6">
+            <h4 class="font-weight-bold py-3 mb-4">
+                <span class="text-muted font-weight-light">{{ model.name_model|title }} /</span> Detalhes do {{ model.name_model|title }}
+            </h4>
+        </div>
+        <div class="col-xl-6">
+            <div class="text-right  mt-3">
+                <a href="{% url url_list %}" class="btn btn-outline-primary">
+                    <span class="ion ion-md-arrow-back"></span> Voltar
+                </a>
+            </div>
+        </div>
+        <div class="col-xl-12 bg-white ui-bordered">
+            <div class="mb-2 p-2">
+                <!--  -->
+                {% block detail %}{% endblock detail %}
+            </div>
         </div>
     </div>
 </div>
