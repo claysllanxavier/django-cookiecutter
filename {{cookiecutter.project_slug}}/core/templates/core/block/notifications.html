@@ -1,0 +1,9 @@
+{% if messages %}
+  {% for message in messages %}
+      <button id="toastr-show" style="display: none;"></button>
+      <!-- type -->
+      <input id="toastr-type" name="toastr-type" type="text" style="display: none;" value="{{ message.extra_tags }}">
+      <!-- message -->
+      <input id="toastr-message" name="toastr-message" type="text" value="{{ message|safe }}" style="display: none;">
+  {% endfor %}
+{% endif %}
