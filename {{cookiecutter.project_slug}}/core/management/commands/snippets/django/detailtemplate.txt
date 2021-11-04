@@ -8,41 +8,66 @@ FileLocked
 {% load static %}
 {% load base %}
 {% block title_modulo %}$title${% endblock title_modulo %}
-{% block menu_app %}
-    {% for app in apps %}
-        {% if app.real_name_app.lower == '$app_name$' %}
-            {% for model in app.models_app %}
-                {% if model|has_view_permission:request %}
-                    <tr>
-                        <td>
-                            <i class="fe fe-chevrons-right text-muted"></i> &nbsp;
+<div class="row">
+    {% block menu_app %}
+        {% for app in apps %}
+            {% if app.real_name_app.lower == '$app_name$' %}
+                {% for model in app.models_app %}
+                    {% if model|has_view_permission:request %}
+                        <div class="col-xl-12">
+                            <i class="ion ion-md-arrow-dropight text-muted"></i> &nbsp;
                             <a href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
-                        </td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
-{% endblock menu_app %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    {% endblock menu_app %}
+</div>
 
 {% block titledelete_app %}<h2 class=m-3>$title$</h2>{% endblock titledelete_app %}
 
 {% block detail %}
-    <div class="container-fluid m-3">
-        <div class="row">
-            <div id="div-table" class="col-md-12">
-                {% for field in object_list %}
-                        <div class="row mb-2">
-                        <div class="col-md-2">
-                        <strong>{{ field.0|capfirst }}</strong>
-                        </div>
-                        <div class="col-md-10">
-                            {{ field.1 }}
-                        </div>
+    <div class="row">
+        {% for field in object_list %}
+            <div class="col-xl-6">
+                <h5 class="media align-items-center my-4">
+                    <div class="media-body ml-1">
+                        <div class="text-muted text-tiny font-weight-light mb-1">{{ field.0|capfirst }}</div>
+                        {{ field.1 }}
                     </div>
-                {%  endfor  %}
+                </h5>
             </div>
-        </div>
+            <!-- <div class="row no-gutters row-bordered">
+                <div class="d-flex col-md align-items-center">
+                    <a href="javascript:void(0)" class="card-body d-block text-body">
+                        <div class="text-muted small line-height-1">{{ field.0|capfirst }}</div>
+                        <div class="text-xlarge">{{ field.1 }}</div>
+                    </a>
+                </div>
+            </div> -->
+        {% endfor %}
+    </div>
+
+    {% comment %}        
+        #TODO Estudar aonde fica a barra de actions
+    {% endcomment %}
+
+        {% comment %} <div class="container-fluid m-3">
+            <div class="row">
+                <div id="div-table" class="col-md-12">
+                    {% for field in object_list %}
+                            <div class="row mb-2">
+                            <div class="col-md-2">
+                            <strong>{{ field.0|capfirst }}</strong>
+                            </div>
+                            <div class="col-md-10">
+                                {{ field.1 }}
+                            </div>
+                        </div>
+                    {%  endfor  %}
+                </div>
+            </div>
 
 
             {% for field in many_fields  %}
@@ -59,5 +84,5 @@ FileLocked
                 <!-- Div para as ações caso existam -->
             </div>
         </div>
-    </div>
+    </div> {% endcomment %}
 {% endblock detail %}

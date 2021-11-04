@@ -13,10 +13,10 @@ Get (Consultar um novo registro via API)
 Post (Salvar um novo registro via API)
 
 {% block javascript %}
-  <script>
+<script>
     $("#IdDoElementoQueDisparaOPostParaAAPI").change(function () {
-      var form = $(this).closest("IdDoFormQueTeraOsDadosSerializadosParaEnviarAView");
-      $.ajax({
+    var form = $(this).closest("IdDoFormQueTeraOsDadosSerializadosParaEnviarAView");
+    $.ajax({
         url: // Url da view que recebera o post e executará a ação,
         data: form.serialize(),
         dataType: 'json', // Formato dos dados a serem enviados.
@@ -29,9 +29,9 @@ Post (Salvar um novo registro via API)
         error: function (xhr, errmsg, err){
           // console.log(xhr.status + ": " + xhr.responseText);
         }
-      });
+        });
     });
-  </script>
+</script>
 {% endblock %}
 
 Put (Atualizar um novo registro via API)
@@ -54,9 +54,9 @@ Delete (Deletar um novo registro via API)
         {% endfor %}
         </div>
     {% endif %}
-  <div class="form-row">
-    <!--REPLACE_PARSER_HTML-->
-  </div>
+    <div class="form-row">
+        <!--REPLACE_PARSER_HTML-->
+    </div>
 
     {% block content_inline %}
     <!-- Bloco para renderizar os formularios configurados no inline -->
@@ -85,7 +85,8 @@ Delete (Deletar um novo registro via API)
                         {% endif %}
 
                         {% for formset_form in formset %}
-                            <div {% if  '__prefix__' in formset_form.prefix %} class="p-3 mb-3 inline formset-custom-template {{ formset.prefix }} border-bottom" {% else %}class="p-3 mb-3 inline {{ formset.prefix }} border-bottom" {% endif %}>
+                            <div {% if  '__prefix__' in formset_form.prefix %} class="p-3 mb-3 inline formset-custom-template {{ formset.prefix }} border-bottom" 
+                            {% else %}class="p-3 mb-3 inline {{ formset.prefix }} border-bottom" {% endif %}>
                                 {% for hidden in formset_form.hidden_fields %}
                                     {{ hidden }}
                                 {% endfor %}
@@ -183,14 +184,14 @@ Delete (Deletar um novo registro via API)
         {% endif %}
     {% endblock content_inline %}
 
-  <div class="col-12 m-0 p-0 text-right">
-    <div class="btn-list">
-          <input type="submit" class="btn btn-primary btn-large" value="Salvar">
-          <input type="submit" class="btn btn-outline-info" name="_continue" value="Salvar e continuar">
-          <input type="submit" class="btn btn-outline-info" name="_addanother" value="Salvar e adicionar outro">
-          <a class="btn btn-outline-danger" href="{% url '$url_back$' %}">Cancelar</a>
-      </div>
-  </div>
+    <div class="col-12 m-0 p-0 text-right">
+        <div class="btn-list">
+            <input type="submit" class="btn btn-primary btn-large" value="Salvar">
+            <input type="submit" class="btn btn-outline-info" name="_continue" value="Salvar e continuar">
+            <input type="submit" class="btn btn-outline-info" name="_addanother" value="Salvar e adicionar outro">
+            <a class="btn btn-outline-danger" href="{% url '$url_back$' %}">Cancelar</a>
+        </div>
+    </div>
 </form>
 
 <!--REPLACE_MODAL_HTML-->

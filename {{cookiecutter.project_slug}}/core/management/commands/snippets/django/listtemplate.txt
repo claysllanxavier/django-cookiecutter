@@ -7,7 +7,11 @@ FileLocked
 {% extends 'core/index_list.html' %} 
 {% load base %}
 {% block title %}Listagem $title${% endblock title %} 
-{% block title_modulo %}$title${% endblock title_modulo %} 
+{% block title_modulo %}
+<h4 class="font-weight-bold py-3 mb-4">
+$title$
+</h4>
+{% endblock title_modulo %} 
 
 <!-- Bloco para passagem da URL do formulário de cadastro -->
 {% block uriadd %}{% url "$app_name$:$model_name$-create" %}{% endblock uriadd %}
@@ -15,7 +19,7 @@ FileLocked
 {% block list_app %}
 <thead>
     <tr>
-        <th class="w-1"></th>
+        <th style="width: 10% !important;"></th>
         <!--REPLACE_THEAD-->
     </tr>
 </thead>
@@ -23,14 +27,20 @@ FileLocked
     {% for item in $model_name$ %}
         <tr>
             <td>
-                <a href="{% url '$app_name$:$model_name$-update' item.pk %}" data-toggle="tooltip" data-placement="bottom" title="Editar Registro.">
-                    <i class="fas fa-edit"></i>
+                <a href="{% url '$app_name$:$model_name$-detail' item.pk %}"
+                class="mx-2 btn icon-btn btn-sm btn-outline-primary" 
+                data-toggle="tooltip" data-placement="bottom" title="Visualizar" style="margin-right: 0 !important;">
+                    <i class="ion ion-md-eye"></i>
                 </a>
-                <a href="{% url '$app_name$:$model_name$-detail' item.pk %}" class="mx-3" data-toggle="tooltip" data-placement="bottom" title="Visualizar Registro.">
-                    <i class="fas fa-eye"></i>
+                <a href="{% url '$app_name$:$model_name$-update' item.pk %}" 
+                class="mx-2 btn icon-btn btn-sm btn-outline-success"
+                data-toggle="tooltip" data-placement="bottom" title="Editar" style="margin-right: 0 !important;">
+                    <i class="ion ion-md-create"></i>
                 </a>
-                <a href="{% url '$app_name$:$model_name$-delete' item.pk %}" data-toggle="tooltip" data-placement="bottom" title="Excluir Registro.">
-                    <i class="fas fa-trash text-muted"></i>
+                <a href="{% url '$app_name$:$model_name$-delete' item.pk %}" 
+                class="mx-2 btn icon-btn btn-sm btn-outline-danger"
+                data-toggle="tooltip" data-placement="bottom" title="Excluir" style="margin-right: 0 !important;" >
+                    <i class="ion ion-md-trash"></i>
                 </a>
             </td>
             <!--REPLACE_TLINE-->
