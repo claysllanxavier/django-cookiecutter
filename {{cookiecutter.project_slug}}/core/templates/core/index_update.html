@@ -1,20 +1,12 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div id="content_update_page_app" class="row">
-    <div id="form_update_card" class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Atualização de {% block title_modulo %}{% endblock title_modulo %}</h3>
-            </div>
-            <div class="card-header m-0 p-0">
-                <div class="row m-0 p-5 w-100">
-                    <div class="col-12 ml-0">
-                        {% block form_app %}
-                        {% block content_inline %}{% endblock content_inline %}
-                        {% endblock form_app %}
-                    </div>
-                </div>
+<div class="layout-content">
+    {% block title_modulo %}{% endblock title_modulo %}
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                {% block form_app %}{% endblock form_app %}
             </div>
         </div>
     </div>
