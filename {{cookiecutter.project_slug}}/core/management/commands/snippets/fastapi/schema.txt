@@ -14,7 +14,7 @@ class $ModelClass$Update($ModelClass$Base):
     pass
 
 class $ModelClass$InDBBase($ModelClass$Base):
-    id: int
+    id: str
     deleted: bool
     created_on: datetime.datetime
     updated_on: datetime.datetime
