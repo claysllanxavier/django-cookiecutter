@@ -1,22 +1,13 @@
-{% extends 'core/base.html' %} {% block content %}
+{% extends 'core/base.html' %}
 
-<div id="content_detail_page_app" class="row">
-    <div id="detail_card" class="col-md-12">
-            <!-- Div da listagem e edição -->
+{% block content %}
+<div class="layout-content">
+    {% block title_modulo %}{% endblock title_modulo %}
+    <div class="row">
+        <div class="col-xl-12">
             <div class="card">
-                <div class="card-header m-0 p-0">
-                    {% block titledelete_app %}{% endblock titledelete_app %}
-                </div>
-                <div class="card-body m-0 p-0">
-                    {% block detail %}{% endblock detail %}
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-md-12 text-right" >
-                            <a href="{% url url_list %}" class="btn btn-outline-primary"> <i class="fa fa-arrow-left"></i> Voltar</a>
-                        </div>
-                    </div>
-                </div>
+                {% block detail %}{% endblock detail %}
+            </div>
         </div>
     </div>
 </div>

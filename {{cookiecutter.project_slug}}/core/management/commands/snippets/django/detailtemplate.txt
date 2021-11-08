@@ -1,48 +1,71 @@
+{% extends 'core/index_detail.html' %}
+{% load static %}
+{% load base %}
+
 <!--
 Arquivo gerado automaticamente pelo build.
 Caso deseje bloquear o parser nesse arquivo, basta adicionar o caracter #(cerquilha) antes da palavra a seguir
 FileLocked
 -->
 
-{% extends 'core/index_detail.html' %}
-{% load static %}
-{% load base %}
-{% block title_modulo %}$title${% endblock title_modulo %}
-{% block menu_app %}
-    {% for app in apps %}
-        {% if app.real_name_app.lower == '$app_name$' %}
-            {% for model in app.models_app %}
-                {% if model|has_view_permission:request %}
-                    <tr>
-                        <td>
-                            <i class="fe fe-chevrons-right text-muted"></i> &nbsp;
-                            <a href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
-                        </td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
-{% endblock menu_app %}
 
-{% block titledelete_app %}<h2 class=m-3>$title$</h2>{% endblock titledelete_app %}
+{% block title %}Detalhes de $title${% endblock title %} 
+<span class="text-muted font-weight-light"></span>
+{% block title_modulo %}
+<h4 class="font-weight-bold py-3 mb-4">
+    <span class="text-muted font-weight-light">$title$ /</span> Detalhes $title$
+</h4>
+{% endblock title_modulo %}
+
+<div class="row">
+    {% block menu_app %}
+    {% for app in apps %}
+    {% if app.real_name_app.lower == '$app_name$' %}
+    {% for model in app.models_app %}
+    {% if model|has_view_permission:request %}
+    <div class="col-xl-12">
+        <i class="ion ion-md-arrow-dropight text-muted"></i> &nbsp;
+        <a href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+    {% endblock menu_app %}
 
 {% block detail %}
-    <div class="container-fluid m-3">
-        <div class="row">
-            <div id="div-table" class="col-md-12">
-                {% for field in object_list %}
-                        <div class="row mb-2">
-                        <div class="col-md-2">
-                        <strong>{{ field.0|capfirst }}</strong>
-                        </div>
-                        <div class="col-md-10">
-                            {{ field.1 }}
-                        </div>
-                    </div>
-                {%  endfor  %}
-            </div>
+<div class="col-xl-12">
+    {% for field in object_list %}
+        <div class="col-xl-6">
+            <h5 class="media align-items-center my-4">
+                <div class="media-body ml-1">
+                    <div class="text-muted text-tiny font-weight-light mb-1">{{ field.0|capfirst }}</div>
+                    {{ field.1 }}
+                </div>
+            </h5>
         </div>
+    {% endfor %}
+</div>
+
+    {% comment %}        
+        #TODO Estudar aonde fica a barra de actions
+    {% endcomment %}
+
+        {% comment %} <div class="container-fluid m-3">
+            <div class="row">
+                <div id="div-table" class="col-md-12">
+                    {% for field in object_list %}
+                            <div class="row mb-2">
+                            <div class="col-md-2">
+                            <strong>{{ field.0|capfirst }}</strong>
+                            </div>
+                            <div class="col-md-10">
+                                {{ field.1 }}
+                            </div>
+                        </div>
+                    {%  endfor  %}
+                </div>
+            </div>
 
 
             {% for field in many_fields  %}
@@ -59,5 +82,16 @@ FileLocked
                 <!-- Div para as ações caso existam -->
             </div>
         </div>
+    </div> {% endcomment %}
+
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-xl-4">
+                <a class="btn btn-outline-secondary" href="{% url '$url_back$' %}">
+                <span class="ion ion-md-arrow-back"></span> Voltar
+                </a>
+            </div>
+        </div>
     </div>
+</div>
 {% endblock detail %}

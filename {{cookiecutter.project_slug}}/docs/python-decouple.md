@@ -19,22 +19,15 @@ print(utils.get_random_secret_key())
 
   
 ```
+SECRET_KEY=NYPmGeU11uQ96YQtX9UjOZ_EuAGsuJltGJt5XBrXt0HQhgShCP7KIWlLFgxtZDhl0z4
 DEBUG=True
-# O campo SECRET_KEY deve receber o valor gerado pelo comando do django utils.get_random_secret_key() 
-SECRET_KEY=
 ALLOWED_HOSTS=.localhost,
-# O campo API_PATH deve receber o caminho da APIRest
-API_PATH=
-# O campo SENTRY_DNS deve receber o valor do DNS do Sentry para capturar os erros 
-SENTRY_DNS=
-# O campo DB_NAME deve receber o nome do banco de dados PostgreSQL
-DB_NAME=
-# O campo DB_USER deve receber o nome do usuário para autenticar no servidor PostgreSQL
-DB_USER=
-# O campo DB_PASSWORD deve receber a senha de acesso do usuário para autenticar no servidor PostgreSQL
-DB_PASSWORD=
-# O campos DB_HOST deve receber o IP do servidor PostgreSQL
-DB_HOST=
+API_PATH=http://localhost:8080/api/
+SENTRY_DNS=q0y#b#k6@23f=g8ts-x^j55mqcskn3@-_ct&z4(8zp32-z77oq
+DB_NAME=nome_do_banco_de_dados
+DB_USER=usuario_do_banco_de_dados
+DB_PASSWORD=senha_do_banco_de_dados
+DB_HOST=endereco_do_servidor_do_banco_de_dados
 ```
 
 ## Links

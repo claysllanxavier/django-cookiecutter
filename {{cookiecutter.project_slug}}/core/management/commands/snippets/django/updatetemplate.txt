@@ -13,10 +13,10 @@ Get (Consultar um novo registro via API)
 Post (Salvar um novo registro via API)
 
 {% block javascript %}
-  <script>
+<script>
     $("#IdDoElementoQueDisparaOPostParaAAPI").change(function () {
-      var form = $(this).closest("IdDoFormQueTeraOsDadosSerializadosParaEnviarAView");
-      $.ajax({
+    var form = $(this).closest("IdDoFormQueTeraOsDadosSerializadosParaEnviarAView");
+    $.ajax({
         url: // Url da view que recebera o post e executará a ação,
         data: form.serialize(),
         dataType: 'json', // Formato dos dados a serem enviados.
@@ -29,9 +29,9 @@ Post (Salvar um novo registro via API)
         error: function (xhr, errmsg, err){
           // console.log(xhr.status + ": " + xhr.responseText);
         }
-      });
+        });
     });
-  </script>
+</script>
 {% endblock %}
 
 Put (Atualizar um novo registro via API)
@@ -40,23 +40,52 @@ Delete (Deletar um novo registro via API)
 -->
 
 {% block title %}Atualização de $title${% endblock title %} 
-{% block title_modulo %}$title${% endblock title_modulo %} 
-{% block form_app %}
-<form id="form_principal" class="needs-validation was-validated" method="post" novalidate enctype="multipart/form-data">
-    {% csrf_token %}
-    {% for hidden_field in form.hidden_fields %}
-        {{ hidden_field }}
-    {% endfor %}
-    {% if form.non_field_errors %}
-        <div class="alert alert-danger" role="alert">
-        {% for error in form.non_field_errors %}
-            {{ error }}
-        {% endfor %}
-        </div>
+<span class="text-muted font-weight-light"></span>
+{% block title_modulo %}
+<h4 class="font-weight-bold py-3 mb-4">
+    <span class="text-muted font-weight-light">$title$ /</span> Atualização $title$
+</h4>
+{% endblock title_modulo %}
+
+<div class="row">
+    {% block menu_app %}
+    {% for app in apps %}
+    {% if app.real_name_app.lower == '$app_name$' %}
+    {% for model in app.models_app %}
+    {% if model|has_view_permission:request %}
+    <div class="col-xl-12">
+        <i class="ion ion-md-arrow-dropight text-muted"></i> &nbsp;
+        <a href="{% url model.path_url %}"> {{ model.name_model|title }} </a>
+    </div>
     {% endif %}
-  <div class="form-row">
-    <!--REPLACE_PARSER_HTML-->
-  </div>
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+    {% endblock menu_app %}
+
+    {% block form_app %}
+    <div class="col-xl-12">
+        <form id="form_principal" class="needs-validation was-validated" method="post" novalidate enctype="multipart/form-data">
+            <div class="card-body">
+                {% csrf_token %}
+
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field }}
+                {% endfor %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="form-row">
+                    <!--REPLACE_PARSER_HTML-->
+                </div>
+            </div>
+    </div>
 
     {% block content_inline %}
     <!-- Bloco para renderizar os formularios configurados no inline -->
@@ -85,7 +114,8 @@ Delete (Deletar um novo registro via API)
                         {% endif %}
 
                         {% for formset_form in formset %}
-                            <div {% if  '__prefix__' in formset_form.prefix %} class="p-3 mb-3 inline formset-custom-template {{ formset.prefix }} border-bottom" {% else %}class="p-3 mb-3 inline {{ formset.prefix }} border-bottom" {% endif %}>
+                            <div {% if  '__prefix__' in formset_form.prefix %} class="p-3 mb-3 inline formset-custom-template {{ formset.prefix }} border-bottom" 
+                            {% else %}class="p-3 mb-3 inline {{ formset.prefix }} border-bottom" {% endif %}>
                                 {% for hidden in formset_form.hidden_fields %}
                                     {{ hidden }}
                                 {% endfor %}
@@ -183,15 +213,20 @@ Delete (Deletar um novo registro via API)
         {% endif %}
     {% endblock content_inline %}
 
-  <div class="col-12 m-0 p-0 text-right">
-    <div class="btn-list">
-          <input type="submit" class="btn btn-primary btn-large" value="Salvar">
-          <input type="submit" class="btn btn-outline-info" name="_continue" value="Salvar e continuar">
-          <input type="submit" class="btn btn-outline-info" name="_addanother" value="Salvar e adicionar outro">
-          <a class="btn btn-outline-danger" href="{% url '$url_back$' %}">Cancelar</a>
-      </div>
-  </div>
-</form>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-xl-4">
+                    <a class="btn btn-outline-secondary" href="{% url '$url_back$' %}">
+                        <span class="ion ion-md-arrow-back"></span> Voltar
+                    </a>
+                </div>
+                <div class="col-xl-8 text-right">
+                    <input type="submit" class="btn btn-primary btn-large" value="Salvar">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 <!--REPLACE_MODAL_HTML-->
 

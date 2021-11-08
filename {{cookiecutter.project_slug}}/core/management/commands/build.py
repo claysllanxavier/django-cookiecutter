@@ -150,6 +150,7 @@ class Command(BaseCommand):
             _title = self.__get_verbose_name(app_name=self.app.lower()) or self.app.lower()
             content = content.replace("$title$", _title)
             content = content.replace("$model_name$", self.model_lower)
+            content = content.replace("$url_back$", '{}:{}-list'.format(self.app_lower, self.model_lower))
             content = content.replace("$app_name$", self.app_lower)
             with open(path, 'w', encoding='utf-8') as template:
                 template.write(content)

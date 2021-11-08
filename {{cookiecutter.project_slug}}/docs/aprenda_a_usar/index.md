@@ -15,21 +15,29 @@ Abaixo temos as etapas a serem executadas quando o projeto for criado.
 ### Comandos a serem executados após a criação do projeto
 
 1. Acessar o subdiretório do projeto que foi criado após o comando *cookiecutter ..\django-cookiecutter*   
-1. Gerar a secret_key do projeto Django
-   > import secrets  
-   > print(secrets.token_urlsafe())   
-   > **Caso necessário é possível informar a quantidade caracteres na chamada do** ***secrets.token_urlsafe(n)*** 
+1. Gerar a secret_key do projeto Django. 
+   1. Abra o terminal.
+   2. Ative o ambiente virtual
+   3. Execute os comando a seguir. 
+ 
+O código gerado deve ser colocado no arquivo .env que contêm os parâmetros de configuração do projeto.
+   
+```python
+from django.core.management import utils
+print(utils.get_random_secret_key())
+```
+  
 1. Instale as dependências  
     ```pip-sync requirements.txt requirements-dev.txt``` 
-1. Execute o comando de criação das migrações  
+2. Execute o comando de criação das migrações  
     ```python manage.py makemigrations```
-1. Execute o comando de aplicação das migrações    
+3. Execute o comando de aplicação das migrações    
     ```python manage.py migrate```
-1. Crie os códigos boilerplates da app usuario  
+4. Crie os códigos boilerplates da app usuario  
     ```python manage.py build usuario```   
-1. Crie o super user padrão do projeto  
+5. Crie o super user padrão do projeto  
     ```python mock_superuser.py```
-1. Crie usuários de exemplo da app usuário  
+6. Crie usuários de exemplo da app usuário  
     ```python mock_data.py```
 
 -----

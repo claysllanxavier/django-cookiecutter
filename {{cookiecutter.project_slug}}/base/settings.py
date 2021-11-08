@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'base.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': config('DB_ENGINE'),
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
@@ -120,6 +120,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 PROJECT_NAME = "{{ cookiecutter.project_name }}"
+
+# Lista de apps que devem ser mapeadas para gerar a documentação via Sphinxs
+# TODO Adicionar na documentação de uso do Framework a parte de geração da documentação com o Sphinxs
+DOC_APPS = ['usuario', ]
 
 try:
     from base.settings_local import *

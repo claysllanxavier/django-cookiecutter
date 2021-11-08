@@ -21,6 +21,7 @@ class Command(BaseCommand):
 
 
         self.project = 'fastapi'
+
         self.fastapi_dir = os.path.join(self.BASE_DIR, '..', "fastapi")
         self.fastapi_project = os.path.join(self.path_core, "management/commands/snippets/fastapi_project")
         self.snippet_dir = "{}/{}".format(self.path_core, "management/commands/snippets/fastapi/")

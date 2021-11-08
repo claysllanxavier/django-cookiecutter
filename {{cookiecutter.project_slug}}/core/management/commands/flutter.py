@@ -377,7 +377,11 @@ class Command(BaseCommand):
         try:
             if not Utils.check_dir(self.flutter_dir):
                 Utils.show_message("Criando o projeto flutter.")
-                __cmd_flutter_create = "flutter create {}".format(self.flutter_dir)
+                # flutter create --project-name=NomeDoProjeto --org br.com.NomeDaOrganizacao --platforms android, ios -a kotlin -i swift PathDoProjeto
+                # Versão anterior
+                # __cmd_flutter_create = "flutter create {}".format(self.flutter_dir)
+                __cmd_flutter_create = "flutter create --project-name={1} --org br.com.{1} {2} {0}".format(
+                    self.flutter_dir, self.flutter_project.lower(), '--platforms android, ios -a kotlin -i swift')
                 subprocess.call(__cmd_flutter_create, shell=True)
                 Utils.show_message("Projeto criado com sucesso.")
         except Exception as error:
@@ -1359,7 +1363,7 @@ class Command(BaseCommand):
 
     def __replace_main(self):
         """Método responsável por atualizar o conteúdo do arquivo main.dart no projeto Flutter contendo as estruturas
-        de navegação para as apps geradas via nuvols core."""
+        de navegação para as apps geradas via projeto core."""
         __imports = ""
         __list_itens = []
         try:
