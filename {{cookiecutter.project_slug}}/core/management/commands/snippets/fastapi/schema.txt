@@ -1,5 +1,6 @@
 import datetime
 from typing import Optional, Set
+from uuid import UUID
 
 from pydantic import BaseModel, EmailStr
 
@@ -14,7 +15,7 @@ class $ModelClass$Update($ModelClass$Base):
     pass
 
 class $ModelClass$InDBBase($ModelClass$Base):
-    id: str
+    id: UUID
     deleted: bool
     created_on: datetime.datetime
     updated_on: datetime.datetime
